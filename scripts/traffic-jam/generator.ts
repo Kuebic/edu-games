@@ -47,7 +47,7 @@ function weighted<T>(random: Random, items: readonly (readonly [T, number])[]): 
   return items[items.length - 1]![0];
 }
 
-/** Streets of one axis: at least one grass cell from the edge and two between Streets. */
+/** Streets of one axis: at least one grass cell from the edge and between Streets. */
 function placeStreets(random: Random, axis: 'v' | 'h', count: number, width: number, twoLane: boolean): Street[] | null {
   for (let attempt = 0; attempt < 50; attempt++) {
     const streets: Street[] = [];
@@ -55,12 +55,12 @@ function placeStreets(random: Random, axis: 'v' | 'h', count: number, width: num
     for (let i = 0; i < count; i++) {
       const lanes: 1 | 2 = twoLane && random() < 0.6 ? 2 : 1;
       const left = count - i - 1;
-      // Leave room for the Streets still to come, at 3 cells each (one lane + two grass).
-      const latest = width - 1 - lanes - left * 3;
+      // Leave room for the Streets still to come, at 2 cells each (one lane + one grass).
+      const latest = width - 1 - lanes - left * 2;
       if (latest < cursor) break;
-      const at = int(random, cursor, Math.min(latest, cursor + 3));
+      const at = int(random, cursor, Math.min(latest, cursor + 2));
       streets.push({ axis, at, lanes });
-      cursor = at + lanes + 2;
+      cursor = at + lanes + 1 + (random() < 0.5 ? 1 : 0);
     }
     if (streets.length === count) return streets;
   }
@@ -103,7 +103,7 @@ const ARROW_WEIGHT: Record<Arrow, number> = {
 };
 
 function placeVehicles(random: Random, level: Level, spec: ChapterSpec, count: number): void {
-  const taken = new Set<string>();
+  const taken = new Set(level.vehicles.flatMap(cellsOf).map(key));
   const kinds = spec.kinds.map((kind): [Kind, number] => [kind, kind === 'car' ? 3 : kind === 'truck' ? 2 : 1.5]);
   for (let attempt = 0; attempt < 400 && level.vehicles.length < count; attempt++) {
     const street = pick(random, level.streets);
@@ -124,7 +124,10 @@ function placeVehicles(random: Random, level: Level, spec: ChapterSpec, count: n
   }
 }
 
-/** One random Level for the Chapter, or null if it doesn't pass the Chapter's checks. */
+/** Waves may start below the Chapter's minimum; hardening is what gets them there. */
+const relaxed = (spec: ChapterSpec): ChapterSpec => ({ ...spec, waves: [1, spec.waves[1]] });
+
+/** One random Level for the Chapter, or null if it can't be played at all. */
 export function propose(random: Random, spec: ChapterSpec): Level | null {
   const { w, h } = spec.board;
   const vs = placeStreets(random, 'v', int(random, ...spec.vStreets), w, spec.twoLane);
@@ -133,25 +136,69 @@ export function propose(random: Random, spec: ChapterSpec): Level | null {
   const level: Level = { w, h, streets: [...vs, ...hs], vehicles: [] };
   if (spec.tJunctions) cutStreets(random, level);
   placeVehicles(random, level, spec, int(random, ...spec.vehicles));
-  return levelProblems(level, spec).length === 0 ? level : null;
+  return levelProblems(level, relaxed(spec)).length === 0 ? level : null;
+}
+
+/** A small random change: add a Vehicle, take one away, move one, or change an Arrow. */
+function mutate(random: Random, level: Level, spec: ChapterSpec): Level {
+  const next: Level = structuredClone(level);
+  const roll = random();
+  const i = Math.floor(random() * next.vehicles.length);
+  if (roll < 0.35) {
+    placeVehicles(random, next, spec, next.vehicles.length + 1);
+  } else if (roll < 0.5) {
+    next.vehicles.splice(i, 1);
+  } else if (roll < 0.75) {
+    next.vehicles.splice(i, 1);
+    placeVehicles(random, next, spec, next.vehicles.length + 1);
+  } else {
+    const vehicle = next.vehicles[i]!;
+    const arrows = spec.arrows.filter((arrow) => arrow !== vehicle.arrow && routeOf(next, { ...vehicle, arrow }));
+    if (arrows.length > 0) vehicle.arrow = pick(random, arrows);
+  }
+  return next;
 }
 
 /**
- * A Chapter's Levels, easiest first: many candidates, ranked by difficulty,
- * sampled evenly from the easy end to near the hard end.
+ * Hill-climbs toward a harder Level: keeps any change that still passes the Chapter's
+ * checks and is at least as hard. Random boards are mostly free cars; this builds the
+ * long chains of Vehicles waiting on each other that make a real traffic jam.
  */
-export function chapterLevels(spec: ChapterSpec, seed: number, count: number, candidates = 400): Level[] {
+function harden(random: Random, level: Level, spec: ChapterSpec, steps: number): Level {
+  const loose = relaxed(spec);
+  let best = level;
+  let score = report(level).difficulty;
+  for (let step = 0; step < steps; step++) {
+    const next = mutate(random, best, spec);
+    if (levelProblems(next, loose).length > 0) continue;
+    const difficulty = report(next).difficulty;
+    if (difficulty >= score) {
+      best = next;
+      score = difficulty;
+    }
+  }
+  return best;
+}
+
+/**
+ * A Chapter's Levels, easiest first: candidates hardened by varying amounts, ranked by
+ * difficulty, sampled from a little above the easy end up to the hardest found.
+ */
+export function chapterLevels(spec: ChapterSpec, seed: number, count: number, candidates = 120, steps = 150): Level[] {
   const random = seeded(seed);
   const found = new Map<string, { level: Level; difficulty: number }>();
   for (let attempt = 0; attempt < candidates * 200 && found.size < candidates; attempt++) {
-    const level = propose(random, spec);
-    if (!level) continue;
+    const start = propose(random, spec);
+    if (!start) continue;
+    // Harden each candidate by a different amount, so the pool runs from easy to hard.
+    const level = harden(random, start, spec, Math.floor(random() * steps));
+    if (levelProblems(level, spec).length > 0) continue;
     found.set(JSON.stringify(level), { level, difficulty: report(level).difficulty });
   }
   const ranked = [...found.values()].sort((a, b) => a.difficulty - b.difficulty);
   if (ranked.length < count) throw new Error(`only ${ranked.length} levels for "${spec.name}"`);
   return Array.from({ length: count }, (_, i) => {
-    const quantile = 0.02 + (i / (count - 1)) * 0.93;
+    const quantile = 0.1 + (i / (count - 1)) * 0.9;
     return ranked[Math.round(quantile * (ranked.length - 1))]!.level;
   });
 }

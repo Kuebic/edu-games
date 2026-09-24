@@ -65,7 +65,7 @@ One board: its Streets and the Vehicles on them.
 _Avoid_: Puzzle, stage, map
 
 **Chapter**:
-Eight Levels that share one new idea (straight only, a crossing, turns, U-turns, trucks, two-lane Streets, T-junctions, buses and everything). Easiest first.
+Eight Levels that share one new idea (straight only, crossings, turns, U-turns, trucks, two-lane Streets, T-junctions, buses and everything). Easiest first.
 _Avoid_: World, pack, set
 
 **Wave**:
