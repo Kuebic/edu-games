@@ -1,8 +1,10 @@
 // What the child has cleared, saved on the device.
 
+import type { GameStorage } from '@shared/storage';
 import { LEVELS_PER_CHAPTER } from './chapters';
 
-const KEY = 'traffic-jam:v1';
+/** Saved as "traffic-jam:v1": the shell puts the Slug in front. */
+const KEY = 'v1';
 
 export interface Progress {
   /** Levels cleared, numbered across all Chapters from 0. */
@@ -10,20 +12,16 @@ export interface Progress {
   muted: boolean;
 }
 
-export function loadProgress(storage: Pick<Storage, 'getItem'> = localStorage): Progress {
-  try {
-    const saved = JSON.parse(storage.getItem(KEY) ?? '{}') as Partial<Progress>;
-    return {
-      cleared: Array.isArray(saved.cleared) ? saved.cleared.filter(Number.isInteger) : [],
-      muted: saved.muted === true,
-    };
-  } catch {
-    return { cleared: [], muted: false };
-  }
+export function loadProgress(storage: GameStorage): Progress {
+  const saved = (storage.read(KEY) ?? {}) as Partial<Progress>;
+  return {
+    cleared: Array.isArray(saved.cleared) ? saved.cleared.filter(Number.isInteger) : [],
+    muted: saved.muted === true,
+  };
 }
 
-export function saveProgress(progress: Progress, storage: Pick<Storage, 'setItem'> = localStorage): void {
-  storage.setItem(KEY, JSON.stringify(progress));
+export function saveProgress(progress: Progress, storage: GameStorage): void {
+  storage.write(KEY, progress);
 }
 
 export function withCleared(progress: Progress, level: number): Progress {
