@@ -1,8 +1,14 @@
 // Tiny Web Audio player. Sounds are Kenney's CC0 interface sounds.
 
+import goalUrl from './assets/sounds/goal.ogg';
+import pushUrl from './assets/sounds/push.ogg';
+import tapUrl from './assets/sounds/tap.ogg';
+import undoUrl from './assets/sounds/undo.ogg';
+import winUrl from './assets/sounds/win.ogg';
+
 export type Sound = 'push' | 'goal' | 'win' | 'undo' | 'tap';
 
-const NAMES: readonly Sound[] = ['push', 'goal', 'win', 'undo', 'tap'];
+const URLS: Record<Sound, string> = { push: pushUrl, goal: goalUrl, win: winUrl, undo: undoUrl, tap: tapUrl };
 
 let context: AudioContext | undefined;
 const buffers = new Map<Sound, AudioBuffer>();
@@ -19,8 +25,8 @@ export function unlockAudio(): void {
     return;
   }
   context = new AudioContext();
-  for (const name of NAMES) {
-    fetch(`${import.meta.env.BASE_URL}push-pals/sounds/${name}.ogg`)
+  for (const [name, url] of Object.entries(URLS) as [Sound, string][]) {
+    fetch(url)
       .then((response) => response.arrayBuffer())
       .then((data) => context!.decodeAudioData(data))
       .then((buffer) => buffers.set(name, buffer))

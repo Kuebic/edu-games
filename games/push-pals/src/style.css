@@ -99,7 +99,7 @@ button svg {
 .mini-box {
   width: 24px;
   height: 24px;
-  background: url('/push-pals/sprites/box.png') center / contain no-repeat;
+  background: url('./assets/sprites/box.png') center / contain no-repeat;
 }
 
 .chapter-levels {
@@ -224,17 +224,17 @@ button svg {
 }
 
 .tile.floor {
-  background: url('/push-pals/sprites/floor.png') center / cover;
+  background: url('./assets/sprites/floor.png') center / cover;
 }
 
 .tile.wall {
-  background: url('/push-pals/sprites/wall.png') center / cover;
+  background: url('./assets/sprites/wall.png') center / cover;
 }
 
 .tile.goal {
   background:
-    url('/push-pals/sprites/goal.png') center / 80% no-repeat,
-    url('/push-pals/sprites/floor.png') center / cover;
+    url('./assets/sprites/goal.png') center / 80% no-repeat,
+    url('./assets/sprites/floor.png') center / cover;
 }
 
 .sprite {
@@ -252,12 +252,12 @@ button svg {
 }
 
 .box {
-  background-image: url('/push-pals/sprites/box.png');
+  background-image: url('./assets/sprites/box.png');
   background-size: 92%;
 }
 
 .box.on-goal {
-  background-image: url('/push-pals/sprites/box-on-goal.png');
+  background-image: url('./assets/sprites/box-on-goal.png');
 }
 
 .box.on-goal::after {
@@ -270,19 +270,19 @@ button svg {
 
 .player {
   background-size: 90%;
-  background-image: url('/push-pals/sprites/player-down.png');
+  background-image: url('./assets/sprites/player-down.png');
 }
 
 .player[data-facing='up'] {
-  background-image: url('/push-pals/sprites/player-up.png');
+  background-image: url('./assets/sprites/player-up.png');
 }
 
 .player[data-facing='left'] {
-  background-image: url('/push-pals/sprites/player-left.png');
+  background-image: url('./assets/sprites/player-left.png');
 }
 
 .player[data-facing='right'] {
-  background-image: url('/push-pals/sprites/player-right.png');
+  background-image: url('./assets/sprites/player-right.png');
 }
 
 /* ---- solved ------------------------------------------------------------ */
