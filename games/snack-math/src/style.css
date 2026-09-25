@@ -74,9 +74,11 @@ body::before {
 
 /* ---------- Home ---------- */
 
-/* The header floats at the top so the splash stays centred. */
+/* The header floats at the top so the splash stays centred, and above it, since the
+   bobbing friends reach it on short screens. */
 .home > .site-bar {
   position: absolute;
+  z-index: 1;
   top: max(12px, env(safe-area-inset-top));
   left: max(14px, env(safe-area-inset-left));
   right: max(14px, env(safe-area-inset-right));
