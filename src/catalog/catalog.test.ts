@@ -13,7 +13,7 @@ const folders = readdirSync(gamesDir, { withFileTypes: true })
   .filter((dir) => dir.isDirectory())
   .map((dir) => dir.name);
 
-const entry = { name: 'X', category: 'logic', tile: 'icon.svg', added: '2026-01-01' };
+const entry = { name: 'X', category: 'logic', tile: 'icon.svg', shelf: 'on', added: '2026-01-01' };
 
 describe('Catalog', () => {
   it.each(folders)('%s has a game.json if it holds a Game', (slug) => {
@@ -50,6 +50,12 @@ describe('Catalog', () => {
 
   it('rejects an unknown field', () => {
     expect(() => parseEntry('x', { ...entry, icon: 'y' })).toThrow(/unknown field "icon"/);
+  });
+
+  it('rejects a missing or unknown Shelf status', () => {
+    const { shelf: _, ...noShelf } = entry;
+    expect(() => parseEntry('x', noShelf)).toThrow(/"shelf" must be on, hidden or off/);
+    expect(() => parseEntry('x', { ...entry, shelf: 'shelved' })).toThrow(/shelf/);
   });
 
   it('rejects a bad category or date', () => {

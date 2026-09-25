@@ -27,8 +27,18 @@ npm run deploy       # build, then wrangler deploy (Worker: edu-games)
 
 Each Game is one folder in `games/`, and the build finds it there.
 
-1. Copy the Game folder closest to yours and rename it. The folder name is the slug. It's in the Game's address, `/<slug>/`, and in its saved progress, so it never changes once children have played the Game.
-2. Edit `game.json`: the name, the Category (one of `src/catalog/categories.ts`), the Tile picture (a file in the folder's `public/`) and today's date as `added`. Tiles sit in the order their Games were added.
+1. Copy the Game folder closest to yours and rename it. The folder name is the slug. It's in the Game's address, `/<slug>/`, and in its saved progress, so it never changes once the Game has been On.
+2. Edit `game.json`: the name, the Category (one of `src/catalog/categories.ts`), the Tile picture (a file in the folder's `public/`), today's date as `added`, and `"shelf": "hidden"` until it's ready for a Tile. Tiles sit in the order their Games were added.
 3. Fix `index.html`: the title, the icons, and the script, which is `/games/<slug>/src/main.ts`.
 4. Replace the rest with your Game. Its `src/main.ts` calls `registerOffline()` from `@shared/pwa` and shows `homeButton()` from `@shared/home-button` on its first screen. Files in `public/` are served at `/<slug>/<file>`. Prefix localStorage keys with the slug, since every Game shares one origin.
 5. Run `npm test`. The Catalog test names anything the copy still gets wrong.
+
+## Turn a Game on or off
+
+Each Game's `game.json` has a `"shelf"` status:
+
+- `"on"`: a Tile on its Shelf.
+- `"hidden"`: built, precached and playable at `/<slug>/`, but no Tile. Use it to try a new Game on a real phone, offline too, before children find it.
+- `"off"`: not built or shipped. Its code is still type-checked and tested. To drop a Game for good, delete its folder; git keeps it.
+
+Change the status and deploy. `npm run dev` serves every Game whatever its status, and its Hub shows Hidden Tiles dimmed and Off Tiles dashed. `npm run preview` and `npm run cf:dev` show what ships. A Game that goes Off keeps children's saved progress on their phones, so turning it back On restores it.

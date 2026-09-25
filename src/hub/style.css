@@ -103,3 +103,13 @@ h1 {
   outline: 4px solid var(--ink);
   outline-offset: 3px;
 }
+
+/* Dev server only: Hidden and Off Games get a Tile too, marked so they aren't mistaken for On. */
+.tile[data-shelf] img {
+  opacity: 0.5;
+}
+
+.tile[data-shelf='off'] img {
+  outline: 3px dashed var(--ink);
+  outline-offset: -3px;
+}

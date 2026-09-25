@@ -1,8 +1,9 @@
-// The hub: one Shelf per Category, each holding a Tile per Game. Pictures first, so a
+// The hub: one Shelf per Category, each holding a Tile per On Game. Pictures first, so a
 // pre-reader can find a game on their own.
 
 import { registerOffline } from '../shared/pwa';
 import { CATEGORIES, GAMES } from '../catalog/catalog';
+import { tilesFor } from './tiles';
 import './style.css';
 
 const root = document.querySelector<HTMLElement>('#app')!;
@@ -14,7 +15,7 @@ title.textContent = 'Game Shelf';
 page.append(title);
 
 for (const category of CATEGORIES) {
-  const games = GAMES.filter((game) => game.category === category.id);
+  const games = tilesFor(GAMES, category.id, import.meta.env.DEV);
   if (games.length === 0) continue;
   const shelf = document.createElement('section');
   shelf.className = 'shelf';
@@ -28,6 +29,8 @@ for (const category of CATEGORIES) {
     const tile = document.createElement('a');
     tile.className = 'tile';
     tile.href = `/${game.slug}/`;
+    // Dev only: marks a Hidden or Off Game's Tile.
+    if (game.shelf !== 'on') tile.dataset.shelf = game.shelf;
     const picture = document.createElement('img');
     picture.src = `/${game.slug}/${game.tile}`;
     picture.alt = '';

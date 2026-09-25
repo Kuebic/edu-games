@@ -2,5 +2,6 @@
   "name": "Way Out",
   "category": "logic",
   "tile": "icon.svg",
+  "shelf": "on",
   "added": "2026-09-25"
 }

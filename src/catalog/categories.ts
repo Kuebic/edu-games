@@ -11,7 +11,7 @@ export interface Category {
   icon: string;
 }
 
-/** Shelf order on the hub. Shelves without games are hidden. */
+/** Shelf order on the hub. Shelves with no On Games are left out. */
 export const CATEGORIES: readonly Category[] = [
   { id: 'math', name: 'Math', color: '#ff8a3d', icon: '🔢' },
   { id: 'reading', name: 'Reading & Writing', color: '#7a6cf0', icon: '🔤' },

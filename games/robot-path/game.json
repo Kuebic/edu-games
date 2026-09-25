@@ -2,5 +2,6 @@
   "name": "Robot Path",
   "category": "logic",
   "tile": "icon.svg",
+  "shelf": "on",
   "added": "2026-09-25"
 }

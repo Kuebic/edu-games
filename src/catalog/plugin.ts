@@ -4,6 +4,7 @@ import { createReadStream, existsSync, readdirSync, readFileSync, statSync } fro
 import { extname, join, relative } from 'node:path';
 import type { Plugin } from 'vite';
 import { discoverGames } from './discover.ts';
+import { isBuilt } from './entry.ts';
 
 const MIME: Record<string, string> = {
   '.svg': 'image/svg+xml',
@@ -25,6 +26,7 @@ const isFile = (path: string) => existsSync(path) && statSync(path).isFile();
 export function gameShelf(rootDir: string): Plugin {
   const gamesDir = join(rootDir, 'games');
   const games = discoverGames(gamesDir);
+  const built = games.filter(isBuilt);
   return {
     name: 'game-shelf',
     config: () => ({
@@ -32,13 +34,13 @@ export function gameShelf(rootDir: string): Plugin {
         rollupOptions: {
           input: {
             hub: join(rootDir, 'index.html'),
-            ...Object.fromEntries(games.map((game) => [game.slug, join(gamesDir, game.slug, 'index.html')])),
+            ...Object.fromEntries(built.map((game) => [game.slug, join(gamesDir, game.slug, 'index.html')])),
           },
         },
       },
     }),
     // Dev: /<slug>/ is the Game's page and /<slug>/<file> comes from its public/ folder.
-    // Runs before Vite's own middleware.
+    // Every Game, even an Off one. Runs before Vite's own middleware.
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://x');
@@ -59,8 +61,8 @@ export function gameShelf(rootDir: string): Plugin {
         createReadStream(file).pipe(res);
       });
     },
-    // Build: games/<slug>/index.html lands at <slug>/index.html, and games/<slug>/public/
-    // is copied to <slug>/. Runs after Vite has emitted the HTML.
+    // Build, for Games that aren't Off: games/<slug>/index.html lands at <slug>/index.html,
+    // and games/<slug>/public/ is copied to <slug>/. Runs after Vite has emitted the HTML.
     generateBundle: {
       order: 'post',
       handler(_, bundle) {
@@ -68,7 +70,7 @@ export function gameShelf(rootDir: string): Plugin {
           const match = /^games\/([^/]+)\/index\.html$/.exec(file.fileName);
           if (match) file.fileName = `${match[1]}/index.html`;
         }
-        for (const game of games) {
+        for (const game of built) {
           const publicDir = join(gamesDir, game.slug, 'public');
           for (const path of walk(publicDir)) {
             this.emitFile({ type: 'asset', fileName: `${game.slug}/${relative(publicDir, path)}`, source: readFileSync(path) });
