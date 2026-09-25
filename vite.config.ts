@@ -7,6 +7,8 @@ const page = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
   resolve: { alias: { '@shared': page('src/shared') } },
+  // Every imported file becomes one hashed file in assets/, never a data: URI in the JS or CSS.
+  build: { assetsInlineLimit: 0 },
   plugins: [
     // Each games/<slug>/ folder becomes the page at /<slug>/.
     gameShelf(page('.')),
