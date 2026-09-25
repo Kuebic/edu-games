@@ -5,7 +5,9 @@
   --sun: #ffd23f;
   --sun-dark: #d9a400;
   --step: 130ms;
-  font-family: ui-rounded, 'Nunito', 'Varela Round', system-ui, sans-serif;
+  --site-lip: var(--sky-dark);
+  --site-tool-ink: var(--ink);
+  --site-focus: var(--sun);
   color: var(--ink);
   background: var(--sky);
 }
@@ -25,11 +27,6 @@ body {
   overscroll-behavior: none;
 }
 
-/* Until Push Pals takes the Shared look, its buttons keep the browser's padding. */
-button {
-  padding: revert;
-}
-
 button svg {
   width: 60%;
   height: 60%;
@@ -38,42 +35,24 @@ button svg {
 /* ---- level picker ------------------------------------------------------ */
 
 .picker {
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar-balance {
+  flex: none;
+  width: var(--site-tool);
+}
+
+.chapters {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: max(16px, env(safe-area-inset-top)) 16px 32px;
+  padding: 8px 16px 32px;
   display: flex;
   flex-direction: column;
   gap: 18px;
   align-items: center;
-}
-
-.hub-home {
-  flex: none;
-  align-self: flex-start;
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 5px 0 var(--sky-dark);
-  color: inherit;
-  display: grid;
-  place-items: center;
-  touch-action: manipulation;
-}
-
-.hub-home:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 var(--sky-dark);
-}
-
-.hub-home:focus-visible {
-  outline: 4px solid var(--sun);
-  outline-offset: 3px;
-}
-
-.hub-home svg {
-  width: 60%;
-  height: 60%;
 }
 
 .chapter {
@@ -128,11 +107,6 @@ button svg {
   box-shadow: 0 1px 0 var(--sky-dark);
 }
 
-.level-button:focus-visible {
-  outline: 4px solid var(--sun);
-  outline-offset: 3px;
-}
-
 .level-button.current {
   background: var(--sun);
   box-shadow: 0 5px 0 var(--sun-dark);
@@ -147,8 +121,8 @@ button svg {
 }
 
 .level-button.locked svg {
-  width: 40%;
-  height: 40%;
+  width: 35%;
+  height: 35%;
 }
 
 .level-star {
@@ -167,48 +141,25 @@ button svg {
 /* ---- play screen ------------------------------------------------------- */
 
 .play {
-  position: relative;
-  height: 100%;
   display: flex;
   flex-direction: column;
   touch-action: none;
-}
-
-.toolbar {
-  display: flex;
-  gap: 12px;
-  padding: max(10px, env(safe-area-inset-top)) 12px 10px;
 }
 
 .spacer {
   flex: 1;
 }
 
-.tool {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 5px 0 var(--sky-dark);
-  display: grid;
-  place-items: center;
-}
-
-.tool:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 var(--sky-dark);
-}
-
-.tool.nudge {
+.site-tool.nudge {
+  --site-lip: var(--sun-dark);
   background: var(--sun);
-  box-shadow: 0 5px 0 var(--sun-dark);
   animation: wiggle 1s ease-in-out infinite;
 }
 
 .stage {
   flex: 1;
   min-height: 0;
-  margin: 0 12px max(12px, env(safe-area-inset-bottom));
+  margin: 0 12px 12px;
   display: grid;
   place-items: center;
 }
@@ -322,21 +273,9 @@ button svg {
   animation-delay: 300ms;
 }
 
-.big-button {
-  width: 128px;
-  height: 128px;
-  border-radius: 36px;
-  background: var(--sun);
-  box-shadow: 0 8px 0 var(--sun-dark);
-  display: grid;
-  place-items: center;
-  animation:
-    pop 400ms 500ms cubic-bezier(0.3, 1.6, 0.5, 1) both,
-    bob 1.2s 1s ease-in-out infinite;
-}
-
-.big-button svg {
-  stroke-width: 3.2;
+/* The levels grid sits centred; only the Next arrow leans right. */
+.site-next.all-levels svg {
+  margin-left: 0;
 }
 
 /* ---- motion ------------------------------------------------------------ */

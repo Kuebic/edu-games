@@ -66,20 +66,20 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
 
   // --- layout ---------------------------------------------------------------
   const screen = document.createElement('main');
-  screen.className = 'play';
+  screen.className = 'site-screen play';
 
   const toolbar = document.createElement('nav');
-  toolbar.className = 'toolbar';
-  const homeButton = button('tool', ICONS.home, () => hooks.home());
-  const undoButton = button('tool', ICONS.undo, undo);
-  const resetButton = button('tool', ICONS.reset, reset);
-  const muteButton = button('tool', '', () => {
+  toolbar.className = 'site-bar';
+  const backButton = button('site-tool', ICONS.back, () => hooks.home());
+  const undoButton = button('site-tool', ICONS.undo, undo);
+  const resetButton = button('site-tool', ICONS.reset, reset);
+  const muteButton = button('site-tool', '', () => {
     hooks.toggleMute();
     renderMute();
   });
   const spacer = document.createElement('div');
   spacer.className = 'spacer';
-  toolbar.append(homeButton, spacer, undoButton, resetButton, muteButton);
+  toolbar.append(backButton, spacer, undoButton, resetButton, muteButton);
 
   const stage = document.createElement('div');
   stage.className = 'stage';
@@ -109,7 +109,8 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   win.hidden = true;
   const last = index === LEVELS.length - 1;
   win.innerHTML = `<div class="win-stars"><i>${ICONS.star}</i><i>${ICONS.star}</i><i>${ICONS.star}</i></div>`;
-  const nextButton = button('big-button', last ? ICONS.home : ICONS.next, () => hooks.next());
+  // After the last level, Next goes back to the level list.
+  const nextButton = button(last ? 'site-next all-levels' : 'site-next', last ? ICONS.levels : ICONS.next, () => hooks.next());
   win.append(nextButton);
 
   screen.append(toolbar, stage, win);

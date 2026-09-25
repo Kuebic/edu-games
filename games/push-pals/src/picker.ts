@@ -7,10 +7,21 @@ import { play, unlockAudio } from './sound';
 /** Level select: one row per chapter, marked with how many boxes it uses. */
 export function showPicker(root: HTMLElement, progress: Progress, open: (level: number) => void): () => void {
   const screen = document.createElement('main');
-  screen.className = 'picker';
+  screen.className = 'site-screen picker';
   const current = nextLevel(progress, LEVELS.length);
   const buttons: HTMLButtonElement[] = [];
-  screen.append(houseButton());
+
+  const bar = document.createElement('header');
+  bar.className = 'site-bar';
+  const title = document.createElement('h1');
+  title.textContent = 'Push Pals';
+  // An empty slot the House button's size keeps the title centred.
+  const balance = document.createElement('div');
+  balance.className = 'bar-balance';
+  bar.append(houseButton('site-tool'), title, balance);
+  const list = document.createElement('div');
+  list.className = 'chapters';
+  screen.append(bar, list);
 
   let index = 0;
   for (const chapter of CHAPTERS) {
@@ -53,7 +64,7 @@ export function showPicker(root: HTMLElement, progress: Progress, open: (level: 
     }
 
     row.append(badge, grid);
-    screen.append(row);
+    list.append(row);
   }
 
   root.replaceChildren(screen);
