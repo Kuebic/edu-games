@@ -5,7 +5,7 @@ One site of gentle learning games for little kids (ages about 4–6, pre-readers
 ## Language
 
 **Game**:
-One self-contained learning game with its own page at `/<slug>/` (Snack Math, Push Pals, Traffic Jam, Robot Path).
+One self-contained learning game with its own page at `/<slug>/` (Snack Math, Push Pals, Traffic Jam, Robot Path, Way Out).
 _Avoid_: App, activity, module
 
 **Category**:

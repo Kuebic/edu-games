@@ -15,6 +15,8 @@
     "push-pals:generate": "vite-node scripts/push-pals/generate.ts",
     "traffic-jam:levels": "vite-node scripts/traffic-jam/level-report.ts",
     "traffic-jam:generate": "vite-node scripts/traffic-jam/generate.ts",
+    "way-out:build": "vite-node scripts/way-out/build.ts",
+    "way-out:levels": "vite-node scripts/way-out/level-report.ts",
     "robot-path:levels": "vite-node scripts/robot-path/level-report.ts"
   },
   "devDependencies": {

@@ -33,4 +33,5 @@ export const GAMES: readonly Game[] = [
   { slug: 'push-pals', name: 'Push Pals', category: 'logic', icon: 'push-pals/icon.png' },
   { slug: 'traffic-jam', name: 'Traffic Jam', category: 'logic', icon: 'traffic-jam/icon.svg' },
   { slug: 'robot-path', name: 'Robot Path', category: 'logic', icon: 'robot-path/icon.svg' },
+  { slug: 'way-out', name: 'Way Out', category: 'logic', icon: 'way-out/icon.svg' },
 ];

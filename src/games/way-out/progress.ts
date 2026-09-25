@@ -1,0 +1,192 @@
+// What the child has done, saved on the device. Every read and write is wrapped so the
+// game still plays with storage blocked; it just won't remember.
+
+import type { Board } from './game/board';
+import { GROWN_UP_PACK, LEVELS_PER_PACK, OPENS_NEXT, type Level, type PoolPuzzle } from './packs';
+import type { SkinId } from './skins';
+
+const KEY = 'way-out:v1';
+
+/** The board and Move count at one point, for Undo. */
+export interface Snapshot {
+  board: Board;
+  moves: number;
+}
+
+export interface InProgress extends Snapshot {
+  /** Earlier Snapshots, oldest first. */
+  history: Snapshot[];
+}
+
+export interface LevelProgress {
+  done: boolean;
+  sparkle: boolean;
+  bestMoves?: number;
+  /** Where he left off, so coming back picks up there. */
+  inProgress?: InProgress;
+}
+
+export interface Progress {
+  version: 1;
+  skin: SkinId;
+  levels: Record<string, LevelProgress>;
+  /** Pool boards already served, per Pack, so "more like this" doesn't repeat until they run out. */
+  poolSeen: Record<string, Board[]>;
+  /** Sparkles earned on Pool puzzles, per Pack. */
+  poolSparkles: Record<string, number>;
+  settings: { sound: boolean; voice: boolean };
+  unlockAll: boolean;
+  /** The bonus Pack is showing. */
+  grownUp: boolean;
+}
+
+export function freshProgress(): Progress {
+  return {
+    version: 1,
+    skin: 'city',
+    levels: {},
+    poolSeen: {},
+    poolSparkles: {},
+    settings: { sound: true, voice: true },
+    unlockAll: false,
+    grownUp: false,
+  };
+}
+
+type Store = Pick<Storage, 'getItem' | 'setItem'>;
+
+function deviceStorage(): Store | undefined {
+  try {
+    return localStorage;
+  } catch {
+    return undefined;
+  }
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+/**
+ * Reads a save, keeping whatever parts of it make sense. A save from a future version is
+ * read the same way; when the format changes, bump `version` and convert old saves here.
+ */
+export function loadProgress(storage: Store | undefined = deviceStorage()): Progress {
+  const progress = freshProgress();
+  let saved: unknown;
+  try {
+    saved = JSON.parse(storage?.getItem(KEY) ?? 'null');
+  } catch {
+    return progress;
+  }
+  if (!isRecord(saved)) return progress;
+  if (saved.skin === 'city' || saved.skin === 'farm' || saved.skin === 'space') progress.skin = saved.skin;
+  if (isRecord(saved.levels)) {
+    for (const [id, level] of Object.entries(saved.levels)) {
+      if (!isRecord(level)) continue;
+      const entry: LevelProgress = { done: level.done === true, sparkle: level.sparkle === true };
+      if (typeof level.bestMoves === 'number') entry.bestMoves = level.bestMoves;
+      const at = level.inProgress;
+      if (isRecord(at) && typeof at.board === 'string' && typeof at.moves === 'number' && Array.isArray(at.history)) {
+        entry.inProgress = {
+          board: at.board,
+          moves: at.moves,
+          history: at.history.filter(
+            (s): s is Snapshot => isRecord(s) && typeof s.board === 'string' && typeof s.moves === 'number',
+          ),
+        };
+      }
+      progress.levels[id] = entry;
+    }
+  }
+  if (isRecord(saved.poolSeen)) {
+    for (const [pack, seen] of Object.entries(saved.poolSeen)) {
+      if (Array.isArray(seen)) progress.poolSeen[pack] = seen.filter((b): b is string => typeof b === 'string');
+    }
+  }
+  if (isRecord(saved.poolSparkles)) {
+    for (const [pack, count] of Object.entries(saved.poolSparkles)) {
+      if (typeof count === 'number') progress.poolSparkles[pack] = count;
+    }
+  }
+  if (isRecord(saved.settings)) {
+    progress.settings.sound = saved.settings.sound !== false;
+    progress.settings.voice = saved.settings.voice !== false;
+  }
+  progress.unlockAll = saved.unlockAll === true;
+  progress.grownUp = saved.grownUp === true;
+  return progress;
+}
+
+export function saveProgress(progress: Progress, storage: Store | undefined = deviceStorage()): void {
+  try {
+    storage?.setItem(KEY, JSON.stringify(progress));
+  } catch {
+    // Full or blocked: keep playing without saving.
+  }
+}
+
+export function levelProgress(progress: Progress, id: string): LevelProgress {
+  return (progress.levels[id] ??= { done: false, sparkle: false });
+}
+
+/** Records a solved Level. Returns true if this solve earned its Sparkle for the first time. */
+export function recordSolve(progress: Progress, level: Level, moves: number): boolean {
+  const entry = levelProgress(progress, level.id);
+  const fresh = moves <= level.par && !entry.sparkle;
+  entry.done = true;
+  entry.sparkle ||= moves <= level.par;
+  entry.bestMoves = Math.min(entry.bestMoves ?? Infinity, moves);
+  delete entry.inProgress;
+  return fresh;
+}
+
+export function recordPoolSolve(progress: Progress, pack: number, puzzle: PoolPuzzle, moves: number): void {
+  if (moves <= puzzle[1]) progress.poolSparkles[pack] = (progress.poolSparkles[pack] ?? 0) + 1;
+}
+
+export function packLevels(levels: readonly Level[], pack: number): Level[] {
+  return levels.filter((l) => l.pack === pack);
+}
+
+export function packStats(progress: Progress, levels: readonly Level[], pack: number) {
+  const inPack = packLevels(levels, pack);
+  return {
+    done: inPack.filter((l) => progress.levels[l.id]?.done).length,
+    sparkles: inPack.filter((l) => progress.levels[l.id]?.sparkle).length + (progress.poolSparkles[pack] ?? 0),
+  };
+}
+
+/** Pack 1 is always open; each Pack after opens once 9 of the one before are solved. */
+export function isPackOpen(progress: Progress, levels: readonly Level[], pack: number): boolean {
+  if (pack === GROWN_UP_PACK) return progress.grownUp || progress.unlockAll;
+  return pack === 1 || progress.unlockAll || packStats(progress, levels, pack - 1).done >= OPENS_NEXT;
+}
+
+/** A Level opens when the one before it is solved. */
+export function isLevelOpen(progress: Progress, levels: readonly Level[], level: Level): boolean {
+  if (!isPackOpen(progress, levels, level.pack)) return false;
+  if (progress.unlockAll || level.index === 1 || progress.levels[level.id]?.done) return true;
+  const before = levels.find((l) => l.pack === level.pack && l.index === level.index - 1);
+  return before !== undefined && progress.levels[before.id]?.done === true;
+}
+
+/** The next Level after this one, if there is one in the same Pack. */
+export function nextLevel(levels: readonly Level[], level: Level): Level | undefined {
+  return level.index < LEVELS_PER_PACK ? levels.find((l) => l.pack === level.pack && l.index === level.index + 1) : undefined;
+}
+
+/**
+ * A random Pool puzzle he hasn't been served yet. Once the whole Pool has been seen,
+ * it starts over.
+ */
+export function takePoolPuzzle(progress: Progress, pack: number, pool: readonly PoolPuzzle[], random = Math.random): PoolPuzzle {
+  let seen = new Set(progress.poolSeen[pack] ?? []);
+  let fresh = pool.filter(([board]) => !seen.has(board));
+  if (fresh.length === 0) {
+    seen = new Set();
+    fresh = [...pool];
+  }
+  const puzzle = fresh[Math.floor(random() * fresh.length)]!;
+  progress.poolSeen[pack] = [...seen, puzzle[0]];
+  return puzzle;
+}
