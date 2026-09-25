@@ -115,7 +115,7 @@ function placeVehicles(random: Random, level: Level, spec: ChapterSpec, count: n
     const vehicle: Vehicle = { kind, x, y, dir, arrow: 'straight' };
     const cells = cellsOf(vehicle);
     if (cells.some((cell) => !inBoard(level, cell) || !covers(level, street, cell) || taken.has(key(cell)))) continue;
-    if (cells.length > 1 && cells.every((cell) => isIntersection(level, cell))) continue;
+    if (isIntersection(level, vehicle)) continue;
     const arrows = spec.arrows.filter((arrow) => routeOf(level, { ...vehicle, arrow }));
     if (arrows.length === 0) continue;
     vehicle.arrow = weighted(random, arrows.map((arrow) => [arrow, ARROW_WEIGHT[arrow]] as const));

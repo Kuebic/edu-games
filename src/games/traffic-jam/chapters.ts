@@ -1,7 +1,7 @@
 // The Chapter ladder. Each Chapter adds one idea and keeps everything before it.
 // The generator builds Levels to these limits; levels.test.ts fails any Level that breaks them.
 
-import { cellsOf, isIntersection, layoutProblems, streetAt, axisOf, type Arrow, type Kind, type Level } from './game/level';
+import { isIntersection, layoutProblems, streetAt, axisOf, type Arrow, type Kind, type Level } from './game/level';
 import { routeOf, solve, tap } from './game/rules';
 
 export type Feature =
@@ -57,7 +57,7 @@ export const CHAPTERS: readonly ChapterSpec[] = [
     vehicles: [5, 9],
     waves: [3, 7],
     arrows: ['straight'],
-    kinds: ['car'],
+    kinds: ['car', 'truck'],
     twoLane: false,
     tJunctions: false,
     needs: ['crossing-block'],
@@ -70,7 +70,7 @@ export const CHAPTERS: readonly ChapterSpec[] = [
     vehicles: [7, 10],
     waves: [4, 8],
     arrows: TURNS,
-    kinds: ['car'],
+    kinds: ['car', 'truck'],
     twoLane: false,
     tJunctions: false,
     needs: ['turn'],
@@ -83,7 +83,7 @@ export const CHAPTERS: readonly ChapterSpec[] = [
     vehicles: [8, 11],
     waves: [5, 9],
     arrows: ALL,
-    kinds: ['car'],
+    kinds: ['car', 'truck'],
     twoLane: false,
     tJunctions: false,
     needs: ['uturn'],
@@ -194,9 +194,8 @@ export function levelProblems(level: Level, spec: ChapterSpec): string[] {
     if (!routeOf(level, vehicle)) problems.push(`vehicle ${i} can't follow its arrow`);
     if (!spec.arrows.includes(vehicle.arrow)) problems.push(`vehicle ${i} has a ${vehicle.arrow} arrow`);
     if (!spec.kinds.includes(vehicle.kind)) problems.push(`vehicle ${i} is a ${vehicle.kind}`);
-    if (cellsOf(vehicle).length > 1 && cellsOf(vehicle).every((cell) => isIntersection(level, cell))) {
-      problems.push(`vehicle ${i} sits wholly inside an intersection`);
-    }
+    // Only a truck or bus tail may start in an Intersection. A front in one looks like it's already turning there.
+    if (isIntersection(level, vehicle)) problems.push(`vehicle ${i} starts in an intersection`);
   });
   if (problems.length > 0) return problems;
   if (solve(level).stuck.length > 0) problems.push("can't be cleared");

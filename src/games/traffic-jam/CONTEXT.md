@@ -15,7 +15,7 @@ One line of cells along a Street. On a two-lane Street each Lane has a direction
 _Avoid_: Track, row, column
 
 **Intersection**:
-A cell where two Streets cross. Vehicles may start inside one; that's what makes crossing traffic block.
+A cell where two Streets cross. Only the tail of a truck or bus may start inside one; that's what makes crossing traffic block.
 _Avoid_: Junction (except T-junction), crossroads, node
 
 **T-junction**:
@@ -65,7 +65,7 @@ One board: its Streets and the Vehicles on them.
 _Avoid_: Puzzle, stage, map
 
 **Chapter**:
-Eight Levels that share one new idea (straight only, crossings, turns, U-turns, trucks, two-lane Streets, T-junctions, buses and everything). Easiest first.
+Eight Levels that share one new idea (straight only, crossings with trucks, turns, U-turns, more trucks, two-lane Streets, T-junctions, buses and everything). Easiest first.
 _Avoid_: World, pack, set
 
 **Wave**:
