@@ -94,20 +94,28 @@ let lastOpened: number | undefined;
 export function showLevelSelect(root: HTMLElement, game: LevelSelectGame, group?: number): LevelSelectView {
   let at = group;
   let stop = () => {};
-  const render = () => {
+  /** `chose` after a Skin chip: focus stays on it, and the list stays where it was scrolled. */
+  const render = (chose = false) => {
     stop();
     const groups = game.groups();
     if (groups.length === 0) throw new Error(`Game Shelf: ${game.title} has no Groups for its level select`);
     if (at !== undefined && !groups[at]) at = undefined;
     if (at === undefined) {
-      stop = put(root, groupList(game, groups, open, render), lastOpened);
+      const scrolled = root.querySelector('.site-groups')?.scrollTop ?? 0;
+      const screen = groupList(game, groups, open, () => render(true));
+      const card = lastOpened === undefined ? undefined : screen.querySelectorAll<HTMLButtonElement>('.site-group')[lastOpened];
+      const chip = chose ? screen.querySelector<HTMLElement>('.site-skin[aria-checked="true"]') : null;
+      stop = put(root, screen, chip ?? card, card);
+      if (chip) screen.querySelector('.site-groups')!.scrollTop = scrolled;
     } else {
       lastOpened = at;
       const g = at;
-      stop = put(root, groupScreen(game, groups[g]!, g, back, (level) => {
+      const screen = groupScreen(game, groups[g]!, g, back, (level) => {
         stop();
         game.play(g, level);
-      }), undefined, back);
+      });
+      const current = screen.querySelector<HTMLButtonElement>('.site-current') ?? undefined;
+      stop = put(root, screen, current, current, back);
     }
   };
   const open = (g: number) => {
@@ -119,7 +127,7 @@ export function showLevelSelect(root: HTMLElement, game: LevelSelectGame, group?
     render();
   };
   render();
-  return { leave: () => stop(), redraw: render };
+  return { leave: () => stop(), redraw: () => render() };
 }
 
 /** Sets a Skin's page colours on :root, so notches and overscroll match, and the browser bar's colour. */
@@ -277,33 +285,46 @@ function groupScreen(
 }
 
 /**
- * Puts a screen up, brings a card into view (the Group last opened on the list, the current Level on
- * a Group screen), and walks focus with the arrow keys. Returns what takes the key handling away again.
+ * Puts a screen up, focuses `focus` and brings it into view, and walks the cards with the arrow keys:
+ * from `start` (the Group last opened, the current Level) when no card has focus, else the first open card.
+ * While a dialog such as the Grown-up Corner is over the screen, the screen's keys and buttons do nothing.
+ * Returns what takes the key handling away again.
  */
-function put(root: HTMLElement, screen: HTMLElement, focusGroup: number | undefined, back?: () => void): () => void {
+function put(root: HTMLElement, screen: HTMLElement, focus: HTMLElement | undefined, start: HTMLButtonElement | undefined, back?: () => void): () => void {
   root.replaceChildren(screen);
   const cards = [...screen.querySelectorAll<HTMLButtonElement>('.site-group, .site-level')];
-  const current = back ? screen.querySelector<HTMLButtonElement>('.site-current') : focusGroup === undefined ? null : cards[focusGroup];
-  current?.scrollIntoView?.({ block: 'center' });
-  current?.focus({ preventScroll: true });
+  const first = start ?? cards.find((c) => !c.disabled);
+  focus?.scrollIntoView?.({ block: 'center' });
+  focus?.focus({ preventScroll: true });
+
+  const dialog = () => root.querySelector('[role="dialog"]');
+  // Enter and Space on a card behind the Corner are the button's own click, so the keys alone can't stop them.
+  screen.addEventListener(
+    'click',
+    (event) => {
+      const over = dialog();
+      if (over && !over.contains(event.target as Node)) event.stopPropagation();
+    },
+    true,
+  );
 
   const onKey = (event: KeyboardEvent) => {
     if (!screen.isConnected) return stop();
-    // Not while a dialog such as the Grown-up Corner is over this screen, or something else has focus.
-    if (root.querySelector('[role="dialog"]')) return;
+    if (dialog()) return;
     const focused = document.activeElement;
+    // Not while something else has focus, or on the Skin chips, a radio group of their own.
     if (focused && focused !== document.body && !screen.contains(focused)) return;
+    if (focused?.closest('.site-skins')) return;
     if (event.key === 'Escape' && back) {
       event.preventDefault();
       return back();
     }
     const from = cards.indexOf(focused as HTMLButtonElement);
-    if (from === -1) return;
     const columns = getComputedStyle(cards[0]!.parentElement!).gridTemplateColumns.split(' ').filter(Boolean).length || 1;
     const step = ({ ArrowLeft: -1, ArrowRight: 1, ArrowUp: -columns, ArrowDown: columns } as Record<string, number>)[event.key];
     if (step === undefined) return;
     event.preventDefault();
-    const to = cards[from + step];
+    const to = from === -1 ? first : cards[from + step];
     if (to && !to.disabled) to.focus();
   };
   window.addEventListener('keydown', onKey);

@@ -71,6 +71,8 @@ describe('the Group list', () => {
     byLabel('Moon')!.click();
     expect(choose).toHaveBeenCalledWith('moon');
     expect(checked()).toEqual(['false', 'true']);
+    // Focus stays on the chip chosen, not on a Group card.
+    expect(document.activeElement).toBe(byLabel('Moon'));
   });
 
   it('draws no chips in a Game without Skins', () => {
@@ -87,6 +89,21 @@ describe('the Group list', () => {
 
   it('throws on a Game with no Groups', () => {
     expect(() => showLevelSelect(root, { title: 'Empty', groups: () => [], play() {} })).toThrow(/no Groups/);
+  });
+
+  it('starts the arrow keys from the Group last opened when no card has focus, else the first', () => {
+    const { game } = testGame();
+    showLevelSelect(root, game, 1);
+    key('Escape');
+    expect(document.activeElement).toBe(byLabel('Hard: 0 of 8 done'));
+    (document.activeElement as HTMLElement).blur();
+    key('ArrowDown');
+    expect(document.activeElement).toBe(byLabel('Hard: 0 of 8 done'));
+    // One Group now, so the one last opened isn't shown.
+    showLevelSelect(root, { ...game, groups: () => game.groups().slice(0, 1) });
+    expect(document.activeElement).toBe(document.body);
+    key('ArrowRight');
+    expect(document.activeElement).toBe(byLabel('Easy: 2 of 4 done'));
   });
 });
 
@@ -158,6 +175,27 @@ describe('a Group screen', () => {
     expect(byLabel('All games')).not.toBeNull();
   });
 
+  it('plays nothing while a Grown-up Corner is over it, though the Corner’s own buttons work', () => {
+    const { game, play } = testGame();
+    showLevelSelect(root, game, 0);
+    const corner = document.createElement('section');
+    corner.setAttribute('role', 'dialog');
+    corner.innerHTML = '<button>Close</button>';
+    const close = vi.fn();
+    corner.querySelector('button')!.addEventListener('click', close);
+    root.querySelector('main')!.append(corner);
+    // Enter or Space on the card that had focus.
+    byLabel('Level 3')!.click();
+    byLabel('Back')!.click();
+    expect(play).not.toHaveBeenCalled();
+    expect(byLabel('Back')).not.toBeNull();
+    corner.querySelector('button')!.click();
+    expect(close).toHaveBeenCalled();
+    corner.remove();
+    byLabel('Level 3')!.click();
+    expect(play).toHaveBeenCalledWith(0, 2);
+  });
+
   it('walks the Levels with the arrow keys, from the one to play next', () => {
     showLevelSelect(root, testGame().game, 0);
     expect(document.activeElement).toBe(byLabel('Level 3'));
@@ -167,6 +205,23 @@ describe('a Group screen', () => {
     key('ArrowRight');
     // Level 4 is locked, so focus stays.
     expect(document.activeElement).toBe(byLabel('Level 3'));
+  });
+
+  it('starts the arrow keys from the Level to play next when no card has focus, else the first', () => {
+    const { game, groups } = testGame();
+    showLevelSelect(root, game, 0);
+    (document.activeElement as HTMLElement).blur();
+    key('ArrowRight');
+    expect(document.activeElement).toBe(byLabel('Level 3'));
+    byLabel('Back')!.focus();
+    key('ArrowDown');
+    expect(document.activeElement).toBe(byLabel('Level 3'));
+    // Every Level done: nothing to play next, so nothing has focus until an arrow.
+    groups[0]!.levels = marks('xxxx');
+    showLevelSelect(root, game, 0);
+    expect(document.activeElement).toBe(document.body);
+    key('ArrowLeft');
+    expect(document.activeElement).toBe(byLabel('Level 1, done'));
   });
 
   it('puts the Game’s node under the Levels', () => {

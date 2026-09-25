@@ -5,8 +5,8 @@ to four boxes and a dozen or more. Every level can get stuck, and some chapters 
 pushing a box off a goal, or back the way it came.
 
 - Play: swipe (one swipe = one step) or arrow keys / WASD. `Z` or Backspace undoes, `R` resets, Esc goes back to the Chapter's levels.
-- The level select: a Chapter's first level is open, and solving a level opens the next. Arrow keys walk the levels,
-  Esc goes back to the Chapter list, and the House button at its top goes back to the Hub.
+- The level select: a Chapter's first level is open, and solving a level opens the next. Arrow keys walk the Chapters
+  and levels, Esc goes back to the Chapter list, and the House button at its top goes back to the Hub.
 
 ## Develop
 
