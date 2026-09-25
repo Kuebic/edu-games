@@ -80,9 +80,9 @@ describe('Catalog', () => {
       }
     });
 
-    // The level select draws it on a Game's first screen (ADR 0008); look.test.ts checks where.
+    // Every Game opens on the level select, which draws the House button (ADR 0008); look.test.ts checks the rest.
     it('has a House button back to the Hub', () => {
-      expect(scripts.some((f) => /from '@shared\/(?:house-button|level-select)'/.test(readFileSync(f, 'utf8')))).toBe(true);
+      expect(scripts.some((f) => /from '@shared\/level-select'/.test(readFileSync(f, 'utf8')))).toBe(true);
     });
 
     it('keeps in public/ only the Tile picture and the files its page links', () => {

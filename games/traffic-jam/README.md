@@ -2,6 +2,8 @@
 
 Tap the cars in the right order to clear the streets. 64 levels in 8 chapters for 4–6-year-olds: straight arrows on one or two streets (5–7 cars), then crossings (where a truck's tail blocks the other street), turns, U-turns, more trucks, two-lane streets (keep right), T-junctions, and finally buses with everything mixed (14–15 vehicles on a grid of up to 3 × 4 streets). A car either drives off or bumps and backs up, so there's no way to lose. See `CONTEXT.md` for the vocabulary and `docs/adr/` for why it works this way.
 
+Every chapter is open, and inside one, clearing a level opens the next; Next goes on into the next chapter. The sound button is at the top of every screen.
+
 ## Develop
 
 From the repo root:

@@ -51,7 +51,7 @@ _Avoid_: Card, icon, link
 ### Inside a Game
 
 **Shared look**:
-What every Game draws the same way: the rounded font, the header with the House button, the press-down tool buttons, the Next button, the gear, big tap sizes, notch margins and calm motion. A Game's colours, characters and boards sit inside it.
+What every Game draws the same way: the rounded font, the header with the House button, the press-down tool buttons, the level select, the Next button, the gear, big tap sizes, notch margins and calm motion. A Game's colours, characters and boards sit inside it.
 _Avoid_: theme, skin, frame, design system, house style
 
 **House button**:
@@ -59,7 +59,7 @@ The house picture at the top left of a Game's Group list. It always goes to the 
 _Avoid_: home button, back button
 
 **Next button**:
-The big round green arrow that appears when a child finishes, and goes on to the next puzzle. It looks the same in every Game.
+The big round green arrow that appears when a child finishes a Level, and goes on to the next one, or to the next Group after a Group's last. It looks the same in every Game.
 _Avoid_: continue, play button
 
 **Grown-up Corner**:
@@ -90,10 +90,14 @@ The two screens a Game opens on, drawn the same in every Game: the Group list an
 _Avoid_: level picker, map, menu
 
 **Group list**:
-A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group with its badge, done dots and Sparkles.
+A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group with its badge, done dots and Sparkles if it has them.
 
 **Group screen**:
 One Group's Levels as numbered cards: done ones filled and ticked, the next one open, later ones locked.
+
+**Sparkle**:
+A mark for doing a Level especially well: in the fewest Moves (Way Out) or with a Program no longer than Par (Robot Path). It shows on the Level's card and is counted on its Group's card. Games without Sparkles show none.
+_Avoid_: star, bonus, score
 
 **Skin**:
 A picture set a child picks from the chips on the Group list. It changes looks and sounds, never the Levels. Robot Path and Way Out have Skins.

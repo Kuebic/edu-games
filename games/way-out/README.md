@@ -4,7 +4,8 @@ A sliding-block parking-lot puzzle for 4–6-year-olds. Cars and trucks fill a 6
 
 - Play: drag a Vehicle along its line, or tap it and tap an arrow to nudge it one cell. Undo goes back one Move at a time, Reset needs a 1-second hold (and can be undone), and the lightbulb shows and says the next best Move.
 - Three Skins: city (cars and trucks), farm (tractors and hay wagons) and space (shuttles and cargo ships). They change the art, the engine sound and the spoken names only.
-- Grown-ups: press and hold the gear for 3 seconds for sound, voice, "every level open", the Grown-up Pack, and reset progress.
+- Levels: every Pack is open, and inside a Pack, solving a level opens the next. Next goes on into the next Pack.
+- Grown-ups: press and hold the gear for 3 seconds for sound, voice, "Every level open", the Grown-up Pack, and reset progress.
 
 ## Develop
 

@@ -2,6 +2,10 @@
 
 A programming puzzle for 4-5-year-olds. He taps arrows into a Program, presses Go, and watches the robot run it on a grid. 64 levels in 8 Worlds: arrows, collecting gems, letters and numbers, three Worlds of twisty paths and mazes (stairs, snakes, going the long way round, two ways to the flag, dead ends, side pockets, spirals), the Repeat Block, fixing Bip's broken Programs (plus crates and sums), and robot-relative turns. A bonk is a silly boing and the Program stays put, so there's no way to lose. See `CONTEXT.md` for the vocabulary and `docs/adr/` for why it works this way.
 
+- Levels: every World is open, and inside one, winning a level opens the next. Next goes on into the next World.
+- Three Skins, picked on the World list: garden, planet and sea. They change the art and the sounds only.
+- Grown-ups: press and hold the gear for 3 seconds for sound, voice, speed, "Every level open", and reset progress.
+
 ## Develop
 
 From the repo root:

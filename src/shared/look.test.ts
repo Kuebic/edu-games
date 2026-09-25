@@ -35,12 +35,6 @@ const OWN_RULES = /\b(?:isUnlocked|isPackOpen|isWorldUnlocked|isLevelUnlocked|OP
 const baseClasses = classesIn(base);
 const SELECT_CLASSES = [...classesIn(read('src/shared/level-select.css'))].filter((c) => !baseClasses.has(c));
 
-/**
- * Games that still draw their own level select, with their own House button and unlock rule.
- * A Game leaves this list when it moves to showLevelSelect(), and nothing joins it.
- */
-const OWN_LEVEL_SELECT: string[] = [];
-
 /** Where a Game has drifted from the Shared look; empty when it hasn't. */
 function drift(slug: string): string[] {
   const files = sources(`games/${slug}/src`).map((f) => ({ f, text: read(f) }));
@@ -54,18 +48,11 @@ function drift(slug: string): string[] {
     }
   }
   if (!files.some(({ text }) => text.includes('site-screen'))) found.push("its screens aren't site-screens");
-  const calls = (name: string) => files.flatMap(({ text }) => [...text.matchAll(new RegExp(`\\b${name}\\(([^)]*)\\)`, 'g'))].map(([, arg]) => arg));
-  if (OWN_LEVEL_SELECT.includes(slug)) {
-    const houses = calls('houseButton');
-    if (houses.length !== 1 || houses[0] !== '') found.push(`one houseButton(), not ${houses.length} (${houses.join(' + ')})`);
-    for (const { f, text } of files) if (text.includes('houseButton(') && !text.includes("'site-bar'")) found.push(`${f}: its House button isn't in a site-bar`);
-    return found;
-  }
-  // The level select draws the House button, the locks and the unlock rule.
-  const selects = calls('showLevelSelect').length;
+  // Every Game opens on the level select, which draws the House button, the locks and the unlock rule.
+  const selects = files.flatMap(({ text }) => text.match(/\bshowLevelSelect\(/g) ?? []).length;
   if (selects !== 1) found.push(`one showLevelSelect(), not ${selects}`);
   for (const { f, text } of files) {
-    if (text.includes('houseButton(')) found.push(`${f}: a House button of its own; the level select draws it`);
+    if (/houseButton\(|@shared\/house-button/.test(text)) found.push(`${f}: a House button of its own; the level select draws it`);
     for (const lock of LOCKS) if (text.includes(lock)) found.push(`${f}: draws its own lock`);
     const rule = OWN_RULES.exec(text);
     if (rule) found.push(`${f}: an unlock rule of its own (${rule[0]}); use @shared/unlock`);
@@ -101,11 +88,5 @@ describe('the Shared look', () => {
 
   describe.each(GAMES.map((g) => g.slug))('%s', (slug) => {
     it('has the Shared look', () => expect(drift(slug)).toEqual([]));
-  });
-
-  it.each(OWN_LEVEL_SELECT)('%s is on the list of Games with their own level select only until it moves', (slug) => {
-    expect(GAMES.map((g) => g.slug)).toContain(slug);
-    const moved = sources(`games/${slug}/src`).some((f) => read(f).includes('showLevelSelect('));
-    expect(moved, `${slug} uses showLevelSelect(); take it off OWN_LEVEL_SELECT`).toBe(false);
   });
 });
