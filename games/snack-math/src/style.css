@@ -14,10 +14,14 @@
   --lilac: #b79cf2;
   --wood: #f3dcb6;
   --wood-dark: #dcb883;
+  --site-lip: #0000001a;
+  --site-tool-ink: var(--ink-soft);
+  --site-go: var(--mint);
+  --site-go-dark: var(--mint-dark);
   --site-ring: var(--coral);
+  --site-focus: var(--sky-dark);
 
   --slot: min(15vw, 64px, 8.5vh);
-  --round: ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', 'Arial Rounded MT Bold', system-ui, sans-serif;
   --emoji: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
 }
 
@@ -32,17 +36,11 @@ body {
   overflow: hidden;
   background: var(--cream);
   color: var(--ink);
-  font-family: var(--round);
   touch-action: none;
 }
 
 #app {
   height: 100%;
-}
-
-button:focus-visible {
-  outline: 4px solid var(--sky-dark);
-  outline-offset: 4px;
 }
 
 svg {
@@ -74,22 +72,16 @@ body::before {
     linear-gradient(var(--cream), var(--cream-2));
 }
 
-.icon-btn {
-  width: 56px;
-  height: 56px;
-  padding: 12px;
-  border-radius: 50%;
-  background: #fff;
-  color: var(--ink-soft);
-  box-shadow: 0 4px 0 #0000001a;
-}
-
-.icon-btn:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #0000001a;
-}
-
 /* ---------- Home ---------- */
+
+/* The header floats at the top so the splash stays centred. */
+.home > .site-bar {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(14px, env(safe-area-inset-left));
+  right: max(14px, env(safe-area-inset-right));
+  padding: 0;
+}
 
 .home {
   display: flex;
@@ -175,45 +167,10 @@ body::before {
   border-radius: 19px;
   background: var(--coral);
   color: #fff;
-  font-family: var(--round);
+  font-family: var(--site-font);
   font-size: 22px;
   font-weight: 900;
   line-height: 38px;
-}
-
-.gear {
-  position: absolute;
-  right: max(14px, env(safe-area-inset-right));
-  bottom: max(14px, env(safe-area-inset-bottom));
-  width: 48px;
-  height: 48px;
-  padding: 10px;
-  opacity: 0.7;
-}
-
-.hub-home {
-  position: absolute;
-  top: max(12px, env(safe-area-inset-top));
-  left: max(14px, env(safe-area-inset-left));
-  display: block;
-  width: 56px;
-  height: 56px;
-  padding: 12px;
-  border-radius: 50%;
-  background: #fff;
-  color: var(--ink-soft);
-  box-shadow: 0 4px 0 #0000001a;
-  touch-action: manipulation;
-}
-
-.hub-home:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 #0000001a;
-}
-
-.hub-home:focus-visible {
-  outline: 4px solid var(--sky-dark);
-  outline-offset: 4px;
 }
 
 /* ---------- Play ---------- */
@@ -225,7 +182,7 @@ body::before {
 
 .play-top {
   display: grid;
-  grid-template-columns: 48px 1fr 48px;
+  grid-template-columns: var(--site-tool) 1fr var(--site-tool);
   align-items: center;
   gap: 8px;
 }
@@ -235,12 +192,6 @@ body::before {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-}
-
-.corner-btn {
-  width: 48px;
-  height: 48px;
-  padding: 11px;
 }
 
 .sum {
@@ -384,7 +335,7 @@ body::before {
   border-radius: 999px;
   background: var(--coral);
   color: #fff;
-  font-family: var(--round);
+  font-family: var(--site-font);
   font-size: calc(var(--slot) * 0.28);
   font-weight: 900;
   line-height: calc(var(--slot) * 0.42);
@@ -549,16 +500,6 @@ body::before {
   line-height: 1;
 }
 
-.round-btn.go {
-  width: 110px;
-  height: 110px;
-  padding: 28px 24px 28px 32px;
-  background: var(--mint);
-  color: #fff;
-  box-shadow: 0 8px 0 var(--mint-dark);
-  animation: breathe 2.2s ease-in-out infinite;
-}
-
 .round-btn:active {
   transform: translateY(5px);
   box-shadow: none;
@@ -598,7 +539,7 @@ body::before {
 
 .book-top {
   display: grid;
-  grid-template-columns: 56px 1fr 56px;
+  grid-template-columns: var(--site-tool) 1fr var(--site-tool);
   align-items: center;
   margin-bottom: 12px;
 }
@@ -643,15 +584,9 @@ body::before {
 
 /* ---------- Grown-Up Corner ---------- */
 
-.grownup {
-  font-family: system-ui, sans-serif;
-  -webkit-user-select: text;
-  user-select: text;
-}
-
 .grownup h1 {
   margin: 8px 0 4px;
-  font-family: var(--round);
+  font-family: var(--site-font);
   font-size: 28px;
 }
 

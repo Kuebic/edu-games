@@ -24,18 +24,17 @@ export const homeScreen: Screen = (app) => {
     h('span', { class: 'book-icon', text: '📒' }),
     app.save.stickers.length > 0 && h('span', { class: 'book-count', text: String(app.save.stickers.length) }),
   );
-  const gear = h('button', { class: 'icon-btn gear', label: 'Grown-Up Corner (press and hold)', html: gearIcon });
+  const gear = h('button', { class: 'site-tool', label: 'Grown-Up Corner (press and hold)', html: gearIcon });
 
   app.root.append(
     h(
       'div',
       { class: 'screen home' },
-      houseButton(),
+      h('header', { class: 'site-bar' }, houseButton('site-tool'), gear),
       friends,
       h('h1', { class: 'title' }, h('span', { text: 'Snack' }), h('span', { text: 'Math' })),
       playBtn,
       bookBtn,
-      gear,
     ),
   );
 

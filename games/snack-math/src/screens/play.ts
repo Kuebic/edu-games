@@ -5,7 +5,7 @@ import { PLATE_SIZE, ROUND_LENGTH, answerChoices, makeRound, type Problem } from
 import { nextStage, pickSticker } from '../progress';
 import { buzz, play } from '../sfx';
 import { hush, say } from '../speech';
-import { homeIcon, playIcon } from './icons';
+import { backIcon, playIcon } from './icons';
 
 const IDLE_MS = 8000;
 const MAX_NUDGES = 3;
@@ -23,7 +23,7 @@ export const playScreen: Screen = (app) => {
   const word = (n: number) => snackWord(friend, n);
 
   // ---- Layout ------------------------------------------------------------
-  const homeBtn = h('button', { class: 'icon-btn corner-btn', label: 'Home', html: homeIcon });
+  const homeBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
   const sumEl = h('div', { class: 'sum', label: 'Problem' });
   const dots = Array.from({ length: ROUND_LENGTH }, () => h('span', { class: 'dot' }));
   const friendEl = h('button', { class: 'friend', text: friend.emoji, label: `${friend.name}, tap to hear again` });
@@ -353,8 +353,8 @@ export const playScreen: Screen = (app) => {
   function showReward(sticker: string, movedUp: boolean) {
     clearTimeout(idleTimer);
     hint = null;
-    const again = h('button', { class: 'round-btn go', label: 'Play again', html: playIcon });
-    const home = h('button', { class: 'round-btn', label: 'Home', html: homeIcon });
+    const again = h('button', { class: 'site-next', label: 'Play again', html: playIcon });
+    const home = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
     const book = h('button', { class: 'round-btn', label: 'Sticker Book', text: '📒' });
     const confetti = h('div', { class: 'confetti' });
     const colors = ['#FF7B6B', '#FFCE4F', '#6FD3A8', '#7CC3F5', '#B79CF2'];

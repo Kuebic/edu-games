@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { GAMES } from '../catalog/catalog.ts';
 
 /** Games still on their own look. Each Game's commit takes its Slug out; the list only shrinks. */
-const NOT_YET = new Set(['snack-math']);
+const NOT_YET = new Set<string>([]);
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const read = (path: string) => readFileSync(join(root, path), 'utf8');
@@ -38,7 +38,7 @@ function problems(slug: string): string[] {
     if (text.includes('hub-home')) found.push(`${f}: uses hub-home, not site-tool`);
     for (const house of HOUSES) if (text.includes(house)) found.push(`${f}: draws its own house`);
     if (f.endsWith('.css')) {
-      const stack = /font-family:\s*(?!var\(|inherit)[^;]+|--[\w-]+:\s*[^;]*\b(?:ui-rounded|system-ui)\b/.exec(text);
+      const stack = /font-family:(?!\s*(?:var\(|inherit))[^;]+|--[\w-]+:\s*[^;]*\b(?:ui-rounded|system-ui)\b/.exec(text);
       if (stack) found.push(`${f}: a font stack of its own (${stack[0]}); use --site-font or site-grownup`);
     }
   }

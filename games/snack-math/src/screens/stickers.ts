@@ -1,7 +1,7 @@
 import type { Screen } from '../app';
 import { h } from '../dom';
 import { play } from '../sfx';
-import { homeIcon } from './icons';
+import { backIcon } from './icons';
 
 const ROW = 4;
 
@@ -18,7 +18,7 @@ export const stickersScreen: Screen = (app) => {
     }),
     ...Array.from({ length: empties }, () => h('div', { class: 'sticker empty' })),
   );
-  const home = h('button', { class: 'icon-btn corner-btn', label: 'Home', html: homeIcon });
+  const home = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
 
   app.root.append(
     h(
