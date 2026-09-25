@@ -18,4 +18,4 @@ The page is `index.html`; its icons are in `public/`, served at `/snack-math/`.
 
 ## For grown-ups
 
-Press and hold the gear on the home screen for 3 seconds to open the Grown-Up Corner, where you can pick the stage, turn the voice or sounds off, or reset progress.
+Press and hold the gear on the home screen for 3 seconds to open the Grown-up Corner, where you can pick the stage, turn the voice or sounds off, or reset progress.

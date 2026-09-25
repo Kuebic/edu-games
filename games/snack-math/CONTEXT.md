@@ -74,6 +74,6 @@ _Avoid_: Star, badge, points, prize
 Where the child sees every Sticker earned.
 _Avoid_: Collection, trophy room
 
-**Grown-Up Corner**:
+**Grown-up Corner**:
 Snack Math's Grown-up Corner (a site term): where a grown-up changes the Stage, sound, or resets progress.
 _Avoid_: Parent mode, admin, settings screen

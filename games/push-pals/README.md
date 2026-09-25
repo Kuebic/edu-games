@@ -5,7 +5,7 @@ to four boxes and a dozen or more. Every level can get stuck, and some chapters 
 pushing a box off a goal, or back the way it came.
 
 - Play: swipe (one swipe = one step) or arrow keys / WASD. `Z` or Backspace undoes, `R` resets, Esc goes to the level list.
-- The house button at the top of the level list goes back to the game shelf.
+- The House button at the top of the level list goes back to the Hub.
 
 ## Develop
 
