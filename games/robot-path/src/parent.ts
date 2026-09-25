@@ -18,13 +18,17 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
   const panel = document.createElement('section');
   panel.className = 'rp-parent site-grownup';
   panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
   panel.setAttribute('aria-label', 'Grown-ups');
   veil.append(panel);
   host.append(veil);
+  const opener = document.activeElement;
 
   const close = () => {
     veil.remove();
     hooks.close();
+    // Focus goes back to what had it, unless the level select was redrawn and focused a card of its own.
+    if (opener instanceof HTMLElement && opener !== document.body && opener.isConnected) opener.focus();
   };
 
   const draw = () => {
@@ -75,6 +79,10 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
       }
     });
 
+    // Focus goes into the Corner as it opens, and stays on the same button when a choice redraws it.
+    const buttons = () => [...panel.querySelectorAll('button')];
+    const opening = !panel.hasChildNodes();
+    const focused = buttons().indexOf(document.activeElement as HTMLButtonElement);
     panel.replaceChildren(
       heading,
       toggle('Sound', settings.sound, () => set({ settings: { ...settings, sound: !settings.sound } })),
@@ -83,6 +91,7 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
       toggle('Every level open', progress.unlockAll, () => set({ unlockAll: !progress.unlockAll })),
       reset,
     );
+    if (opening || focused !== -1) buttons()[Math.max(focused, 0)]!.focus();
   };
   draw();
 }
