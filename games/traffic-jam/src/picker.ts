@@ -1,6 +1,6 @@
 // The level list: one row per Chapter, its picture on the left and its Levels beside it.
 
-import { homeButton } from '@shared/home-button';
+import { houseButton } from '@shared/house-button';
 import { CHAPTERS, LEVELS_PER_CHAPTER } from './chapters';
 import { ICONS, iconButton } from './icons';
 import { chapterColor } from './play';
@@ -25,7 +25,7 @@ export function showPicker(root: HTMLElement, progress: Progress, hooks: PickerH
     progress = { ...progress, muted: !progress.muted };
     mute.innerHTML = progress.muted ? ICONS.soundOff : ICONS.soundOn;
   });
-  bar.append(homeButton('tj-tool'), title, mute);
+  bar.append(houseButton('tj-tool'), title, mute);
 
   const list = document.createElement('div');
   list.className = 'tj-chapters';

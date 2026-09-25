@@ -1,6 +1,6 @@
 // Home: the Skin picker, then the world map, one row of level cards per World.
 
-import { homeButton } from '@shared/home-button';
+import { houseButton } from '@shared/house-button';
 import { holdButton, ICONS, WORLD_ICONS } from './icons';
 import { WORLDS } from './levels';
 import { isLevelUnlocked, isWorldUnlocked, SKINS, type Progress, type SkinId } from './progress';
@@ -26,7 +26,7 @@ export function showHome(root: HTMLElement, hooks: HomeHooks): () => void {
   bar.className = 'rp-bar';
   const title = document.createElement('h1');
   title.textContent = 'Robot Path';
-  bar.append(homeButton('rp-tool'), title, holdButton('rp-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
+  bar.append(houseButton('rp-tool'), title, holdButton('rp-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
 
   const skins = document.createElement('div');
   skins.className = 'rp-skins';

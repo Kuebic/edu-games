@@ -1,4 +1,4 @@
-import { homeButton } from '@shared/home-button';
+import { houseButton } from '@shared/house-button';
 import { ICONS } from './icons';
 import { CHAPTERS, LEVELS } from './levels';
 import { type Progress, isUnlocked, nextLevel } from './progress';
@@ -10,7 +10,7 @@ export function showPicker(root: HTMLElement, progress: Progress, open: (level: 
   screen.className = 'picker';
   const current = nextLevel(progress, LEVELS.length);
   const buttons: HTMLButtonElement[] = [];
-  screen.append(homeButton());
+  screen.append(houseButton());
 
   let index = 0;
   for (const chapter of CHAPTERS) {

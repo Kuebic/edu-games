@@ -1,6 +1,6 @@
 // Home: pick a Skin, then a Pack. Pictures first, so he can find his way alone.
 
-import { homeButton } from '@shared/home-button';
+import { houseButton } from '@shared/house-button';
 import { packColor, packIcon, type App } from './app';
 import { holdToActivate, ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
@@ -21,7 +21,7 @@ export function showHome(app: App): () => void {
   speaker.hidden = !canSpeak;
   const gear = iconButton('wo-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
   holdToActivate(gear, 3000, () => app.parent());
-  bar.append(homeButton('wo-tool'), title, speaker, gear);
+  bar.append(houseButton('wo-tool'), title, speaker, gear);
 
   const skins = document.createElement('div');
   skins.className = 'wo-skins';

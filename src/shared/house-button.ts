@@ -3,7 +3,7 @@
  * Each game places it where it fits its own layout.
  * A button rather than a link, so a long press doesn't open the browser's link menu.
  */
-export function homeButton(className = 'hub-home'): HTMLButtonElement {
+export function houseButton(className = 'hub-home'): HTMLButtonElement {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = className;

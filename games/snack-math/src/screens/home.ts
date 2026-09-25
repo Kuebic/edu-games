@@ -1,4 +1,4 @@
-import { homeButton } from '@shared/home-button';
+import { houseButton } from '@shared/house-button';
 import type { Screen } from '../app';
 import { h, holdToActivate } from '../dom';
 import { FRIENDS } from '../friends';
@@ -29,7 +29,7 @@ export const homeScreen: Screen = (app) => {
     h(
       'div',
       { class: 'screen home' },
-      homeButton(),
+      houseButton(),
       friends,
       h('h1', { class: 'title' }, h('span', { text: 'Snack' }), h('span', { text: 'Math' })),
       playBtn,
