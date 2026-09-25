@@ -479,7 +479,6 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #e0a800;
   font-size: 22px;
 }
 
@@ -506,10 +505,6 @@
 .wo-more-like > svg {
   width: 56px;
   height: 56px;
-}
-
-.wo-more-like .wo-pack-sparkles {
-  color: #fff;
 }
 
 /* Grown-up menu */

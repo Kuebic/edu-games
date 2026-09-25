@@ -29,7 +29,7 @@ describe("Robot Path's level select", () => {
     const progress = oldSave({
       version: 2,
       skin: 'sea',
-      // w3-05 was done under "Unlock every level", which is off again now.
+      // w3-05 was done under "Every level open", which is off again now.
       levels: {
         'w1-01': { done: true, sparkle: true },
         'w1-02': { done: true, sparkle: false, draft: [{ op: 'up' }] },

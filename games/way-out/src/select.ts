@@ -6,7 +6,7 @@ import { packColor, packIcon, type App } from './app';
 import { ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
 import { PACKS } from './packs';
-import { packLevels, packStats, shownPacks } from './progress';
+import { packLevels, packSparkles, shownPacks } from './progress';
 import { heroPicture, SKINS, skinById, type SkinId } from './skins';
 import { canSpeak, say } from './speech';
 
@@ -49,7 +49,7 @@ export function wayOutSelect(app: App): LevelSelectGame {
     underGroup(g) {
       const more = iconButton('wo-more-like', ICONS.more, 'More like this', () => app.pool(g + 1));
       more.style.setProperty('--pack', packColor(g + 1));
-      const { sparkles } = packStats(progress, LEVELS, g + 1);
+      const sparkles = packSparkles(progress, LEVELS, g + 1);
       if (sparkles) more.insertAdjacentHTML('beforeend', `<span class="wo-pack-sparkles">${ICONS.sparkle}<b>${sparkles}</b></span>`);
       return more;
     },

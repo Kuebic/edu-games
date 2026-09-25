@@ -132,12 +132,9 @@ export function packLevels(levels: readonly Level[], pack: number): Level[] {
   return levels.filter((l) => l.pack === pack);
 }
 
-export function packStats(progress: Progress, levels: readonly Level[], pack: number) {
-  const inPack = packLevels(levels, pack);
-  return {
-    done: inPack.filter((l) => progress.levels[l.id]?.done).length,
-    sparkles: inPack.filter((l) => progress.levels[l.id]?.sparkle).length + (progress.poolSparkles[pack] ?? 0),
-  };
+/** A Pack's Sparkles: its Levels' and its Pool's. */
+export function packSparkles(progress: Progress, levels: readonly Level[], pack: number): number {
+  return packLevels(levels, pack).filter((l) => progress.levels[l.id]?.sparkle).length + (progress.poolSparkles[pack] ?? 0);
 }
 
 /**
