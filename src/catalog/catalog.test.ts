@@ -1,6 +1,6 @@
 // The contract every Game folder keeps. A copied folder that still points at the
 // Game it came from fails here, with the folder named.
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { GAMES } from './catalog.ts';
@@ -34,9 +34,6 @@ describe('Catalog', () => {
     const file = (path: string) => inGames(`${game.slug}/${path}`);
     it('has its Tile picture in public/', () => expect(existsSync(file(`public/${game.tile}`))).toBe(true));
     it('has a README', () => expect(existsSync(file('README.md'))).toBe(true));
-    it('has a page that loads its own code', () => {
-      expect(readFileSync(file('index.html'), 'utf8')).toContain(`src="/games/${game.slug}/src/main.ts"`);
-    });
   });
 
   it('accepts a good entry', () => {

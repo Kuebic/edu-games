@@ -25,7 +25,7 @@ Whether a Game is **On** (a Tile on its Shelf), **Hidden** (playable at its addr
 _Avoid_: enabled/disabled, draft, published, shelved
 
 **Tile**:
-A Game's big picture button on a Shelf. Only On Games have one. Tiles sit in the order their Games were added, so a familiar Tile never moves.
+A Game's big picture button on a Shelf. Only On Games have one. Tiles sit in the order their Games were added, so a familiar Tile never moves. The same picture marks the Game's browser tab.
 _Avoid_: Card, icon, link
 
 **Hub**:
