@@ -10,3 +10,11 @@ export function discoverGames(gamesDir: string): Game[] {
     .map((dir) => parseEntry(dir.name, JSON.parse(readFileSync(join(gamesDir, dir.name, 'game.json'), 'utf8'))))
     .sort(byAdded);
 }
+
+/** Every file under a folder, as absolute paths; none if the folder doesn't exist. */
+export const filesIn = (dir: string): string[] =>
+  !existsSync(dir)
+    ? []
+    : readdirSync(dir, { recursive: true, withFileTypes: true })
+        .filter((entry) => entry.isFile())
+        .map((entry) => join(entry.parentPath, entry.name));

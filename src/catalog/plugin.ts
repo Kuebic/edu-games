@@ -1,47 +1,39 @@
 // The Game Shelf Vite plugin: serves each games/<slug>/ folder as the page at /<slug>/,
 // with its public/ files at /<slug>/<file>.
-import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { extname, join, relative } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join, relative } from 'node:path';
 import type { Plugin } from 'vite';
-import { discoverGames } from './discover.ts';
-import { isBuilt } from './entry.ts';
-
-const MIME: Record<string, string> = {
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.ogg': 'audio/ogg',
-  '.json': 'application/json',
-  '.webmanifest': 'application/manifest+json',
-};
-
-const walk = (dir: string): string[] =>
-  !existsSync(dir)
-    ? []
-    : readdirSync(dir, { recursive: true, withFileTypes: true })
-        .filter((entry) => entry.isFile())
-        .map((entry) => join(entry.parentPath, entry.name));
-
-const isFile = (path: string) => existsSync(path) && statSync(path).isFile();
+import { discoverGames, filesIn } from './discover.ts';
+import { isBuilt, type Game } from './entry.ts';
 
 export function gameShelf(rootDir: string): Plugin {
   const gamesDir = join(rootDir, 'games');
-  const games = discoverGames(gamesDir);
-  const built = games.filter(isBuilt);
+  let games: Game[] = [];
+  let built: Game[] = [];
   return {
     name: 'game-shelf',
-    config: () => ({
-      build: {
-        rollupOptions: {
-          input: {
-            hub: join(rootDir, 'index.html'),
-            ...Object.fromEntries(built.map((game) => [game.slug, join(gamesDir, game.slug, 'index.html')])),
+    // Reads the Games, again on every dev server restart.
+    config: () => {
+      games = discoverGames(gamesDir);
+      built = games.filter(isBuilt);
+      return {
+        build: {
+          rollupOptions: {
+            input: {
+              hub: join(rootDir, 'index.html'),
+              ...Object.fromEntries(built.map((game) => [game.slug, join(gamesDir, game.slug, 'index.html')])),
+            },
           },
         },
-      },
-    }),
-    // Dev: /<slug>/ is the Game's page and /<slug>/<file> comes from its public/ folder.
-    // Every Game, even an Off one. Runs before Vite's own middleware.
+      };
+    },
+    // Dev: /<slug>/ is the Game's page and /<slug>/<file> comes from its public/ folder,
+    // both served by Vite itself. Every Game, even an Off one. Runs before Vite's own middleware.
     configureServer(server) {
+      // A Game folder added, removed or renamed, or its game.json edited: restart, which reads the Games again.
+      server.watcher.on('all', (_, path) => {
+        if (/^[^/\\]+[/\\]game\.json$/.test(relative(gamesDir, path))) void server.restart();
+      });
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://x');
         const [, slug, ...rest] = url.pathname.split('/');
@@ -51,14 +43,9 @@ export function gameShelf(rootDir: string): Plugin {
           return;
         }
         const path = rest.join('/');
-        if (path === '' || path === 'index.html') {
-          req.url = `/games/${slug}/index.html${url.search}`;
-          return next();
-        }
-        const file = join(gamesDir, slug, 'public', ...rest.map(decodeURIComponent));
-        if (!file.startsWith(join(gamesDir, slug, 'public')) || !isFile(file)) return next();
-        res.setHeader('Content-Type', MIME[extname(file)] ?? 'application/octet-stream');
-        createReadStream(file).pipe(res);
+        const file = path === '' || path === 'index.html' ? 'index.html' : `public/${path}`;
+        req.url = `/games/${slug}/${file}${url.search}`;
+        next();
       });
     },
     // Build, for Games that aren't Off: games/<slug>/index.html lands at <slug>/index.html,
@@ -72,7 +59,7 @@ export function gameShelf(rootDir: string): Plugin {
         }
         for (const game of built) {
           const publicDir = join(gamesDir, game.slug, 'public');
-          for (const path of walk(publicDir)) {
+          for (const path of filesIn(publicDir)) {
             this.emitFile({ type: 'asset', fileName: `${game.slug}/${relative(publicDir, path)}`, source: readFileSync(path) });
           }
         }
