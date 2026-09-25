@@ -1,3 +1,4 @@
+import type { GameStorage } from '@shared/storage';
 import { STAGES, type Rng } from './problems';
 
 /** First Tries needed in one Round to move up a Stage. */
@@ -17,7 +18,8 @@ export interface Save {
   nextFriend: number;
 }
 
-const KEY = 'snack-math:v1';
+/** Saved as "snack-math:v1": the shell puts the Slug in front. */
+const KEY = 'v1';
 
 export function defaultSave(): Save {
   return { stage: 0, stickers: [], voice: true, sound: true, nextFriend: 0 };
@@ -35,16 +37,9 @@ export function pickSticker(owned: readonly string[], rng: Rng = Math.random): s
   return pool[Math.floor(rng() * pool.length)];
 }
 
-type Storage = Pick<globalThis.Storage, 'getItem' | 'setItem' | 'removeItem'>;
-
-export function loadSave(storage: Storage): Save {
+export function loadSave(storage: GameStorage): Save {
   const save = defaultSave();
-  let raw: unknown;
-  try {
-    raw = JSON.parse(storage.getItem(KEY) ?? 'null');
-  } catch {
-    return save;
-  }
+  const raw = storage.read(KEY);
   if (!raw || typeof raw !== 'object') return save;
   const r = raw as Record<string, unknown>;
   if (Number.isInteger(r.stage) && (r.stage as number) >= 0 && (r.stage as number) < STAGES.length) {
@@ -57,11 +52,7 @@ export function loadSave(storage: Storage): Save {
   return save;
 }
 
-export function writeSave(save: Save, storage: Storage): void {
-  try {
-    storage.setItem(KEY, JSON.stringify(save));
-  } catch {
-    // Private mode or full storage: progress just won't persist.
-  }
+export function writeSave(save: Save, storage: GameStorage): void {
+  storage.write(KEY, save);
 }
 

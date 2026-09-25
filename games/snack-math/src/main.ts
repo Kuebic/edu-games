@@ -1,5 +1,5 @@
+import { startGame } from '@shared/shell';
 import './style.css';
-import { registerOffline } from '@shared/pwa';
 import type { App, Screen, ScreenName } from './app';
 import { loadSave, writeSave } from './progress';
 import { grownupScreen } from './screens/grownup';
@@ -16,14 +16,14 @@ const screens: Record<ScreenName, Screen> = {
   grownup: grownupScreen,
 };
 
-const root = document.getElementById('app')!;
+const { root, storage } = startGame('snack-math');
 let cleanup: (() => void) | void;
 
 const app: App = {
   root,
-  save: loadSave(localStorage),
+  save: loadSave(storage),
   persist() {
-    writeSave(app.save, localStorage);
+    writeSave(app.save, storage);
   },
   go(name) {
     cleanup?.();
@@ -35,22 +35,8 @@ const app: App = {
 setVoiceEnabled(app.save.voice);
 setSoundEnabled(app.save.sound);
 
-// Keep stray little fingers from zooming, selecting, or opening menus.
-document.addEventListener('contextmenu', (e) => e.preventDefault());
-for (const type of ['gesturestart', 'gesturechange']) {
-  document.addEventListener(type, (e) => e.preventDefault(), { passive: false });
-}
-document.addEventListener(
-  'touchmove',
-  (e) => {
-    if (e.touches.length > 1) e.preventDefault();
-  },
-  { passive: false },
-);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) hush();
 });
 
 app.go('home');
-
-if (import.meta.env.PROD) registerOffline();
