@@ -12,7 +12,7 @@ export function showParent(app: App, close: () => void): void {
   layer.setAttribute('aria-modal', 'true');
   layer.setAttribute('aria-label', 'Grown-ups');
   const panel = document.createElement('div');
-  panel.className = 'wo-parent-panel';
+  panel.className = 'wo-parent-panel site-grownup';
   const title = document.createElement('h2');
   title.textContent = 'Grown-ups';
 

@@ -32,12 +32,12 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
   let gone = false;
 
   const screen = document.createElement('main');
-  screen.className = 'wo-play';
+  screen.className = 'site-screen wo-play';
   screen.style.setProperty('--pack', packColor(pack));
 
   // Header: back, which puzzle this is, speaker, gear.
   const bar = document.createElement('header');
-  bar.className = 'wo-bar';
+  bar.className = 'site-bar';
   const badge = document.createElement('div');
   badge.className = 'wo-badge';
   if (puzzle.kind === 'level') {
@@ -47,11 +47,11 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
     badge.setAttribute('aria-label', 'More like this');
     badge.innerHTML = `<span class="wo-badge-icon">${packIcon(pack)}</span><span class="wo-badge-more">${ICONS.more}</span>`;
   }
-  const speaker = iconButton('wo-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${skin.hero} get out.`));
+  const speaker = iconButton('site-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${skin.hero} get out.`));
   speaker.hidden = !canSpeak;
-  const gear = iconButton('wo-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
+  const gear = iconButton('site-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
   holdToActivate(gear, 3000, () => app.parent());
-  bar.append(iconButton('wo-tool', ICONS.back, 'Back', () => app.pack(pack)), badge, speaker, gear);
+  bar.append(iconButton('site-tool', ICONS.back, 'Back', () => app.pack(pack)), badge, speaker, gear);
 
   // Status: the Move counter, and the Sparkle if it's already earned.
   const status = document.createElement('div');
@@ -190,9 +190,9 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
           ? () => app.level(after)
           : () => app.home();
     done.append(
-      iconButton('wo-next', ICONS.next, 'Next', next),
+      iconButton('site-next', ICONS.next, 'Next', next),
       iconButton('wo-more', ICONS.more, 'More like this', () => app.pool(pack)),
-      iconButton('wo-tool', ICONS.levels, 'All levels', () => app.pack(pack)),
+      iconButton('site-tool', ICONS.levels, 'All levels', () => app.pack(pack)),
     );
     screen.append(done);
   }

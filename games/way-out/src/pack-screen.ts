@@ -10,20 +10,20 @@ import { canSpeak, say } from './speech';
 
 export function showPack(app: App, pack: number): () => void {
   const screen = document.createElement('main');
-  screen.className = 'wo-pack-screen';
+  screen.className = 'site-screen wo-pack-screen';
   screen.style.setProperty('--pack', packColor(pack));
 
   const bar = document.createElement('header');
-  bar.className = 'wo-bar';
+  bar.className = 'site-bar';
   const badge = document.createElement('div');
   badge.className = 'wo-badge';
   badge.setAttribute('aria-label', PACKS[pack - 1]!.name);
   badge.innerHTML = `<span class="wo-badge-icon">${packIcon(pack)}</span>`;
-  const speaker = iconButton('wo-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${app.skin().hero} get out.`));
+  const speaker = iconButton('site-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${app.skin().hero} get out.`));
   speaker.hidden = !canSpeak;
-  const gear = iconButton('wo-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
+  const gear = iconButton('site-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
   holdToActivate(gear, 3000, () => app.parent());
-  bar.append(iconButton('wo-tool', ICONS.back, 'Back', () => app.home()), badge, speaker, gear);
+  bar.append(iconButton('site-tool', ICONS.back, 'Back', () => app.home()), badge, speaker, gear);
 
   const grid = document.createElement('div');
   grid.className = 'wo-levels';

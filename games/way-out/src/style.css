@@ -4,6 +4,8 @@
   --ink: #2b3445;
   --button-ink: #2b3445;
   --pack: #2fa36b;
+  --site-lip: var(--sky-dark);
+  --site-tool-ink: var(--button-ink);
   --site-focus: var(--ink);
   color: var(--ink);
   background: var(--sky);
@@ -16,58 +18,17 @@
 .wo-play,
 .wo-home,
 .wo-pack-screen {
-  position: relative;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  overflow: hidden;
 }
 
 /* Header */
 
-.wo-bar {
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px 8px;
-}
-
-.wo-bar h1 {
-  flex: 1;
-  margin: 0;
-  font-size: 28px;
-  font-weight: 800;
-  text-align: center;
-}
-
-.wo-bar .wo-badge {
+.site-bar .wo-badge {
   margin: 0 auto;
 }
 
-.wo-tool {
-  position: relative;
-  flex: none;
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  background: #fff;
-  color: var(--button-ink);
-  box-shadow: 0 5px 0 var(--sky-dark);
-  display: grid;
-  place-items: center;
-}
-
-.wo-tool svg {
-  width: 58%;
-  height: 58%;
-}
-
-.wo-tool:active,
 .wo-control:active:not(:disabled),
-.wo-next:active,
 .wo-more:active,
 .wo-more-like:active {
   transform: translateY(4px);
@@ -433,24 +394,6 @@
   animation: wo-pop 0.5s 0.2s cubic-bezier(0.3, 1.6, 0.5, 1) both;
 }
 
-.wo-next {
-  width: 128px;
-  height: 128px;
-  border-radius: 50%;
-  background: #22c55e;
-  color: #fff;
-  box-shadow: 0 8px 0 #15803d;
-  display: grid;
-  place-items: center;
-  animation: wo-breathe 1.6s 1s ease-in-out infinite;
-}
-
-.wo-next svg {
-  width: 56%;
-  height: 56%;
-  margin-left: 8%;
-}
-
 .wo-more {
   width: 84px;
   height: 84px;
@@ -471,12 +414,6 @@
   from {
     transform: scale(0.2);
     opacity: 0;
-  }
-}
-
-@keyframes wo-breathe {
-  50% {
-    transform: scale(1.07);
   }
 }
 
@@ -773,8 +710,6 @@
   place-items: center;
   padding: 16px;
   background: #0f172acc;
-  -webkit-user-select: text;
-  user-select: text;
 }
 
 .wo-parent-panel {
@@ -789,7 +724,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-family: system-ui, sans-serif;
 }
 
 .wo-parent-panel h2 {
@@ -850,7 +784,7 @@
       'stage controls';
   }
 
-  .wo-play .wo-bar {
+  .wo-play .site-bar {
     grid-area: bar;
     padding-top: 8px;
     padding-bottom: 4px;
@@ -889,7 +823,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wo-next,
   .wo-hint.wo-glow,
   .wo-piece.wo-hinted svg,
   .wo-path,

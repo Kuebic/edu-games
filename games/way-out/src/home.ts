@@ -12,17 +12,17 @@ import { canSpeak, say } from './speech';
 
 export function showHome(app: App): () => void {
   const screen = document.createElement('main');
-  screen.className = 'wo-home';
+  screen.className = 'site-screen wo-home';
 
   const bar = document.createElement('header');
-  bar.className = 'wo-bar';
+  bar.className = 'site-bar';
   const title = document.createElement('h1');
   title.textContent = 'Way Out';
-  const speaker = iconButton('wo-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${app.skin().hero} get out.`));
+  const speaker = iconButton('site-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${app.skin().hero} get out.`));
   speaker.hidden = !canSpeak;
-  const gear = iconButton('wo-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
+  const gear = iconButton('site-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
   holdToActivate(gear, 3000, () => app.parent());
-  bar.append(houseButton('wo-tool'), title, speaker, gear);
+  bar.append(houseButton('site-tool'), title, speaker, gear);
 
   const skins = document.createElement('div');
   skins.className = 'wo-skins';
