@@ -39,6 +39,12 @@ button svg {
   flex-direction: column;
 }
 
+/* White on the sky, with the same dark lip as the buttons. */
+.picker h1 {
+  color: white;
+  text-shadow: 0 3px 0 var(--sky-dark);
+}
+
 .bar-balance {
   flex: none;
   width: var(--site-tool);
