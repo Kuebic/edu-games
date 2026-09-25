@@ -8,7 +8,3 @@ export const homeIcon =
 
 export const gearIcon =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm8.1 4.6-.1-1.1 1.9-1.5-1.8-3.1-2.3.8a7 7 0 0 0-1.9-1.1L15.5 3h-3.6l-.4 2.1a7 7 0 0 0-1.9 1.1l-2.3-.8-1.8 3.1L7.4 10l-.1 1.1.1 1.1-1.9 1.5 1.8 3.1 2.3-.8a7 7 0 0 0 1.9 1.1l.4 2.4h3.6l.4-2.4a7 7 0 0 0 1.9-1.1l2.3.8 1.8-3.1-1.9-1.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>';
-
-/** A ring that fills while a hold-to-open button is pressed. */
-export const holdRing =
-  '<svg class="hold-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" pathLength="100"/></svg>';

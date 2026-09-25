@@ -1,7 +1,8 @@
 // One Pack: its twelve Levels, and "more like this" for endless puzzles at the same level.
 
+import { holdToActivate } from '@shared/hold';
 import { packColor, packIcon, type App } from './app';
-import { holdToActivate, ICONS, iconButton } from './icons';
+import { ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
 import { PACKS } from './packs';
 import { isLevelOpen, packLevels, packStats } from './progress';

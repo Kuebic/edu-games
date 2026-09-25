@@ -1,5 +1,6 @@
 // Button pictures. Everything a child taps is a picture first.
 
+import { holdToActivate } from '@shared/hold';
 import type { Op } from './game/level';
 
 const icon = (body: string) =>
@@ -88,29 +89,10 @@ export function iconButton(className: string, svg: string, label: string, onClic
 
 /**
  * A button that only works when held down for `ms`, with a ring that fills while held.
- * For things a small child mustn't do by accident: clearing a Program, opening the parent menu.
+ * For things a small child mustn't do by accident: clearing a Program, opening the Grown-up Corner.
  */
 export function holdButton(className: string, svg: string, label: string, ms: number, onDone: () => void): HTMLButtonElement {
-  const button = iconButton(`${className} rp-hold`, svg, label, () => {});
-  button.style.setProperty('--hold', `${ms}ms`);
-  button.insertAdjacentHTML(
-    'beforeend',
-    '<svg class="rp-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" pathLength="100"/></svg>',
-  );
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const cancel = () => {
-    clearTimeout(timer);
-    button.classList.remove('rp-holding');
-  };
-  button.addEventListener('pointerdown', (event) => {
-    if (button.disabled) return;
-    button.setPointerCapture?.(event.pointerId);
-    button.classList.add('rp-holding');
-    timer = setTimeout(() => {
-      cancel();
-      onDone();
-    }, ms);
-  });
-  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) button.addEventListener(type, cancel);
+  const button = iconButton(className, svg, label, () => {});
+  holdToActivate(button, ms, onDone);
   return button;
 }

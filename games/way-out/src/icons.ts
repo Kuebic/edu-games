@@ -42,37 +42,3 @@ export function iconButton(className: string, svg: string, label: string, onClic
   if (onClick) button.addEventListener('click', onClick);
   return button;
 }
-
-/**
- * Press and hold to act: a ring fills around the button, and letting go early does nothing.
- * Keeps a stray tap from resetting a board or opening the grown-up menu.
- */
-export function holdToActivate(button: HTMLElement, ms: number, action: () => void): void {
-  button.classList.add('wo-hold');
-  button.style.setProperty('--hold', `${ms}ms`);
-  button.insertAdjacentHTML(
-    'beforeend',
-    '<svg class="wo-ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" pathLength="100"/></svg>',
-  );
-  let timer: number | undefined;
-  const stop = () => {
-    window.clearTimeout(timer);
-    timer = undefined;
-    button.classList.remove('wo-holding');
-  };
-  const start = (event: Event) => {
-    event.preventDefault();
-    stop();
-    button.classList.add('wo-holding');
-    timer = window.setTimeout(() => {
-      stop();
-      action();
-    }, ms);
-  };
-  button.addEventListener('pointerdown', start);
-  for (const type of ['pointerup', 'pointerleave', 'pointercancel', 'blur']) button.addEventListener(type, stop);
-  button.addEventListener('keydown', (event) => {
-    if ((event.key === 'Enter' || event.key === ' ') && !event.repeat) start(event);
-  });
-  button.addEventListener('keyup', stop);
-}

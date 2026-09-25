@@ -1,8 +1,9 @@
 // Home: pick a Skin, then a Pack. Pictures first, so he can find his way alone.
 
+import { holdToActivate } from '@shared/hold';
 import { houseButton } from '@shared/house-button';
 import { packColor, packIcon, type App } from './app';
-import { holdToActivate, ICONS, iconButton } from './icons';
+import { ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
 import { GROWN_UP_PACK, LEVELS_PER_PACK, PACKS } from './packs';
 import { isPackOpen, packStats } from './progress';

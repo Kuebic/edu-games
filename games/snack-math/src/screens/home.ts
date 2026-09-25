@@ -1,10 +1,11 @@
+import { holdToActivate } from '@shared/hold';
 import { houseButton } from '@shared/house-button';
 import type { Screen } from '../app';
-import { h, holdToActivate } from '../dom';
+import { h } from '../dom';
 import { FRIENDS } from '../friends';
 import { unlockAudio } from '../sfx';
 import { unlockSpeech } from '../speech';
-import { gearIcon, holdRing, playIcon } from './icons';
+import { gearIcon, playIcon } from './icons';
 
 export const homeScreen: Screen = (app) => {
   const friends = h(
@@ -23,7 +24,7 @@ export const homeScreen: Screen = (app) => {
     h('span', { class: 'book-icon', text: '📒' }),
     app.save.stickers.length > 0 && h('span', { class: 'book-count', text: String(app.save.stickers.length) }),
   );
-  const gear = h('button', { class: 'icon-btn gear', label: 'Grown-Up Corner (press and hold)', html: gearIcon + holdRing });
+  const gear = h('button', { class: 'icon-btn gear', label: 'Grown-Up Corner (press and hold)', html: gearIcon });
 
   app.root.append(
     h(

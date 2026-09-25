@@ -103,6 +103,32 @@ button:disabled {
   box-shadow: 0 1px 0 var(--site-lip);
 }
 
+/* Press and hold (hold.ts): a ring fills around the button. Two classes, so a Game's `.x svg` icon size can't shrink it. */
+.site-hold > .site-ring {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.site-hold > .site-ring circle {
+  fill: none;
+  stroke: var(--site-ring);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  opacity: 0;
+}
+
+.site-hold.site-holding > .site-ring circle {
+  opacity: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--site-hold-ms) linear;
+}
+
 /* The Next button on a win: the same in every Game, so a child learns it once. */
 .site-next {
   width: var(--site-next);

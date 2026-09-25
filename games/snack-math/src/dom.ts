@@ -115,26 +115,6 @@ export function dragOrTap(
   return () => ctl.abort();
 }
 
-/** Fire `onDone` only after the element is held down for `ms`. Adds `holding` while pressed. */
-export function holdToActivate(el: HTMLElement, ms: number, onDone: () => void) {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const cancel = () => {
-    clearTimeout(timer);
-    el.classList.remove('holding');
-  };
-  el.style.setProperty('--hold-ms', `${ms}ms`);
-  el.addEventListener('pointerdown', (e) => {
-    el.setPointerCapture(e.pointerId);
-    el.classList.add('holding');
-    timer = setTimeout(() => {
-      cancel();
-      onDone();
-    }, ms);
-  });
-  el.addEventListener('pointerup', cancel);
-  el.addEventListener('pointercancel', cancel);
-}
-
 export function sparkle(from: HTMLElement, layer: HTMLElement, glyphs = ['✨', '💛', '⭐'], count = 10) {
   const r = from.getBoundingClientRect();
   const base = layer.getBoundingClientRect();

@@ -4,6 +4,7 @@
   --go: #22c55e;
   --go-dark: #15803d;
   --bonk: #f97316;
+  --site-ring: var(--bonk);
   color: var(--ink);
   background: #dff3c9;
 }
@@ -102,33 +103,6 @@ svg {
 .rp-badge-icon svg {
   width: 64%;
   height: 64%;
-}
-
-/* Hold-to-act buttons: a ring fills while held. */
-
-.rp-hold .rp-ring {
-  position: absolute;
-  inset: -4px;
-  width: calc(100% + 8px);
-  height: calc(100% + 8px);
-  transform: rotate(-90deg);
-  pointer-events: none;
-}
-
-.rp-ring circle {
-  fill: none;
-  stroke: var(--bonk);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  opacity: 0;
-}
-
-.rp-holding .rp-ring circle {
-  opacity: 1;
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset var(--hold) linear;
 }
 
 /* Play: portrait, top to bottom. */

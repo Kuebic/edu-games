@@ -1,11 +1,12 @@
 // One puzzle: a Level or a Pool puzzle. Slide Vehicles until the red one can drive out.
 // No timer, no move limit, no way to lose; Undo goes all the way back and Reset can be undone.
 
+import { holdToActivate } from '@shared/hold';
 import { packColor, packIcon, type App } from './app';
 import { createBoardView } from './board-view';
 import { apply, isSolved, parse, solve, type Board, type Move } from './game/board';
 import { nextMove } from './hint';
-import { holdToActivate, ICONS, iconButton } from './icons';
+import { ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
 import type { Level, PoolPuzzle } from './packs';
 import { levelProgress, nextLevel, recordPoolSolve, recordSolve, type Snapshot } from './progress';

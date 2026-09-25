@@ -107,33 +107,6 @@
   height: 32px;
 }
 
-/* Hold to act: a ring fills around the button. */
-
-.wo-ring {
-  position: absolute;
-  inset: -7px;
-  width: calc(100% + 14px);
-  height: calc(100% + 14px);
-  transform: rotate(-90deg);
-  pointer-events: none;
-}
-
-.wo-ring circle {
-  fill: none;
-  stroke: #22c55e;
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  opacity: 0;
-}
-
-.wo-holding .wo-ring circle {
-  opacity: 1;
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset var(--hold) linear;
-}
-
 /* Play */
 
 .wo-status {

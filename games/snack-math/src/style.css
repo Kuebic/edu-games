@@ -14,6 +14,7 @@
   --lilac: #b79cf2;
   --wood: #f3dcb6;
   --wood-dark: #dcb883;
+  --site-ring: var(--coral);
 
   --slot: min(15vw, 64px, 8.5vh);
   --round: ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', 'Arial Rounded MT Bold', system-ui, sans-serif;
@@ -213,31 +214,6 @@ body::before {
 .hub-home:focus-visible {
   outline: 4px solid var(--sky-dark);
   outline-offset: 4px;
-}
-
-.hold-ring {
-  position: absolute;
-  inset: -4px;
-  width: calc(100% + 8px);
-  height: calc(100% + 8px);
-  transform: rotate(-90deg);
-  pointer-events: none;
-}
-
-.hold-ring circle {
-  fill: none;
-  stroke: var(--coral);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  opacity: 0;
-}
-
-.holding .hold-ring circle {
-  stroke-dashoffset: 0;
-  opacity: 1;
-  transition: stroke-dashoffset var(--hold-ms, 3s) linear;
 }
 
 /* ---------- Play ---------- */
