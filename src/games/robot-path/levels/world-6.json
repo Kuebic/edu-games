@@ -1,0 +1,176 @@
+[
+  {
+    "id": "w6-01",
+    "world": 6,
+    "index": 1,
+    "voice": "Use the loop! Put the right arrow in it, then tap the number to make it five.",
+    "grid": [
+      ".......",
+      "R....F.",
+      "......."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 3,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 5, "body": [{"op": "right"}]}],
+    "par": 2,
+    "tutorial": ["repeat", "right", "count", "count", "count", "go"]
+  },
+  {
+    "id": "w6-02",
+    "world": 6,
+    "index": 2,
+    "voice": "Only two spaces! Use the loop to go up.",
+    "grid": [
+      "...",
+      ".F.",
+      "...",
+      "...",
+      "...",
+      ".R."
+    ],
+    "start": {"facing": "N"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 2,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 4, "body": [{"op": "up"}]}],
+    "par": 2
+  },
+  {
+    "id": "w6-03",
+    "world": 6,
+    "index": 3,
+    "voice": "Loop to go right, then go up.",
+    "grid": [
+      "......",
+      ".....F",
+      "R....."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 4,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 5, "body": [{"op": "right"}]}, {"op": "up"}],
+    "par": 3
+  },
+  {
+    "id": "w6-04",
+    "world": 6,
+    "index": 4,
+    "voice": "Climb the stairs with a loop.",
+    "grid": [
+      "###F",
+      "##..",
+      "#..#",
+      "R.##"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 4,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 3, "body": [{"op": "right"}, {"op": "up"}]}],
+    "par": 3
+  },
+  {
+    "id": "w6-05",
+    "world": 6,
+    "index": 5,
+    "voice": "Get all the gems with a loop.",
+    "grid": [
+      ".......",
+      "R......",
+      "......."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 1, "type": "gem"},
+      {"x": 4, "y": 1, "type": "gem"},
+      {"x": 6, "y": 1, "type": "gem"}
+    ],
+    "goals": {"collectAll": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 4,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 3, "body": [{"op": "right"}, {"op": "right"}]}],
+    "par": 3
+  },
+  {
+    "id": "w6-06",
+    "world": 6,
+    "index": 6,
+    "voice": "Use two loops.",
+    "grid": [
+      "####F",
+      "####.",
+      "####.",
+      "####.",
+      "R...."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 5,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 4, "body": [{"op": "right"}]}, {"op": "repeat", "times": 4, "body": [{"op": "up"}]}],
+    "par": 4
+  },
+  {
+    "id": "w6-07",
+    "world": 6,
+    "index": 7,
+    "voice": "Climb the stairs and spell fun.",
+    "grid": [
+      "###.",
+      "##..",
+      "#..#",
+      "R.##"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 1, "y": 2, "type": "letter", "value": "F"},
+      {"x": 2, "y": 1, "type": "letter", "value": "U"},
+      {"x": 3, "y": 0, "type": "letter", "value": "N"}
+    ],
+    "goals": {"spell": "FUN"},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 4,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 3, "body": [{"op": "right"}, {"op": "up"}]}],
+    "par": 3
+  },
+  {
+    "id": "w6-08",
+    "world": 6,
+    "index": 8,
+    "voice": "Go all the way around. Get the gems, then the flag.",
+    "grid": [
+      "R....",
+      "F###.",
+      ".###.",
+      ".###.",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 4, "y": 0, "type": "gem"},
+      {"x": 4, "y": 4, "type": "gem"},
+      {"x": 0, "y": 4, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 9,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 4, "body": [{"op": "right"}]}, {"op": "repeat", "times": 4, "body": [{"op": "down"}]}, {"op": "repeat", "times": 4, "body": [{"op": "left"}]}, {"op": "repeat", "times": 3, "body": [{"op": "up"}]}],
+    "par": 8
+  }
+]

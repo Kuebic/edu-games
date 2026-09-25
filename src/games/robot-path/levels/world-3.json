@@ -1,0 +1,171 @@
+[
+  {
+    "id": "w3-01",
+    "world": 3,
+    "index": 1,
+    "voice": "Walk down the stairs to the flag.",
+    "grid": [
+      "R.##",
+      "#..#",
+      "##..",
+      "###F"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 9,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "right"}, {"op": "down"}, {"op": "right"}, {"op": "down"}],
+    "par": 6
+  },
+  {
+    "id": "w3-02",
+    "world": 3,
+    "index": 2,
+    "voice": "Climb the stairs to the flag.",
+    "grid": [
+      "####F",
+      "###..",
+      "##..#",
+      "#..##",
+      "R.###"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 11,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "up"}, {"op": "right"}, {"op": "up"}, {"op": "right"}, {"op": "up"}, {"op": "right"}, {"op": "up"}],
+    "par": 8
+  },
+  {
+    "id": "w3-03",
+    "world": 3,
+    "index": 3,
+    "voice": "Big steps! Go down the stairs to the flag.",
+    "grid": [
+      "####..R",
+      "####.##",
+      "##...##",
+      "##.####",
+      "F..####"
+    ],
+    "start": {"facing": "W"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 13,
+    "starterProgram": [],
+    "solution": [{"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}],
+    "par": 10
+  },
+  {
+    "id": "w3-04",
+    "world": 3,
+    "index": 4,
+    "voice": "The path wiggles like a snake.",
+    "grid": [
+      "R..",
+      "##.",
+      "...",
+      ".##",
+      "..F"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 13,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}],
+    "par": 10
+  },
+  {
+    "id": "w3-05",
+    "world": 3,
+    "index": 5,
+    "voice": "Another snake! This one wiggles up and down.",
+    "grid": [
+      "R#...",
+      ".#.#.",
+      "...#F"
+    ],
+    "start": {"facing": "S"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 13,
+    "starterProgram": [],
+    "solution": [{"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}],
+    "par": 10
+  },
+  {
+    "id": "w3-06",
+    "world": 3,
+    "index": 6,
+    "voice": "The flag is close, but a wall is in the way. Go the long way round.",
+    "grid": [
+      "#######",
+      "#..R#F#",
+      "#.###.#",
+      "#.....#",
+      "#######"
+    ],
+    "start": {"facing": "W"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 13,
+    "starterProgram": [],
+    "solution": [{"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}],
+    "par": 10
+  },
+  {
+    "id": "w3-07",
+    "world": 3,
+    "index": 7,
+    "voice": "Two ways go to the flag. Can you find the short one?",
+    "grid": [
+      "#######",
+      "#R....#",
+      "#.###.#",
+      "#.#F..#",
+      "#.###.#",
+      "#.....#",
+      "#######"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 13,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}],
+    "par": 8
+  },
+  {
+    "id": "w3-08",
+    "world": 3,
+    "index": 8,
+    "voice": "The flag is just above you. How can you get there?",
+    "grid": [
+      "#######",
+      "#..F..#",
+      "#.###.#",
+      "#.#R#.#",
+      "#.#.#.#",
+      "#.....#",
+      "#######"
+    ],
+    "start": {"facing": "S"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 13,
+    "starterProgram": [],
+    "solution": [{"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "up"}, {"op": "up"}, {"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}],
+    "par": 10
+  }
+]

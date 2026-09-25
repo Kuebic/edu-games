@@ -1,0 +1,172 @@
+[
+  {
+    "id": "w8-01",
+    "world": 8,
+    "index": 1,
+    "voice": "The robot walks the way it's looking. Go forward!",
+    "grid": [
+      "#F#",
+      "#.#",
+      "#.#",
+      "#R#"
+    ],
+    "start": {"facing": "N"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 5,
+    "starterProgram": [],
+    "solution": [{"op": "forward"}, {"op": "forward"}, {"op": "forward"}],
+    "par": 3
+  },
+  {
+    "id": "w8-02",
+    "world": 8,
+    "index": 2,
+    "voice": "Go forward, turn right, and go forward again.",
+    "grid": [
+      "..F",
+      ".##",
+      "R##"
+    ],
+    "start": {"facing": "N"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 7,
+    "starterProgram": [],
+    "solution": [{"op": "forward"}, {"op": "forward"}, {"op": "turnRight"}, {"op": "forward"}, {"op": "forward"}],
+    "par": 5
+  },
+  {
+    "id": "w8-03",
+    "world": 8,
+    "index": 3,
+    "voice": "This time, turn left.",
+    "grid": [
+      "F..",
+      "##.",
+      "##R"
+    ],
+    "start": {"facing": "N"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 7,
+    "starterProgram": [],
+    "solution": [{"op": "forward"}, {"op": "forward"}, {"op": "turnLeft"}, {"op": "forward"}, {"op": "forward"}],
+    "par": 5
+  },
+  {
+    "id": "w8-04",
+    "world": 8,
+    "index": 4,
+    "voice": "The robot is looking right. Which way should it turn?",
+    "grid": [
+      "##F",
+      "##.",
+      "R.."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 7,
+    "starterProgram": [],
+    "solution": [{"op": "forward"}, {"op": "forward"}, {"op": "turnLeft"}, {"op": "forward"}, {"op": "forward"}],
+    "par": 5
+  },
+  {
+    "id": "w8-05",
+    "world": 8,
+    "index": 5,
+    "voice": "The robot is looking down. Its left is your right!",
+    "grid": [
+      "R##",
+      ".##",
+      "..F"
+    ],
+    "start": {"facing": "S"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 7,
+    "starterProgram": [],
+    "solution": [{"op": "forward"}, {"op": "forward"}, {"op": "turnLeft"}, {"op": "forward"}, {"op": "forward"}],
+    "par": 5
+  },
+  {
+    "id": "w8-06",
+    "world": 8,
+    "index": 6,
+    "voice": "Turn and go to get all the gems.",
+    "grid": [
+      "##...",
+      "##.##",
+      "...##",
+      ".####",
+      "R####"
+    ],
+    "start": {"facing": "N"},
+    "items": [
+      {"x": 0, "y": 2, "type": "gem"},
+      {"x": 2, "y": 2, "type": "gem"},
+      {"x": 2, "y": 0, "type": "gem"}
+    ],
+    "goals": {"collectAll": true},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 10,
+    "starterProgram": [],
+    "solution": [{"op": "forward"}, {"op": "forward"}, {"op": "turnRight"}, {"op": "forward"}, {"op": "forward"}, {"op": "turnLeft"}, {"op": "forward"}, {"op": "forward"}],
+    "par": 8
+  },
+  {
+    "id": "w8-07",
+    "world": 8,
+    "index": 7,
+    "voice": "Go around the square with a loop.",
+    "grid": [
+      "R...",
+      ".##.",
+      ".##.",
+      "...."
+    ],
+    "start": {"facing": "S"},
+    "items": [
+      {"x": 0, "y": 3, "type": "gem"},
+      {"x": 3, "y": 3, "type": "gem"},
+      {"x": 3, "y": 0, "type": "gem"},
+      {"x": 1, "y": 0, "type": "gem"}
+    ],
+    "goals": {"collectAll": true},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 6,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 4, "body": [{"op": "forward"}, {"op": "forward"}, {"op": "forward"}, {"op": "turnLeft"}]}],
+    "par": 5
+  },
+  {
+    "id": "w8-08",
+    "world": 8,
+    "index": 8,
+    "voice": "Spell bus down the stairs.",
+    "grid": [
+      "R###",
+      "..##",
+      "#..#",
+      "##.."
+    ],
+    "start": {"facing": "S"},
+    "items": [
+      {"x": 1, "y": 1, "type": "letter", "value": "B"},
+      {"x": 2, "y": 2, "type": "letter", "value": "U"},
+      {"x": 3, "y": 3, "type": "letter", "value": "S"}
+    ],
+    "goals": {"spell": "BUS"},
+    "palette": ["forward", "turnLeft", "turnRight", "repeat"],
+    "maxSlots": 6,
+    "starterProgram": [],
+    "solution": [{"op": "repeat", "times": 3, "body": [{"op": "forward"}, {"op": "turnLeft"}, {"op": "forward"}, {"op": "turnRight"}]}],
+    "par": 5
+  }
+]

@@ -1,0 +1,187 @@
+[
+  {
+    "id": "w2-01",
+    "world": 2,
+    "index": 1,
+    "voice": "Get the gem, then go to the flag.",
+    "grid": [
+      ".....",
+      "R...F",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 1, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 7,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}],
+    "par": 4
+  },
+  {
+    "id": "w2-02",
+    "world": 2,
+    "index": 2,
+    "voice": "Get the gem, then go to the flag.",
+    "grid": [
+      ".....",
+      "R...F",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 0, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 9,
+    "starterProgram": [],
+    "solution": [{"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}],
+    "par": 6
+  },
+  {
+    "id": "w2-03",
+    "world": 2,
+    "index": 3,
+    "voice": "Get all three gems, then go to the flag.",
+    "grid": [
+      ".....",
+      "....F",
+      ".....",
+      "R...."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 3, "type": "gem"},
+      {"x": 2, "y": 1, "type": "gem"},
+      {"x": 4, "y": 2, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 11,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "up"}],
+    "par": 8
+  },
+  {
+    "id": "w2-04",
+    "world": 2,
+    "index": 4,
+    "voice": "Spell go. Get the G, then the O.",
+    "grid": [
+      "R....",
+      ".....",
+      ".....",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 0, "type": "letter", "value": "G"},
+      {"x": 2, "y": 2, "type": "letter", "value": "O"}
+    ],
+    "goals": {"spell": "GO"},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 8,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}],
+    "par": 4
+  },
+  {
+    "id": "w2-05",
+    "world": 2,
+    "index": 5,
+    "voice": "Spell cat, then go to the flag.",
+    "grid": [
+      "#######",
+      "#R...F#",
+      "#.###.#",
+      "#.....#",
+      "#######"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 3, "type": "letter", "value": "C"},
+      {"x": 3, "y": 3, "type": "letter", "value": "A"},
+      {"x": 4, "y": 3, "type": "letter", "value": "T"}
+    ],
+    "goals": {"flag": true, "spell": "CAT"},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 12,
+    "starterProgram": [],
+    "solution": [{"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}],
+    "par": 8
+  },
+  {
+    "id": "w2-06",
+    "world": 2,
+    "index": 6,
+    "voice": "Spell dog. D, then O, then G.",
+    "grid": [
+      "......",
+      "R.....",
+      "......"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 1, "y": 1, "type": "letter", "value": "D"},
+      {"x": 3, "y": 1, "type": "letter", "value": "G"},
+      {"x": 3, "y": 2, "type": "letter", "value": "O"}
+    ],
+    "goals": {"spell": "DOG"},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 9,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "up"}],
+    "par": 5
+  },
+  {
+    "id": "w2-07",
+    "world": 2,
+    "index": 7,
+    "voice": "Get the numbers in order. One, two, three.",
+    "grid": [
+      ".....",
+      ".....",
+      ".....",
+      ".....",
+      "..R.."
+    ],
+    "start": {"facing": "N"},
+    "items": [
+      {"x": 2, "y": 1, "type": "number", "value": 1},
+      {"x": 3, "y": 3, "type": "number", "value": 2},
+      {"x": 1, "y": 3, "type": "number", "value": 3}
+    ],
+    "goals": {"numberOrder": [1, 2, 3]},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 12,
+    "starterProgram": [],
+    "solution": [{"op": "up"}, {"op": "up"}, {"op": "up"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "left"}, {"op": "left"}],
+    "par": 8
+  },
+  {
+    "id": "w2-08",
+    "world": 2,
+    "index": 8,
+    "voice": "Spell sun, then go to the flag.",
+    "grid": [
+      "R....",
+      ".###.",
+      "F...."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 4, "y": 0, "type": "letter", "value": "S"},
+      {"x": 4, "y": 2, "type": "letter", "value": "U"},
+      {"x": 2, "y": 2, "type": "letter", "value": "N"}
+    ],
+    "goals": {"flag": true, "spell": "SUN"},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 14,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "left"}, {"op": "left"}],
+    "par": 10
+  }
+]

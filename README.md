@@ -7,6 +7,7 @@ One phone-first site of gentle learning games for little kids, grouped on Shelve
 | [Snack Math](src/games/snack-math/README.md) | Math | `/snack-math/` |
 | [Push Pals](src/games/push-pals/README.md) | Logic | `/push-pals/` |
 | [Traffic Jam](src/games/traffic-jam/README.md) | Logic | `/traffic-jam/` |
+| [Robot Path](src/games/robot-path/README.md) | Logic | `/robot-path/` |
 
 Site vocabulary is in [CONTEXT.md](./CONTEXT.md), site decisions in [docs/adr](./docs/adr). Each game has its own README, CONTEXT.md and ADRs next to its code.
 

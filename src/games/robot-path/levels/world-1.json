@@ -1,0 +1,162 @@
+[
+  {
+    "id": "w1-01",
+    "world": 1,
+    "index": 1,
+    "voice": "Tap the arrow, then press Go!",
+    "grid": [
+      ".....",
+      ".RF..",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 4,
+    "starterProgram": [],
+    "solution": [{"op": "right"}],
+    "par": 1,
+    "tutorial": ["right", "go"]
+  },
+  {
+    "id": "w1-02",
+    "world": 1,
+    "index": 2,
+    "voice": "Help the robot get to the flag.",
+    "grid": [
+      ".....",
+      "R..F.",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 6,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}],
+    "par": 3
+  },
+  {
+    "id": "w1-03",
+    "world": 1,
+    "index": 3,
+    "voice": "The flag is up high. Go up!",
+    "grid": [
+      "...",
+      ".F.",
+      "...",
+      "...",
+      ".R."
+    ],
+    "start": {"facing": "N"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 6,
+    "starterProgram": [],
+    "solution": [{"op": "up"}, {"op": "up"}, {"op": "up"}],
+    "par": 3
+  },
+  {
+    "id": "w1-04",
+    "world": 1,
+    "index": 4,
+    "voice": "Go right, then go up.",
+    "grid": [
+      "#####",
+      "###F#",
+      "###.#",
+      "#R..#"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 8,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}],
+    "par": 4
+  },
+  {
+    "id": "w1-05",
+    "world": 1,
+    "index": 5,
+    "voice": "A wall is in the way. Go around it.",
+    "grid": [
+      ".....",
+      "R.#F.",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 8,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "down"}],
+    "par": 5
+  },
+  {
+    "id": "w1-06",
+    "world": 1,
+    "index": 6,
+    "voice": "Follow the path to the flag.",
+    "grid": [
+      "##..F",
+      "##.##",
+      "R..##"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 9,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}],
+    "par": 6
+  },
+  {
+    "id": "w1-07",
+    "world": 1,
+    "index": 7,
+    "voice": "Watch out for the dead end!",
+    "grid": [
+      "R.#F#",
+      "#.#.#",
+      "#...#",
+      "#.###",
+      "#.###"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 10,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}],
+    "par": 7
+  },
+  {
+    "id": "w1-08",
+    "world": 1,
+    "index": 8,
+    "voice": "A long path. Plan it all, then press Go.",
+    "grid": [
+      "R.#..F",
+      "#.#.##",
+      "#...##",
+      "###.##",
+      "###..#"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 12,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}],
+    "par": 9
+  }
+]

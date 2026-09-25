@@ -1,0 +1,192 @@
+[
+  {
+    "id": "w5-01",
+    "world": 5,
+    "index": 1,
+    "voice": "A big maze! Find the way to the flag.",
+    "grid": [
+      "R..#...",
+      "##.#.#.",
+      ".....#.",
+      ".####..",
+      "...#..#",
+      "##.####",
+      "##..F##"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 18,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}],
+    "par": 14
+  },
+  {
+    "id": "w5-02",
+    "world": 5,
+    "index": 2,
+    "voice": "Get one, two, three, then go to the flag.",
+    "grid": [
+      "##F##",
+      "##.##",
+      "..R..",
+      "##.##",
+      "##.##"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 4, "y": 2, "type": "number", "value": 1},
+      {"x": 2, "y": 4, "type": "number", "value": 2},
+      {"x": 0, "y": 2, "type": "number", "value": 3}
+    ],
+    "goals": {"flag": true, "numberOrder": [1, 2, 3]},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 18,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "up"}, {"op": "up"}, {"op": "left"}, {"op": "left"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}],
+    "par": 14
+  },
+  {
+    "id": "w5-03",
+    "world": 5,
+    "index": 3,
+    "voice": "Get the gem on the way, and don't get stuck in a dead end!",
+    "grid": [
+      "R##...",
+      ".##.#.",
+      "....#.",
+      ".#.##.",
+      ".####F"
+    ],
+    "start": {"facing": "S"},
+    "items": [
+      {"x": 2, "y": 3, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 19,
+    "starterProgram": [],
+    "solution": [{"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "up"}, {"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "down"}],
+    "par": 15
+  },
+  {
+    "id": "w5-04",
+    "world": 5,
+    "index": 4,
+    "voice": "Start in the middle and spiral out to the flag.",
+    "grid": [
+      "F....",
+      "####.",
+      ".R.#.",
+      ".###.",
+      "....."
+    ],
+    "start": {"facing": "W"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 19,
+    "starterProgram": [],
+    "solution": [{"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "up"}, {"op": "up"}, {"op": "left"}, {"op": "left"}, {"op": "left"}, {"op": "left"}],
+    "par": 15
+  },
+  {
+    "id": "w5-05",
+    "world": 5,
+    "index": 5,
+    "voice": "Spell sun, then go to the flag. Don't skip a letter!",
+    "grid": [
+      "R....",
+      "##.#.",
+      ".....",
+      ".####",
+      "....F"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 4, "y": 0, "type": "letter", "value": "S"},
+      {"x": 0, "y": 2, "type": "letter", "value": "U"},
+      {"x": 2, "y": 4, "type": "letter", "value": "N"}
+    ],
+    "goals": {"flag": true, "spell": "SUN"},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 20,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}],
+    "par": 16
+  },
+  {
+    "id": "w5-06",
+    "world": 5,
+    "index": 6,
+    "voice": "Get the gem, then go to the flag.",
+    "grid": [
+      "R......",
+      ".#####.",
+      ".#F..#.",
+      ".#.#.#.",
+      "...#..."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 6, "y": 2, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 20,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "up"}, {"op": "up"}, {"op": "left"}, {"op": "left"}],
+    "par": 16
+  },
+  {
+    "id": "w5-07",
+    "world": 5,
+    "index": 7,
+    "voice": "Spell dog, then go to the flag.",
+    "grid": [
+      "R.....#",
+      "#.#.###",
+      "###...#",
+      "###.###",
+      "###...F"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 1, "y": 1, "type": "letter", "value": "D"},
+      {"x": 5, "y": 2, "type": "letter", "value": "O"},
+      {"x": 5, "y": 4, "type": "letter", "value": "G"}
+    ],
+    "goals": {"flag": true, "spell": "DOG"},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 20,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}],
+    "par": 16
+  },
+  {
+    "id": "w5-08",
+    "world": 5,
+    "index": 8,
+    "voice": "The biggest maze! Get both gems, then go to the flag.",
+    "grid": [
+      "R......",
+      "###..#.",
+      "....##.",
+      "#.#####",
+      "..#####",
+      "#....F#"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 4, "y": 1, "type": "gem"},
+      {"x": 0, "y": 4, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 22,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "right"}, {"op": "left"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "right"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}],
+    "par": 18
+  }
+]

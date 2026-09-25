@@ -32,4 +32,5 @@ export const GAMES: readonly Game[] = [
   { slug: 'snack-math', name: 'Snack Math', category: 'math', icon: 'snack-math/icon.svg' },
   { slug: 'push-pals', name: 'Push Pals', category: 'logic', icon: 'push-pals/icon.png' },
   { slug: 'traffic-jam', name: 'Traffic Jam', category: 'logic', icon: 'traffic-jam/icon.svg' },
+  { slug: 'robot-path', name: 'Robot Path', category: 'logic', icon: 'robot-path/icon.svg' },
 ];

@@ -1,0 +1,174 @@
+[
+  {
+    "id": "w4-01",
+    "world": 4,
+    "index": 1,
+    "voice": "One way is a dead end. Find the way to the flag.",
+    "grid": [
+      "R...#",
+      "#.#.#",
+      "#.#..",
+      "#.##.",
+      "####F"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 12,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "down"}, {"op": "down"}],
+    "par": 8
+  },
+  {
+    "id": "w4-02",
+    "world": 4,
+    "index": 2,
+    "voice": "Pop up to get the gem, then go to the flag.",
+    "grid": [
+      "###.###",
+      "R.....F"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 3, "y": 0, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 12,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}],
+    "par": 8
+  },
+  {
+    "id": "w4-03",
+    "world": 4,
+    "index": 3,
+    "voice": "Two ways go to the flag. Take the way with the gem!",
+    "grid": [
+      "R.....",
+      ".####F",
+      ".####.",
+      "......"
+    ],
+    "start": {"facing": "S"},
+    "items": [
+      {"x": 2, "y": 3, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 14,
+    "starterProgram": [],
+    "solution": [{"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}],
+    "par": 10
+  },
+  {
+    "id": "w4-04",
+    "world": 4,
+    "index": 4,
+    "voice": "Lots of dead ends! Find the way to the flag.",
+    "grid": [
+      "R....#.",
+      "##.#.#.",
+      "...#...",
+      ".#####.",
+      "...F#.."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 15,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "right"}, {"op": "right"}],
+    "par": 11
+  },
+  {
+    "id": "w4-05",
+    "world": 4,
+    "index": 5,
+    "voice": "Go in to get each gem, back out, then go to the flag.",
+    "grid": [
+      "####.##",
+      "####.##",
+      "#R...F#",
+      "##.####",
+      "##.####"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 4, "type": "gem"},
+      {"x": 4, "y": 0, "type": "gem"}
+    ],
+    "goals": {"flag": true, "collectAll": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 16,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "down"}, {"op": "down"}, {"op": "right"}],
+    "par": 12
+  },
+  {
+    "id": "w4-06",
+    "world": 4,
+    "index": 6,
+    "voice": "Spell cat. Pop down for each letter, then go to the flag.",
+    "grid": [
+      "R.....F",
+      "#.#.#.#"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 1, "y": 1, "type": "letter", "value": "C"},
+      {"x": 3, "y": 1, "type": "letter", "value": "A"},
+      {"x": 5, "y": 1, "type": "letter", "value": "T"}
+    ],
+    "goals": {"flag": true, "spell": "CAT"},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 16,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "up"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "up"}, {"op": "right"}],
+    "par": 12
+  },
+  {
+    "id": "w4-07",
+    "world": 4,
+    "index": 7,
+    "voice": "Go round and round to the flag.",
+    "grid": [
+      "R...",
+      "###.",
+      ".F#.",
+      ".##.",
+      "...."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 17,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "left"}, {"op": "up"}, {"op": "up"}, {"op": "right"}],
+    "par": 13
+  },
+  {
+    "id": "w4-08",
+    "world": 4,
+    "index": 8,
+    "voice": "A bigger spiral! Go round and round to the middle.",
+    "grid": [
+      "R....",
+      "####.",
+      ".F.#.",
+      ".###.",
+      "....."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 19,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "down"}, {"op": "left"}, {"op": "left"}, {"op": "left"}, {"op": "left"}, {"op": "up"}, {"op": "up"}, {"op": "right"}],
+    "par": 15
+  }
+]

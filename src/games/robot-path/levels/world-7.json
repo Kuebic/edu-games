@@ -1,0 +1,167 @@
+[
+  {
+    "id": "w7-01",
+    "world": 7,
+    "index": 1,
+    "voice": "Bip wrote this program, but it has a bug. Press Go, then fix it!",
+    "grid": [
+      "#..F.",
+      "#.###",
+      "R.###"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 7,
+    "starterProgram": [{"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "right"}, {"op": "right"}],
+    "solution": [{"op": "right"}, {"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}],
+    "par": 5
+  },
+  {
+    "id": "w7-02",
+    "world": 7,
+    "index": 2,
+    "voice": "Bip's robot stops too soon. Fix it!",
+    "grid": [
+      "R....",
+      "####.",
+      "####F"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 8,
+    "starterProgram": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}],
+    "par": 6
+  },
+  {
+    "id": "w7-03",
+    "world": 7,
+    "index": 3,
+    "voice": "Bip's program has one step too many. Fix it!",
+    "grid": [
+      "R...#",
+      "##.##",
+      "##F##"
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 6,
+    "starterProgram": [{"op": "right"}, {"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "down"}, {"op": "down"}],
+    "par": 4
+  },
+  {
+    "id": "w7-04",
+    "world": 7,
+    "index": 4,
+    "voice": "Push the box onto the X.",
+    "grid": [
+      "..x..",
+      ".....",
+      ".....",
+      "R...."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 2, "y": 2, "type": "crate"}
+    ],
+    "goals": {"cratesOnTargets": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 6,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "right"}, {"op": "up"}, {"op": "up"}],
+    "par": 4
+  },
+  {
+    "id": "w7-05",
+    "world": 7,
+    "index": 5,
+    "voice": "Bip's box got stuck. Fix the program!",
+    "grid": [
+      "#####",
+      "...x.",
+      ".R..."
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 1, "y": 1, "type": "crate"}
+    ],
+    "goals": {"cratesOnTargets": true},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 6,
+    "starterProgram": [{"op": "up"}, {"op": "up"}, {"op": "right"}, {"op": "right"}],
+    "solution": [{"op": "left"}, {"op": "up"}, {"op": "right"}, {"op": "right"}],
+    "par": 4
+  },
+  {
+    "id": "w7-06",
+    "world": 7,
+    "index": 6,
+    "voice": "Add up to five, then go to the flag.",
+    "grid": [
+      "R....",
+      ".....",
+      ".....",
+      "....F"
+    ],
+    "start": {"facing": "E"},
+    "items": [
+      {"x": 1, "y": 0, "type": "number", "value": 2},
+      {"x": 3, "y": 0, "type": "number", "value": 4},
+      {"x": 2, "y": 2, "type": "number", "value": 3},
+      {"x": 0, "y": 2, "type": "number", "value": 1},
+      {"x": 4, "y": 1, "type": "number", "value": 1}
+    ],
+    "goals": {"flag": true, "sum": 5},
+    "palette": ["up", "down", "left", "right"],
+    "maxSlots": 10,
+    "starterProgram": [],
+    "solution": [{"op": "right"}, {"op": "down"}, {"op": "down"}, {"op": "right"}, {"op": "down"}, {"op": "right"}, {"op": "right"}],
+    "par": 7
+  },
+  {
+    "id": "w7-07",
+    "world": 7,
+    "index": 7,
+    "voice": "Bip's loop is wrong. Fix the number!",
+    "grid": [
+      "####F#",
+      "R....."
+    ],
+    "start": {"facing": "E"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 3,
+    "starterProgram": [{"op": "repeat", "times": 3, "body": [{"op": "right"}]}, {"op": "up"}],
+    "solution": [{"op": "repeat", "times": 4, "body": [{"op": "right"}]}, {"op": "up"}],
+    "par": 3
+  },
+  {
+    "id": "w7-08",
+    "world": 7,
+    "index": 8,
+    "voice": "Bip's program has two bugs. Fix them both!",
+    "grid": [
+      "...F.",
+      ".####",
+      ".####",
+      ".####",
+      "R####"
+    ],
+    "start": {"facing": "N"},
+    "items": [],
+    "goals": {"flag": true},
+    "palette": ["up", "down", "left", "right", "repeat"],
+    "maxSlots": 5,
+    "starterProgram": [{"op": "repeat", "times": 3, "body": [{"op": "up"}]}, {"op": "repeat", "times": 3, "body": [{"op": "left"}]}],
+    "solution": [{"op": "repeat", "times": 4, "body": [{"op": "up"}]}, {"op": "repeat", "times": 3, "body": [{"op": "right"}]}],
+    "par": 4
+  }
+]
