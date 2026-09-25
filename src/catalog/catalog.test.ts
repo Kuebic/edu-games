@@ -42,7 +42,10 @@ describe('Catalog', () => {
   describe.each(GAMES)('$slug', (game) => {
     const file = (path: string) => inGames(`${game.slug}/${path}`);
     it('has its Tile picture in public/', () => expect(existsSync(file(`public/${game.tile}`))).toBe(true));
-    it('has a README', () => expect(existsSync(file('README.md'))).toBe(true));
+    it('has a README headed with its name', () => {
+      expect(existsSync(file('README.md'))).toBe(true);
+      expect(readFileSync(file('README.md'), 'utf8').split('\n')[0]).toBe(`# ${game.name}`);
+    });
 
     // ADR 0005: code imports its files from src/assets/, so the build hashes them and
     // fails if one is missing. Only the Tile and the page's icons need a fixed address.

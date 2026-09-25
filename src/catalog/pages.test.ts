@@ -50,6 +50,16 @@ const pages = [
   })),
 ];
 
+// A copied page keeps the old Game's description, and nothing else would notice.
+it('every page has its own description', () => {
+  const seen = new Map<string | undefined, string>();
+  for (const { file } of pages) {
+    const [description] = readPage(readFileSync(new URL(file, root), 'utf8')).meta('description');
+    expect(seen.get(description), `${file} has the same description as`).toBeUndefined();
+    seen.set(description, file);
+  }
+});
+
 describe.each(pages)('$file', ({ file, name, icon, script, slug }) => {
   const html = readFileSync(new URL(file, root), 'utf8');
   const page = readPage(html);
