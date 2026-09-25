@@ -14,18 +14,18 @@ export interface PickerHooks {
 
 export function showPicker(root: HTMLElement, progress: Progress, hooks: PickerHooks): () => void {
   const screen = document.createElement('main');
-  screen.className = 'tj-picker';
+  screen.className = 'site-screen tj-picker';
 
   const bar = document.createElement('header');
-  bar.className = 'tj-bar';
+  bar.className = 'site-bar';
   const title = document.createElement('h1');
   title.textContent = 'Traffic Jam';
-  const mute = iconButton('tj-tool', progress.muted ? ICONS.soundOff : ICONS.soundOn, 'Sound', () => {
+  const mute = iconButton('site-tool', progress.muted ? ICONS.soundOff : ICONS.soundOn, 'Sound', () => {
     hooks.toggleMute();
     progress = { ...progress, muted: !progress.muted };
     mute.innerHTML = progress.muted ? ICONS.soundOff : ICONS.soundOn;
   });
-  bar.append(houseButton('tj-tool'), title, mute);
+  bar.append(houseButton('site-tool'), title, mute);
 
   const list = document.createElement('div');
   list.className = 'tj-chapters';

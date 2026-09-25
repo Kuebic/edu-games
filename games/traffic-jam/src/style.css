@@ -2,6 +2,7 @@
   --sky: #c4e8fb;
   --sky-dark: #8fbcd6;
   --ink: #2b3445;
+  --site-lip: var(--sky-dark);
   color: var(--ink);
   background: var(--sky);
 }
@@ -12,52 +13,8 @@
 
 .tj-play,
 .tj-picker {
-  position: relative;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  overflow: hidden;
-}
-
-.tj-bar {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px 10px;
-}
-
-.tj-bar h1 {
-  margin: 0;
-  font-size: 27px;
-  font-weight: 800;
-  text-align: center;
-}
-
-.tj-tool {
-  flex: none;
-  width: 60px;
-  height: 60px;
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 5px 0 var(--sky-dark);
-  display: grid;
-  place-items: center;
-  color: var(--ink);
-}
-
-.tj-tool svg {
-  width: 58%;
-  height: 58%;
-}
-
-.tj-tool:active,
-.tj-next:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 var(--sky-dark);
 }
 
 .tj-badge {
@@ -136,30 +93,8 @@
   animation: tj-pop 0.5s 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) both;
 }
 
-.tj-next {
-  width: 132px;
-  height: 132px;
-  border-radius: 50%;
-  background: #22c55e;
-  color: #fff;
-  box-shadow: 0 8px 0 #15803d;
-  display: grid;
-  place-items: center;
-  animation: tj-breathe 1.6s 1s ease-in-out infinite;
-}
-
-.tj-next svg {
-  width: 56%;
-  height: 56%;
-  margin-left: 8%;
-}
-
 @keyframes tj-pop {
   from { transform: scale(0.2); opacity: 0; }
-}
-
-@keyframes tj-breathe {
-  50% { transform: scale(1.07); }
 }
 
 .tj-confetti {
@@ -278,7 +213,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tj-next,
   .tj-wobble {
     animation: none;
   }

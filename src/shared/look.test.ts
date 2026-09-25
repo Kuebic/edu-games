@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { GAMES } from '../catalog/catalog.ts';
 
 /** Games still on their own look. Each Game's commit takes its Slug out; the list only shrinks. */
-const NOT_YET = new Set(['traffic-jam', 'robot-path', 'push-pals', 'snack-math']);
+const NOT_YET = new Set(['robot-path', 'push-pals', 'snack-math']);
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const read = (path: string) => readFileSync(join(root, path), 'utf8');

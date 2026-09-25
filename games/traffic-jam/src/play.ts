@@ -56,22 +56,22 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   let gone = false;
 
   const screen = document.createElement('main');
-  screen.className = 'tj-play';
+  screen.className = 'site-screen tj-play';
   screen.style.setProperty('--chapter', chapterColor(chapter));
 
   const bar = document.createElement('header');
-  bar.className = 'tj-bar';
+  bar.className = 'site-bar';
   const badge = document.createElement('div');
   badge.className = 'tj-badge';
   badge.setAttribute('aria-label', `${CHAPTERS[chapter]!.name}, level ${(index % LEVELS_PER_CHAPTER) + 1}`);
   const number = document.createElement('span');
   number.textContent = String((index % LEVELS_PER_CHAPTER) + 1);
   badge.append(chapterIcon(chapter), number);
-  const mute = iconButton('tj-tool', hooks.muted() ? ICONS.soundOff : ICONS.soundOn, 'Sound', () => {
+  const mute = iconButton('site-tool', hooks.muted() ? ICONS.soundOff : ICONS.soundOn, 'Sound', () => {
     hooks.toggleMute();
     mute.innerHTML = hooks.muted() ? ICONS.soundOff : ICONS.soundOn;
   });
-  bar.append(iconButton('tj-tool', ICONS.levels, 'All levels', hooks.levels), badge, mute);
+  bar.append(iconButton('site-tool', ICONS.levels, 'All levels', hooks.levels), badge, mute);
 
   const stage = document.createElement('div');
   stage.className = 'tj-stage';
@@ -140,8 +140,8 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
     const done = document.createElement('div');
     done.className = 'tj-done';
     done.append(
-      iconButton('tj-next', ICONS.next, 'Next level', hooks.next),
-      iconButton('tj-tool', ICONS.levels, 'All levels', hooks.levels),
+      iconButton('site-next', ICONS.next, 'Next level', hooks.next),
+      iconButton('site-tool', ICONS.levels, 'All levels', hooks.levels),
     );
     screen.append(done);
   }
