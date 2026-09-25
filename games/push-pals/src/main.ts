@@ -1,4 +1,4 @@
-import { registerOffline } from '@shared/pwa';
+import { startGame } from '@shared/shell';
 import { LEVELS } from './levels';
 import { showPicker } from './picker';
 import { showPlay } from './play';
@@ -6,10 +6,8 @@ import { loadProgress, saveProgress, withSolved } from './progress';
 import { setMuted } from './sound';
 import './style.css';
 
-registerOffline();
-
-const app = document.querySelector<HTMLElement>('#app')!;
-let progress = loadProgress();
+const { root: app, storage } = startGame('push-pals');
+let progress = loadProgress(storage);
 let leave: () => void = () => {};
 setMuted(progress.muted);
 
@@ -24,12 +22,12 @@ function openLevel(index: number): void {
     muted: () => progress.muted,
     toggleMute() {
       progress = { ...progress, muted: !progress.muted };
-      saveProgress(progress);
+      saveProgress(progress, storage);
       setMuted(progress.muted);
     },
     solved() {
       progress = withSolved(progress, index);
-      saveProgress(progress);
+      saveProgress(progress, storage);
     },
     next: () => (index + 1 < LEVELS.length ? openLevel(index + 1) : openPicker()),
     home: openPicker,

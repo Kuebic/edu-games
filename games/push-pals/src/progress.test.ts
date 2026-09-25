@@ -1,5 +1,23 @@
+import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
-import { isUnlocked, nextLevel, withSolved } from './progress';
+import { isUnlocked, loadProgress, nextLevel, saveProgress, withSolved } from './progress';
+
+describe('saved progress', () => {
+  it('starts empty and survives a save', () => {
+    const storage = gameStorage('push-pals', memoryStorage());
+    expect(loadProgress(storage)).toEqual({ solved: [], muted: false });
+    saveProgress({ solved: [0, 1], muted: true }, storage);
+    expect(loadProgress(storage)).toEqual({ solved: [0, 1], muted: true });
+  });
+
+  it('loads a save written before the shell, from its old key', () => {
+    const backing = memoryStorage({ 'push-pals:v2': '{"solved":[0,1,2],"muted":true}' });
+    const progress = loadProgress(gameStorage('push-pals', backing));
+    expect(progress).toEqual({ solved: [0, 1, 2], muted: true });
+    saveProgress(progress, gameStorage('push-pals', backing));
+    expect(Object.keys(backing.dump())).toEqual(['push-pals:v2']);
+  });
+});
 
 describe('progress', () => {
   const fresh = { solved: [], muted: false };
