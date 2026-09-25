@@ -87,8 +87,11 @@ describe('the Group list', () => {
     expect(root.querySelector('main')!.lastElementChild).toBe(book);
   });
 
-  it('throws on a Game with no Groups', () => {
+  it('throws on a Game with no Groups, or a Group with no Levels', () => {
     expect(() => showLevelSelect(root, { title: 'Empty', groups: () => [], play() {} })).toThrow(/no Groups/);
+    const { game, groups } = testGame();
+    groups[1]!.levels = [];
+    expect(() => showLevelSelect(root, game)).toThrow(/Hard has no Levels/);
   });
 
   it('starts the arrow keys from the Group last opened when no card has focus, else the first', () => {
@@ -104,6 +107,14 @@ describe('the Group list', () => {
     expect(document.activeElement).toBe(document.body);
     key('ArrowRight');
     expect(document.activeElement).toBe(byLabel('Easy: 2 of 4 done'));
+  });
+
+  it('asks for the tools with the Group whose screen is up', () => {
+    const tools = vi.fn(() => []);
+    showLevelSelect(root, testGame({ tools }).game);
+    expect(tools).toHaveBeenLastCalledWith(undefined);
+    byLabel('Hard: 0 of 8 done')!.click();
+    expect(tools).toHaveBeenLastCalledWith(1);
   });
 });
 
@@ -130,6 +141,11 @@ describe('a Group screen', () => {
     expect(labels('.site-level')).toEqual(['Level 1, done, sparkle', 'Level 2, done', 'Level 3', 'Level 4, locked']);
     expect([...root.querySelectorAll<HTMLButtonElement>('.site-level')].map((b) => b.disabled)).toEqual([false, false, false, true]);
     expect(byLabel('Level 3')!.textContent).toBe('3');
+  });
+
+  it('names the Levels with the Game’s own word', () => {
+    showLevelSelect(root, testGame({ levelWord: 'Round' }).game, 0);
+    expect(labels('.site-level')).toEqual(['Round 1, done, sparkle', 'Round 2, done', 'Round 3', 'Round 4, locked']);
   });
 
   it('opens every Level under "Every level open"', () => {

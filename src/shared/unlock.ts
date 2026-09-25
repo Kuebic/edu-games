@@ -17,7 +17,7 @@ export function currentLevel(done: readonly boolean[], everyOpen = false): numbe
 
 /**
  * Where Next goes from a Level: the next one in its Group, else the next Group's Level 0 (always open),
- * else undefined after the very last Level. `sizes` is each Group's Level count.
+ * else undefined after the very last Level. `sizes` is each Group's Level count, never 0 (the level select checks).
  */
 export function nextLevel(sizes: readonly number[], group: number, level: number): { group: number; level: number } | undefined {
   if (level + 1 < (sizes[group] ?? 0)) return { group, level: level + 1 };
