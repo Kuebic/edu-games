@@ -1,6 +1,8 @@
 // Sounds. The engine and horn are made with Web Audio, so there are no clips to download;
 // the cheer is Kenney's CC0 jingle (the same one Push Pals plays).
 
+import clearUrl from './assets/sounds/clear.ogg';
+
 let context: AudioContext | undefined;
 let cheer: AudioBuffer | undefined;
 let muted = false;
@@ -16,7 +18,7 @@ export function unlockAudio(): void {
     return;
   }
   context = new AudioContext();
-  fetch('/traffic-jam/sounds/clear.ogg')
+  fetch(clearUrl)
     .then((response) => response.arrayBuffer())
     .then((data) => context!.decodeAudioData(data))
     .then((buffer) => (cheer = buffer))
