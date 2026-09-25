@@ -22,7 +22,7 @@ export function showHome(app: App): () => void {
   speaker.hidden = !canSpeak;
   const gear = iconButton('site-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
   holdToActivate(gear, 3000, () => app.parent());
-  bar.append(houseButton('site-tool'), title, speaker, gear);
+  bar.append(houseButton(), title, speaker, gear);
 
   const skins = document.createElement('div');
   skins.className = 'wo-skins';

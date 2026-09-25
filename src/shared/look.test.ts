@@ -6,9 +6,6 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { GAMES } from '../catalog/catalog.ts';
 
-/** Games still on their own look. Each Game's commit takes its Slug out; the list only shrinks. */
-const NOT_YET = new Set<string>([]);
-
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const read = (path: string) => readFileSync(join(root, path), 'utf8');
 
@@ -30,12 +27,11 @@ const pages = [
 /** The house drawings Games have used. Only the House button may draw one. */
 const HOUSES = ['M8 23 24 9l16 14', 'M3.5 11.2 12 4l8.5 7.2'];
 
-/** What still keeps a Game from the Shared look; empty once it has taken it. */
-function problems(slug: string): string[] {
+/** Where a Game has drifted from the Shared look; empty when it hasn't. */
+function drift(slug: string): string[] {
   const files = sources(`games/${slug}/src`).map((f) => ({ f, text: read(f) }));
   const found: string[] = [];
   for (const { f, text } of files) {
-    if (text.includes('hub-home')) found.push(`${f}: uses hub-home, not site-tool`);
     for (const house of HOUSES) if (text.includes(house)) found.push(`${f}: draws its own house`);
     if (f.endsWith('.css')) {
       const stack = /font-family:(?!\s*(?:var\(|inherit))[^;]+|--[\w-]+:\s*[^;]*\b(?:ui-rounded|system-ui)\b/.exec(text);
@@ -44,7 +40,7 @@ function problems(slug: string): string[] {
   }
   const houses = files.filter(({ text }) => text.includes('houseButton('));
   const calls = houses.flatMap(({ text }) => [...text.matchAll(/houseButton\(([^)]*)\)/g)].map(([, arg]) => arg));
-  if (calls.length !== 1 || calls[0] !== "'site-tool'") found.push(`one houseButton('site-tool'), not ${calls.join(' + ')}`);
+  if (calls.length !== 1 || calls[0] !== '') found.push(`one houseButton(), not ${calls.length} (${calls.join(' + ')})`);
   for (const { f, text } of houses) if (!text.includes("'site-bar'")) found.push(`${f}: its House button isn't in a site-bar`);
   return found;
 }
@@ -76,14 +72,6 @@ describe('the Shared look', () => {
   });
 
   describe.each(GAMES.map((g) => g.slug))('%s', (slug) => {
-    if (NOT_YET.has(slug)) {
-      it('is still on its own look (else take it out of NOT_YET)', () => expect(problems(slug)).not.toEqual([]));
-    } else {
-      it('has taken the Shared look', () => expect(problems(slug)).toEqual([]));
-    }
-  });
-
-  it('NOT_YET names only Games', () => {
-    for (const slug of NOT_YET) expect(GAMES.map((g) => g.slug)).toContain(slug);
+    it('has the Shared look', () => expect(drift(slug)).toEqual([]));
   });
 });

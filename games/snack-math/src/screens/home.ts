@@ -30,7 +30,7 @@ export const homeScreen: Screen = (app) => {
     h(
       'div',
       { class: 'screen home' },
-      h('header', { class: 'site-bar' }, houseButton('site-tool'), gear),
+      h('header', { class: 'site-bar' }, houseButton(), gear),
       friends,
       h('h1', { class: 'title' }, h('span', { text: 'Snack' }), h('span', { text: 'Math' })),
       playBtn,

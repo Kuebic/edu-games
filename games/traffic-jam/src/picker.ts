@@ -25,7 +25,7 @@ export function showPicker(root: HTMLElement, progress: Progress, hooks: PickerH
     progress = { ...progress, muted: !progress.muted };
     mute.innerHTML = progress.muted ? ICONS.soundOff : ICONS.soundOn;
   });
-  bar.append(houseButton('site-tool'), title, mute);
+  bar.append(houseButton(), title, mute);
 
   const list = document.createElement('div');
   list.className = 'tj-chapters';

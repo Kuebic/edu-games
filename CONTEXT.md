@@ -37,7 +37,7 @@ The page at `/` showing every Shelf. Every Game has a House button back to it.
 _Avoid_: Home page, launcher, menu
 
 **House button**:
-The big house picture in every Game that goes back to the Hub.
+The house picture at the top left of a Game's first screen. It always goes to the Hub, and nothing else in a Game shows a house.
 _Avoid_: home button, back button
 
 **Shared look**:

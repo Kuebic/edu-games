@@ -18,7 +18,7 @@ export function showPicker(root: HTMLElement, progress: Progress, open: (level: 
   // An empty slot the House button's size keeps the title centred.
   const balance = document.createElement('div');
   balance.className = 'bar-balance';
-  bar.append(houseButton('site-tool'), title, balance);
+  bar.append(houseButton(), title, balance);
   const list = document.createElement('div');
   list.className = 'chapters';
   screen.append(bar, list);

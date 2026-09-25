@@ -26,7 +26,7 @@ export function showHome(root: HTMLElement, hooks: HomeHooks): () => void {
   bar.className = 'site-bar';
   const title = document.createElement('h1');
   title.textContent = 'Robot Path';
-  bar.append(houseButton('site-tool'), title, holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
+  bar.append(houseButton(), title, holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
 
   const skins = document.createElement('div');
   skins.className = 'rp-skins';
