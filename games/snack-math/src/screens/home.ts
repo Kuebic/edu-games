@@ -29,7 +29,7 @@ export const homeScreen: Screen = (app) => {
   app.root.append(
     h(
       'div',
-      { class: 'screen home' },
+      { class: 'site-screen screen home' },
       h('header', { class: 'site-bar' }, houseButton(), gear),
       friends,
       h('h1', { class: 'title' }, h('span', { text: 'Snack' }), h('span', { text: 'Math' })),

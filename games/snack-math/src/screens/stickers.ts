@@ -23,7 +23,7 @@ export const stickersScreen: Screen = (app) => {
   app.root.append(
     h(
       'div',
-      { class: 'screen stickers' },
+      { class: 'site-screen screen stickers' },
       h('header', { class: 'book-top' }, home, h('h1', { class: 'book-title', text: '📒' })),
       h('div', { class: 'scroll' }, grid),
     ),

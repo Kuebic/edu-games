@@ -38,6 +38,7 @@ function drift(slug: string): string[] {
       if (stack) found.push(`${f}: a font stack of its own (${stack[0]}); use --site-font or site-grownup`);
     }
   }
+  if (!files.some(({ text }) => text.includes('site-screen'))) found.push("its screens aren't site-screens");
   const houses = files.filter(({ text }) => text.includes('houseButton('));
   const calls = houses.flatMap(({ text }) => [...text.matchAll(/houseButton\(([^)]*)\)/g)].map(([, arg]) => arg));
   if (calls.length !== 1 || calls[0] !== '') found.push(`one houseButton(), not ${calls.length} (${calls.join(' + ')})`);

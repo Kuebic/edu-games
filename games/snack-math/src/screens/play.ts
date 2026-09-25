@@ -35,7 +35,7 @@ export const playScreen: Screen = (app) => {
 
   const screen = h(
     'div',
-    { class: 'screen play' },
+    { class: 'site-screen screen play' },
     h('header', { class: 'play-top' }, homeBtn, h('div', { class: 'sum-wrap' }, sumEl, h('div', { class: 'dots' }, ...dots))),
     h('main', { class: 'table' }, friendEl, plate, pile),
     choicesEl,

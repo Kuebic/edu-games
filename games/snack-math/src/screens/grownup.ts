@@ -81,7 +81,7 @@ export const grownupScreen: Screen = (app) => {
   app.root.append(
     h(
       'div',
-      { class: 'screen grownup site-grownup' },
+      { class: 'site-screen screen grownup site-grownup' },
       h(
         'div',
         { class: 'scroll' },

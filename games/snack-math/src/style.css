@@ -49,15 +49,13 @@ svg {
   height: 100%;
 }
 
+/* A site-screen, kept narrow and with a margin even where there's no notch. */
 .screen {
-  position: relative;
-  height: 100%;
   width: 100%;
   max-width: 560px;
   margin: 0 auto;
   padding: max(12px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
     max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
-  overflow: hidden;
 }
 
 body::before {
