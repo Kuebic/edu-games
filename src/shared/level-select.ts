@@ -289,7 +289,8 @@ function put(root: HTMLElement, screen: HTMLElement, focusGroup: number | undefi
 
   const onKey = (event: KeyboardEvent) => {
     if (!screen.isConnected) return stop();
-    // Not while something else has focus, such as the Grown-up Corner over this screen.
+    // Not while a dialog such as the Grown-up Corner is over this screen, or something else has focus.
+    if (root.querySelector('[role="dialog"]')) return;
     const focused = document.activeElement;
     if (focused && focused !== document.body && !screen.contains(focused)) return;
     if (event.key === 'Escape' && back) {

@@ -140,6 +140,24 @@ describe('a Group screen', () => {
     expect(byLabel('All games')).not.toBeNull();
   });
 
+  it('leaves the keys to a Grown-up Corner over it, wherever the focus is', () => {
+    showLevelSelect(root, testGame().game, 0);
+    const corner = document.createElement('section');
+    corner.setAttribute('role', 'dialog');
+    corner.innerHTML = '<button>Sound</button>';
+    root.querySelector('main')!.append(corner);
+    corner.querySelector('button')!.focus();
+    key('Escape');
+    (document.activeElement as HTMLElement).blur();
+    key('Escape');
+    key('ArrowLeft');
+    expect(byLabel('Back')).not.toBeNull();
+    expect(corner.isConnected).toBe(true);
+    corner.remove();
+    key('Escape');
+    expect(byLabel('All games')).not.toBeNull();
+  });
+
   it('walks the Levels with the arrow keys, from the one to play next', () => {
     showLevelSelect(root, testGame().game, 0);
     expect(document.activeElement).toBe(byLabel('Level 3'));
