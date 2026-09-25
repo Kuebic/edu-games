@@ -6,6 +6,7 @@ import {
   cellsOf,
   covers,
   inBoard,
+  inIntersection,
   isIntersection,
   key,
   laneOf,
@@ -102,6 +103,10 @@ const ARROW_WEIGHT: Record<Arrow, number> = {
   'uturn-right': 2,
 };
 
+/** Whether the Vehicle can follow the Arrow from where it sits. Only straight Arrows start in an Intersection. */
+const canTake = (level: Level, vehicle: Vehicle, arrow: Arrow) =>
+  (arrow === 'straight' || !inIntersection(level, vehicle)) && routeOf(level, { ...vehicle, arrow }) !== null;
+
 function placeVehicles(random: Random, level: Level, spec: ChapterSpec, count: number): void {
   const taken = new Set(level.vehicles.flatMap(cellsOf).map(key));
   const kinds = spec.kinds.map((kind): [Kind, number] => [kind, kind === 'car' ? 3 : kind === 'truck' ? 2 : 1.5]);
@@ -116,7 +121,7 @@ function placeVehicles(random: Random, level: Level, spec: ChapterSpec, count: n
     const cells = cellsOf(vehicle);
     if (cells.some((cell) => !inBoard(level, cell) || !covers(level, street, cell) || taken.has(key(cell)))) continue;
     if (isIntersection(level, vehicle)) continue;
-    const arrows = spec.arrows.filter((arrow) => routeOf(level, { ...vehicle, arrow }));
+    const arrows = spec.arrows.filter((arrow) => canTake(level, vehicle, arrow));
     if (arrows.length === 0) continue;
     vehicle.arrow = weighted(random, arrows.map((arrow) => [arrow, ARROW_WEIGHT[arrow]] as const));
     level.vehicles.push(vehicle);
@@ -153,7 +158,7 @@ function mutate(random: Random, level: Level, spec: ChapterSpec): Level {
     placeVehicles(random, next, spec, next.vehicles.length + 1);
   } else {
     const vehicle = next.vehicles[i]!;
-    const arrows = spec.arrows.filter((arrow) => arrow !== vehicle.arrow && routeOf(next, { ...vehicle, arrow }));
+    const arrows = spec.arrows.filter((arrow) => arrow !== vehicle.arrow && canTake(next, vehicle, arrow));
     if (arrows.length > 0) vehicle.arrow = pick(random, arrows);
   }
   return next;

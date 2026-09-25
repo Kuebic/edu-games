@@ -15,7 +15,7 @@ One line of cells along a Street. On a two-lane Street each Lane has a direction
 _Avoid_: Track, row, column
 
 **Intersection**:
-A cell where two Streets cross. Only the tail of a truck or bus may start inside one; that's what makes crossing traffic block.
+A cell where two Streets cross. Only the tail of a truck or bus with a straight Arrow may start inside one; that's what makes crossing traffic block.
 _Avoid_: Junction (except T-junction), crossroads, node
 
 **T-junction**:

@@ -102,6 +102,11 @@ export function isIntersection(level: Level, cell: Cell): boolean {
   return streetAt(level, cell, 'h') !== undefined && streetAt(level, cell, 'v') !== undefined;
 }
 
+/** Whether any part of the Vehicle is in an Intersection. */
+export function inIntersection(level: Level, vehicle: Vehicle): boolean {
+  return cellsOf(vehicle).some((cell) => isIntersection(level, cell));
+}
+
 /**
  * The column (v) or row (h) a Vehicle heading `dir` drives in on this Street.
  * Single-lane Streets have one Lane for both directions; two-lane Streets keep right.

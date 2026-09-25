@@ -1,7 +1,7 @@
 // The Chapter ladder. Each Chapter adds one idea and keeps everything before it.
 // The generator builds Levels to these limits; levels.test.ts fails any Level that breaks them.
 
-import { isIntersection, layoutProblems, streetAt, axisOf, type Arrow, type Kind, type Level } from './game/level';
+import { inIntersection, isIntersection, layoutProblems, streetAt, axisOf, type Arrow, type Kind, type Level } from './game/level';
 import { routeOf, solve, tap } from './game/rules';
 
 export type Feature =
@@ -196,6 +196,10 @@ export function levelProblems(level: Level, spec: ChapterSpec): string[] {
     if (!spec.kinds.includes(vehicle.kind)) problems.push(`vehicle ${i} is a ${vehicle.kind}`);
     // Only a truck or bus tail may start in an Intersection. A front in one looks like it's already turning there.
     if (isIntersection(level, vehicle)) problems.push(`vehicle ${i} starts in an intersection`);
+    // A tail in an Intersection with a turn Arrow looks like it's turning there too.
+    if (vehicle.arrow !== 'straight' && inIntersection(level, vehicle)) {
+      problems.push(`vehicle ${i} turns but starts in an intersection`);
+    }
   });
   if (problems.length > 0) return problems;
   if (solve(level).stuck.length > 0) problems.push("can't be cleared");
