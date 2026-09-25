@@ -26,8 +26,6 @@ export const ICONS = {
   sparkle: icon(
     '<path d="M22 4c1 10 4 14 16 16-12 2-15 6-16 18-1-12-4-16-16-18 12-2 15-6 16-16Z" fill="currentColor" stroke-width="2"/><path d="M39 32c.5 4 2 5.5 6 6-4 .5-5.5 2-6 6-.5-4-2-5.5-6-6 4-.5 5.5-2 6-6Z" fill="currentColor" stroke-width="1.5"/>',
   ),
-  lock: icon('<rect x="11" y="22" width="26" height="19" rx="4" fill="currentColor"/><path d="M16 22v-6a8 8 0 0 1 16 0v6"/>'),
-  check: icon('<path d="m11 25 9 9 17-19" stroke-width="7"/>'),
   slide: icon('<path d="M6 24h36M14 16l-8 8 8 8M34 16l8 8-8 8"/>'),
   arrow: icon('<path d="M24 38V12M13 22l11-11 11 11" stroke-width="6"/>'),
   hand: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M18 26V9a3.5 3.5 0 0 1 7 0v12l2-1a3.5 3.5 0 0 1 4.8 1.6l.2.4 2.3-.8a3.4 3.4 0 0 1 4.3 2.2L40 30c1 5-1 11-6 14H22c-3-2-6-6-9-11l-2.8-4.4a3.3 3.3 0 0 1 5.4-3.8Z" fill="#fff" stroke="#1f2937" stroke-width="2.5" stroke-linejoin="round"/></svg>`,

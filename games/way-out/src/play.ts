@@ -9,7 +9,7 @@ import { nextMove } from './hint';
 import { ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
 import type { Level, PoolPuzzle } from './packs';
-import { levelProgress, nextLevel, recordPoolSolve, recordSolve, type Snapshot } from './progress';
+import { levelAfter, levelProgress, recordPoolSolve, recordSolve, type Snapshot } from './progress';
 import { cheer, engine, twinkle } from './sound';
 import { canSpeak, say } from './speech';
 import { colorOf, COLORS, kindName, RED } from './skins';
@@ -182,13 +182,9 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
 
     const done = document.createElement('div');
     done.className = 'wo-done';
-    const after = puzzle.kind === 'level' ? nextLevel(LEVELS, puzzle.level) : undefined;
-    const next =
-      puzzle.kind === 'pool'
-        ? () => app.pool(pack)
-        : after
-          ? () => app.level(after)
-          : () => app.home();
+    const after = puzzle.kind === 'level' ? levelAfter(app.progress, LEVELS, puzzle.level) : undefined;
+    // After the very last Level, Next goes to its Pack.
+    const next = puzzle.kind === 'pool' ? () => app.pool(pack) : after ? () => app.level(after) : () => app.pack(pack);
     done.append(
       iconButton('site-next', ICONS.next, 'Next', next),
       iconButton('wo-more', ICONS.more, 'More like this', () => app.pool(pack)),

@@ -75,7 +75,7 @@ export function showParent(app: App, close: () => void): void {
 
   const note = document.createElement('p');
   note.textContent =
-    'Solving a level opens the next; 9 of 12 opens the next pack. A sparkle means solved in the fewest moves possible.';
+    'Every pack is open; solving a level opens the next. A sparkle means solved in the fewest moves possible.';
 
   const done = document.createElement('button');
   done.type = 'button';

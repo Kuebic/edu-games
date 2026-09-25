@@ -1,10 +1,9 @@
 import { startGame } from '@shared/shell';
 import type { App } from './app';
-import { showHome } from './home';
-import { showPack } from './pack-screen';
 import { showParent } from './parent';
 import { showPlay, type Puzzle } from './play';
 import { loadProgress, saveProgress, takePoolPuzzle } from './progress';
+import { paintSkin, showSelect } from './select';
 import { setSoundEnabled, unlockAudio } from './sound';
 import { hush, setVoiceEnabled } from './speech';
 import { skinById } from './skins';
@@ -23,13 +22,20 @@ function show(render: () => () => void, redo: () => void): void {
   leave();
   hush();
   again = redo;
-  const skin = skinById(progress.skin);
-  const page = document.documentElement.style;
-  page.setProperty('--sky', skin.sky);
-  page.setProperty('--sky-dark', skin.skyDark);
-  page.setProperty('--ink', skin.ink);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', skin.sky);
+  paintSkin(progress.skin);
   leave = render();
+}
+
+/** The level select: the Pack list, or one Pack's Levels. It redraws itself, whichever is up. */
+function select(pack?: number): void {
+  let view: ReturnType<typeof showSelect> | undefined;
+  show(
+    () => {
+      view = showSelect(app, pack);
+      return view.leave;
+    },
+    () => view?.redraw(),
+  );
 }
 
 function play(puzzle: Puzzle): void {
@@ -41,8 +47,8 @@ const app: App = {
   progress,
   save: () => saveProgress(progress, storage),
   skin: () => skinById(progress.skin),
-  home: () => show(() => showHome(app), () => app.home()),
-  pack: (pack) => show(() => showPack(app, pack), () => app.pack(pack)),
+  home: () => select(),
+  pack: (pack) => select(pack),
   level: (level) => play({ kind: 'level', level }),
   pool(pack) {
     // The Pools only download when first asked for.

@@ -1,4 +1,4 @@
-// Which Levels a child may open, and where Next goes: the same rule in every Game.
+// Which Levels a child may open, and where Next goes: the same rule in every Game (ADR 0009).
 // A Game's Saved progress only says which Levels are done; openness is worked out from that.
 
 /**

@@ -4,13 +4,12 @@ import { LEVELS } from './levels';
 import { GROWN_UP_PACK, type PoolPuzzle } from './packs';
 import {
   freshProgress,
-  isLevelOpen,
-  isPackOpen,
+  levelAfter,
   loadProgress,
-  nextLevel,
   recordPoolSolve,
   recordSolve,
   saveProgress,
+  shownPacks,
   takePoolPuzzle,
 } from './progress';
 
@@ -64,31 +63,24 @@ describe('progress', () => {
     expect(progress.levels[first.id]).toEqual({ done: true, sparkle: true, bestMoves: first.par });
   });
 
-  it('opens the next Level on a solve, and the next Pack at 9 of 12', () => {
+  it('shows the bonus Pack only behind its switch or "Every level open"', () => {
     const progress = freshProgress();
-    expect(isLevelOpen(progress, LEVELS, level(1, 1))).toBe(true);
-    expect(isLevelOpen(progress, LEVELS, level(1, 2))).toBe(false);
-    recordSolve(progress, level(1, 1), 99);
-    expect(isLevelOpen(progress, LEVELS, level(1, 2))).toBe(true);
-    expect(nextLevel(LEVELS, level(1, 1))).toBe(level(1, 2));
-    expect(nextLevel(LEVELS, level(1, 12))).toBeUndefined();
-
-    for (let i = 2; i <= 8; i++) recordSolve(progress, level(1, i), 99);
-    expect(isPackOpen(progress, LEVELS, 2)).toBe(false);
-    recordSolve(progress, level(1, 9), 99);
-    expect(isPackOpen(progress, LEVELS, 2)).toBe(true);
-    expect(isLevelOpen(progress, LEVELS, level(2, 1))).toBe(true);
-    expect(isPackOpen(progress, LEVELS, 3)).toBe(false);
+    expect(shownPacks(progress)).toBe(GROWN_UP_PACK - 1);
+    progress.grownUp = true;
+    expect(shownPacks(progress)).toBe(GROWN_UP_PACK);
+    progress.grownUp = false;
+    progress.unlockAll = true;
+    expect(shownPacks(progress)).toBe(GROWN_UP_PACK);
   });
 
-  it('lets a grown-up open everything, and the bonus Pack', () => {
+  it("goes on from a Pack's last Level to the next shown Pack, and stops after the last", () => {
     const progress = freshProgress();
-    expect(isPackOpen(progress, LEVELS, GROWN_UP_PACK)).toBe(false);
+    expect(levelAfter(progress, LEVELS, level(1, 1))).toBe(level(1, 2));
+    expect(levelAfter(progress, LEVELS, level(1, 12))).toBe(level(2, 1));
+    expect(levelAfter(progress, LEVELS, level(5, 12))).toBeUndefined();
     progress.grownUp = true;
-    expect(isPackOpen(progress, LEVELS, GROWN_UP_PACK)).toBe(true);
-    expect(isLevelOpen(progress, LEVELS, level(GROWN_UP_PACK, 2))).toBe(false);
-    progress.unlockAll = true;
-    expect(isLevelOpen(progress, LEVELS, level(5, 12))).toBe(true);
+    expect(levelAfter(progress, LEVELS, level(5, 12))).toBe(level(GROWN_UP_PACK, 1));
+    expect(levelAfter(progress, LEVELS, level(GROWN_UP_PACK, 12))).toBeUndefined();
   });
 
   it('serves every Pool puzzle once before repeating, and counts Pool Sparkles', () => {

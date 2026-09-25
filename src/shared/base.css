@@ -14,6 +14,9 @@
   --site-go-dark: #15803d;
   --site-next: 128px;
   --site-ring: var(--site-go);
+  /* A Sparkle drawn on a card, and the Sparkle count's picture and number. */
+  --site-sparkle: #ffd23f;
+  --site-sparkle-ink: #e0a800;
   font-family: var(--site-font);
   color: var(--site-ink);
 }

@@ -37,8 +37,6 @@ export interface PackSpec {
 }
 
 export const LEVELS_PER_PACK = 12;
-/** Solve this many of a Pack's Levels to open the next Pack. */
-export const OPENS_NEXT = 9;
 
 export const PACKS: readonly PackSpec[] = [
   { name: 'First drive', par: [1, 3], vehicles: [2, 5], depth: 1, repeats: false, walls: false, backwards: false },
@@ -50,7 +48,7 @@ export const PACKS: readonly PackSpec[] = [
   { name: 'Grown-up', par: [26, 60], vehicles: [2, 16], depth: 6, repeats: true, walls: true, backwards: true },
 ];
 
-/** Pack number (1-based) of the bonus Pack. It doesn't count toward opening anything. */
+/** Pack number (1-based) of the bonus Pack, shown only when a grown-up turns it on. */
 export const GROWN_UP_PACK = PACKS.length;
 
 export function fitsPack(m: Measures, spec: PackSpec): boolean {

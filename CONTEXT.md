@@ -23,7 +23,7 @@ Whether a Game is **On** (a Tile on its Shelf), **Hidden** (playable at its addr
 _Avoid_: enabled/disabled, draft, published, shelved
 
 **Saved progress**:
-What a Game remembers on the device between visits: Levels done, Stickers, settings. Each Game keeps its own under its Slug, so Games never overwrite each other.
+What a Game remembers on the device between visits: which Levels are Done, Stickers, settings. Each Game keeps its own under its Slug, so Games never overwrite each other.
 _Avoid_: save file, storage, data
 
 **Game task**:
@@ -55,7 +55,7 @@ What every Game draws the same way: the rounded font, the header with the House 
 _Avoid_: theme, skin, frame, design system, house style
 
 **House button**:
-The house picture at the top left of a Game's first screen. It always goes to the Hub, and nothing else in a Game shows a house.
+The house picture at the top left of a Game's Group list. It always goes to the Hub, and nothing else in a Game shows a house.
 _Avoid_: home button, back button
 
 **Next button**:
@@ -65,3 +65,36 @@ _Avoid_: continue, play button
 **Grown-up Corner**:
 A Game's settings for grown-ups, opened by holding the gear for 3 seconds. Words are fine there.
 _Avoid_: parent menu, grown-up menu, settings
+
+**Level**:
+One puzzle, or Round, that a child starts from a Group screen. Each Game has its own kind.
+_Avoid_: stage, puzzle (in site talk)
+
+**Group**:
+A run of Levels at one difficulty, easiest first. Each Game has its own word: Pack (Way Out), Chapter (Push Pals, Traffic Jam), World (Robot Path), Stage (Snack Math). Every Group is always open.
+_Avoid_: set, tier, section
+
+**Done**:
+A Level the child has finished at least once: Solved, Cleared, a Win, a finished Round.
+_Avoid_: complete, passed
+
+**Open**:
+A Level the child may start. A Group's first Level is open, each next one opens when the one before it is done, and a done Level stays open.
+_Avoid_: unlocked, available
+
+**Every level open**:
+A Grown-up Corner switch that opens every Level (Robot Path, Way Out).
+
+**Level select**:
+The two screens a Game opens on, drawn the same in every Game: the Group list and a Group screen.
+_Avoid_: level picker, map, menu
+
+**Group list**:
+A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group with its badge, done dots and Sparkles.
+
+**Group screen**:
+One Group's Levels as numbered cards: done ones filled and ticked, the next one open, later ones locked.
+
+**Skin**:
+A picture set a child picks from the chips on the Group list. It changes looks and sounds, never the Levels. Robot Path and Way Out have Skins.
+_Avoid_: theme

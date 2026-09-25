@@ -67,7 +67,7 @@ One Board with its par, in a Pack. Saved under its id (`p2-04`).
 _Avoid_: Puzzle (that includes Pool puzzles), stage, card
 
 **Pack**:
-Twelve Levels at one difficulty, easiest first: First drive, Busy street, Traffic, Jam, Gridlock, and the bonus Grown-up Pack.
+Twelve Levels at one difficulty, easiest first: First drive, Busy street, Traffic, Jam, Gridlock, and the bonus Grown-up Pack, which shows only when a grown-up turns it on. A Group (site term).
 _Avoid_: Chapter (that's Traffic Jam's and Push Pals'), world, set
 
 **Pool**:

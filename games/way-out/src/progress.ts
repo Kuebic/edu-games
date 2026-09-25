@@ -2,8 +2,9 @@
 // game still plays with storage blocked; it just won't remember.
 
 import type { GameStorage } from '@shared/storage';
+import { nextLevel } from '@shared/unlock';
 import type { Board } from './game/board';
-import { GROWN_UP_PACK, LEVELS_PER_PACK, OPENS_NEXT, type Level, type PoolPuzzle } from './packs';
+import { GROWN_UP_PACK, type Level, type PoolPuzzle } from './packs';
 import type { SkinId } from './skins';
 
 /** Saved as "way-out:v1": the shell puts the Slug in front. */
@@ -139,23 +140,19 @@ export function packStats(progress: Progress, levels: readonly Level[], pack: nu
   };
 }
 
-/** Pack 1 is always open; each Pack after opens once 9 of the one before are solved. */
-export function isPackOpen(progress: Progress, levels: readonly Level[], pack: number): boolean {
-  if (pack === GROWN_UP_PACK) return progress.grownUp || progress.unlockAll;
-  return pack === 1 || progress.unlockAll || packStats(progress, levels, pack - 1).done >= OPENS_NEXT;
+/**
+ * How many Packs the child sees. The bonus Pack is last, and shows only while its Grown-up Corner switch
+ * or "Every level open" is on. Which Levels are open is the site's rule (ADR 0009), worked out from `levels`.
+ */
+export function shownPacks(progress: Progress): number {
+  return progress.grownUp || progress.unlockAll ? GROWN_UP_PACK : GROWN_UP_PACK - 1;
 }
 
-/** A Level opens when the one before it is solved. */
-export function isLevelOpen(progress: Progress, levels: readonly Level[], level: Level): boolean {
-  if (!isPackOpen(progress, levels, level.pack)) return false;
-  if (progress.unlockAll || level.index === 1 || progress.levels[level.id]?.done) return true;
-  const before = levels.find((l) => l.pack === level.pack && l.index === level.index - 1);
-  return before !== undefined && progress.levels[before.id]?.done === true;
-}
-
-/** The next Level after this one, if there is one in the same Pack. */
-export function nextLevel(levels: readonly Level[], level: Level): Level | undefined {
-  return level.index < LEVELS_PER_PACK ? levels.find((l) => l.pack === level.pack && l.index === level.index + 1) : undefined;
+/** Where Next goes: the next Level in its Pack, else the next shown Pack's first (always open), else undefined. */
+export function levelAfter(progress: Progress, levels: readonly Level[], level: Level): Level | undefined {
+  const sizes = Array.from({ length: shownPacks(progress) }, (_, i) => packLevels(levels, i + 1).length);
+  const to = nextLevel(sizes, level.pack - 1, level.index - 1);
+  return to && packLevels(levels, to.group + 1)[to.level];
 }
 
 /**
