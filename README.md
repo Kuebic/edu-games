@@ -28,10 +28,10 @@ npm run deploy       # build, then wrangler deploy (Worker: edu-games)
 
 Each Game is one folder in `games/`, and the build finds it there.
 
-1. Copy the Game folder closest to yours and rename it. The folder name is the slug. It's in the Game's address, `/<slug>/`, and in its saved progress, so it never changes once the Game has been On.
+1. Copy the Game folder closest to yours and rename it. The folder name is the slug. It's in the Game's address, `/<slug>/`, and names its saved progress, so it never changes once the Game has been On.
 2. Edit `game.json`: the name, the Category (one of `src/catalog/categories.ts`), the Tile picture (a file in the folder's `public/`), today's date as `added`, and `"shelf": "hidden"` until it's ready for a Tile. Tiles sit in the order their Games were added.
 3. Fix `index.html`: the title, description, theme colour and icons, and the script, which is `/games/<slug>/src/main.ts`.
-4. Replace the rest with your Game. Its `src/main.ts` calls `registerOffline()` from `@shared/pwa` and shows `houseButton()` from `@shared/house-button` on its first screen. A Game task goes in `scripts/<task>.ts`, with its helpers in `scripts/lib/`. Prefix localStorage keys with the slug, since every Game shares one origin.
+4. Replace the rest with your Game. Its `src/main.ts` starts with `startGame('<slug>')` from `@shared/shell`, imported before its own CSS. That registers offline, blocks pinch zoom and the long-press menu, and returns `#app` and the Game's `storage`. Pass `{ unlock }` if its sound needs a touch to start. Save only through that `storage`, with keys like `v1`; the shell stores them as `<slug>:v1` and never throws (ADR 0006). Show `houseButton()` from `@shared/house-button` on the first screen. A Game task goes in `scripts/<task>.ts`, with its helpers in `scripts/lib/`.
 5. Put sprites and sounds in `src/assets/`, and import them in TS (`import cheerUrl from './assets/sounds/cheer.ogg'`) or use a relative `url()` in CSS. The build hashes them into `assets/`. `public/` is only for the Tile picture and the icons `index.html` links, served at `/<slug>/<file>` (ADR 0005). A new file type, say mp3 or webp, also goes in the precache `globPatterns` in `vite.config.ts`, or it won't work offline.
 6. Run `npm test`. The Catalog and page tests name anything the copy still gets wrong.
 

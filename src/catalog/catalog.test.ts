@@ -63,6 +63,31 @@ describe('Catalog', () => {
       }
     });
 
+    // ADR 0006: every page starts through the shell, and a Game saves only through it.
+    const main = readFileSync(join(dir, 'src/main.ts'), 'utf8');
+    const scripts = code.filter((f) => f.endsWith('.ts'));
+
+    it('starts through the shell under its own Slug', () => {
+      expect(main).toMatch(new RegExp(`startGame\\('${game.slug}'[,)]`));
+    });
+
+    it('imports the shell before its own CSS', () => {
+      const shell = main.search(/import [^;]*'@shared\/shell'/);
+      const css = main.search(/import '[^']+\.css'/);
+      expect(shell).toBeGreaterThanOrEqual(0);
+      if (css >= 0) expect(shell).toBeLessThan(css);
+    });
+
+    it('saves and registers offline only through the shell', () => {
+      for (const f of scripts) {
+        expect(readFileSync(f, 'utf8'), relative(dir, f)).not.toMatch(/\blocalStorage\b|@shared\/pwa|virtual:pwa-register/);
+      }
+    });
+
+    it('has a House button back to the Hub', () => {
+      expect(scripts.some((f) => readFileSync(f, 'utf8').includes("from '@shared/house-button'"))).toBe(true);
+    });
+
     it('keeps in public/ only the Tile picture and the files its page links', () => {
       const own = `/${game.slug}/`;
       const linked = [...readFileSync(join(dir, 'index.html'), 'utf8').matchAll(/(?:href|src)="([^"]+)"/g)]
@@ -74,6 +99,14 @@ describe('Catalog', () => {
         expect([game.tile, ...linked], `public/${name}`).toContain(name);
       }
     });
+  });
+
+  it('the Hub also starts through the shell, before its own CSS', () => {
+    const hub = readFileSync(new URL('../hub/main.ts', import.meta.url), 'utf8');
+    const shell = hub.search(/import [^;]*'(@shared|\.\.\/shared)\/shell'/);
+    expect(hub).toMatch(/\bstartPage\(\)/);
+    expect(shell).toBeGreaterThanOrEqual(0);
+    expect(shell).toBeLessThan(hub.search(/import '[^']+\.css'/));
   });
 
   it('accepts a good entry', () => {

@@ -9,8 +9,12 @@ One self-contained learning game with its own page at `/<slug>/`. Each one is a 
 _Avoid_: App, activity, module
 
 **Slug**:
-A Game's short lowercase name, used in its address and its saved progress. It is the Game's folder name, and it never changes once the Game has been On.
+A Game's short lowercase name, used in its address and its Saved progress. It is the Game's folder name, and it never changes once the Game has been On.
 _Avoid_: id, key
+
+**Saved progress**:
+What a Game remembers on the device between visits: Levels done, Stickers, settings. Each Game keeps its own under its Slug, so Games never overwrite each other.
+_Avoid_: save file, storage, data
 
 **Category**:
 The subject a Game teaches: Math, Reading & Writing, Logic (solo puzzles), or Strategy (played against someone or the computer). Every Game has exactly one.
@@ -29,8 +33,12 @@ A Game's big picture button on a Shelf. Only On Games have one. Tiles sit in the
 _Avoid_: Card, icon, link
 
 **Hub**:
-The page at `/` showing every Shelf. Every Game has a house button back to it.
+The page at `/` showing every Shelf. Every Game has a House button back to it.
 _Avoid_: Home page, launcher, menu
+
+**House button**:
+The big house picture in every Game that goes back to the Hub.
+_Avoid_: home button, back button
 
 **Catalog**:
 Every Game's entry: name, Category, Tile picture, Shelf status and date added. Each Game carries its own entry in `game.json`, and the Hub and the build both read the Catalog.

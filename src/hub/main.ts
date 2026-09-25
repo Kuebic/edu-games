@@ -1,12 +1,12 @@
 // The hub: one Shelf per Category, each holding a Tile per On Game. Pictures first, so a
 // pre-reader can find a game on their own.
 
-import { registerOffline } from '../shared/pwa';
+import { startPage } from '../shared/shell';
 import { CATEGORIES, GAMES } from '../catalog/catalog';
 import { tilesFor } from './tiles';
 import './style.css';
 
-const root = document.querySelector<HTMLElement>('#app')!;
+const root = startPage();
 
 const page = document.createElement('main');
 page.className = 'hub';
@@ -44,5 +44,3 @@ for (const category of CATEGORIES) {
 }
 
 root.replaceChildren(page);
-document.addEventListener('contextmenu', (event) => event.preventDefault());
-if (import.meta.env.PROD) registerOffline();
