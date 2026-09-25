@@ -21,7 +21,7 @@ npm run build                       # whole site, into dist/
 
 Levels live in `src/levels.ts`. Each chapter sets its box count and push range, and says whether
 every level must need a trick; `levels.test.ts` fails if a level breaks its chapter's limits.
-The level scripts are in `scripts/`. Sprites and sounds are in `public/push-pals/`.
+The level scripts are in `scripts/`. Sprites and sounds are in `public/`, served at `/push-pals/`.
 Vocabulary is in `CONTEXT.md`.
 
 ## Credits

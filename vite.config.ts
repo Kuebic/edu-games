@@ -1,21 +1,15 @@
 import { fileURLToPath } from 'node:url';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
-import { GAMES } from './src/hub/catalog.ts';
+import { gameShelf } from './src/catalog/plugin.ts';
 
 const page = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
   resolve: { alias: { '@shared': page('src/shared') } },
-  build: {
-    rollupOptions: {
-      input: {
-        hub: page('index.html'),
-        ...Object.fromEntries(GAMES.map((game) => [game.slug, page(`${game.slug}/index.html`)])),
-      },
-    },
-  },
   plugins: [
+    // Each games/<slug>/ folder becomes the page at /<slug>/.
+    gameShelf(page('.')),
     // One service worker for the whole site: install once, every game works offline.
     VitePWA({
       registerType: 'autoUpdate',

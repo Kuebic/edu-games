@@ -34,6 +34,6 @@ npm run deploy       # build, then wrangler deploy (Worker: edu-games)
 ## Add a game
 
 1. Code in `games/<slug>/src/`, with a `main.ts` that calls `registerOffline()` from `@shared/pwa` and shows `homeButton()` from `@shared/home-button` on its first screen. Its README, CONTEXT.md, docs and scripts go in `games/<slug>/`.
-2. Page at `<slug>/index.html`, static files in `public/<slug>/` (fetch them as `/<slug>/...`).
+2. Page at `games/<slug>/index.html` (its script is `/games/<slug>/src/main.ts`), static files in `games/<slug>/public/` (fetch them as `/<slug>/...`).
 3. An entry in `src/hub/catalog.ts` with its Category and Tile picture. The build picks up its page from there.
 4. Keep localStorage keys prefixed with the slug. Every game shares one origin.

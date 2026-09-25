@@ -14,7 +14,7 @@ npx vitest run games/snack-math      # problem generation, answer choices, stage
 npm run build                        # whole site, into dist/
 ```
 
-The page is `snack-math/index.html`; its icons are in `public/snack-math/`.
+The page is `index.html`; its icons are in `public/`, served at `/snack-math/`.
 
 ## For grown-ups
 
