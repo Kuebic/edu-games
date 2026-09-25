@@ -1,5 +1,5 @@
 // Every game on the site. Adding a game: add its entry here, its page at
-// <slug>/index.html, and its code under src/games/<slug>/.
+// <slug>/index.html, and its code under games/<slug>/src/.
 
 export type CategoryId = 'math' | 'reading' | 'logic' | 'strategy';
 

@@ -6,6 +6,7 @@ import { GAMES } from './src/hub/catalog.ts';
 const page = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
 export default defineConfig({
+  resolve: { alias: { '@shared': page('src/shared') } },
   build: {
     rollupOptions: {
       input: {

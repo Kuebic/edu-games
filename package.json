@@ -11,13 +11,13 @@
     "typecheck": "tsc --noEmit",
     "cf:dev": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
-    "push-pals:levels": "vite-node scripts/push-pals/level-report.ts",
-    "push-pals:generate": "vite-node scripts/push-pals/generate.ts",
-    "traffic-jam:levels": "vite-node scripts/traffic-jam/level-report.ts",
-    "traffic-jam:generate": "vite-node scripts/traffic-jam/generate.ts",
-    "way-out:build": "vite-node scripts/way-out/build.ts",
-    "way-out:levels": "vite-node scripts/way-out/level-report.ts",
-    "robot-path:levels": "vite-node scripts/robot-path/level-report.ts"
+    "push-pals:levels": "vite-node games/push-pals/scripts/level-report.ts",
+    "push-pals:generate": "vite-node games/push-pals/scripts/generate.ts",
+    "traffic-jam:levels": "vite-node games/traffic-jam/scripts/level-report.ts",
+    "traffic-jam:generate": "vite-node games/traffic-jam/scripts/generate.ts",
+    "way-out:build": "vite-node games/way-out/scripts/build.ts",
+    "way-out:levels": "vite-node games/way-out/scripts/level-report.ts",
+    "robot-path:levels": "vite-node games/robot-path/scripts/level-report.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

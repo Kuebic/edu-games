@@ -3,4 +3,3 @@ dist
 dev-dist
 .wrangler
 *.log
-scripts/way-out/rush.txt.gz

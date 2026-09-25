@@ -1,6 +1,6 @@
 # Game Shelf
 
-One site of gentle learning games for little kids (ages about 4–6, pre-readers), played on a phone. Each game keeps its own vocabulary in `src/games/<slug>/CONTEXT.md`; this file covers the site around them.
+One site of gentle learning games for little kids (ages about 4–6, pre-readers), played on a phone. Each game keeps its own vocabulary in `games/<slug>/CONTEXT.md`; this file covers the site around them.
 
 ## Language
 
