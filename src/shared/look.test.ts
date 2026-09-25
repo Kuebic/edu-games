@@ -1,6 +1,7 @@
 // The Shared look (ADR 0007): base.css draws what every Game shares, and a Game only adds its own.
 // A Game that copies a shared rule back, or uses a --site-* token base.css doesn't have, fails here.
-// Every Game opens on the shared level select (ADR 0008) with the one unlock rule (ADR 0009).
+// Every Game opens on the shared level select (ADR 0008) with the one unlock rule (ADR 0009). What
+// draws the locks is the level select alone; the checks below only catch the old locks and rules coming back.
 import { readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,9 +28,9 @@ const pages = [
 
 /** The house drawings Games have used. Only the House button may draw one. */
 const HOUSES = ['M8 23 24 9l16 14', 'M3.5 11.2 12 4l8.5 7.2'];
-/** The lock drawings Games have used. Only the level select may draw one. */
+/** The lock drawings Games have used. Only the level select may draw one; a lock drawn some new way isn't caught. */
 const LOCKS = ['M16 22v-6a8 8', 'M8 11V7a4 4'];
-/** The unlock rules Games have had. The one rule is src/shared/unlock.ts. */
+/** The unlock rules Games have had, by name. The one rule is src/shared/unlock.ts; a rule under a new name isn't caught. */
 const OWN_RULES = /\b(?:isUnlocked|isPackOpen|isWorldUnlocked|isLevelUnlocked|OPENS_NEXT|WORLD_UNLOCK_AT)\b/;
 /** The level select's own classes, which no Game restyles. */
 const baseClasses = classesIn(base);
@@ -53,9 +54,9 @@ function drift(slug: string): string[] {
   if (selects !== 1) found.push(`one showLevelSelect(), not ${selects}`);
   for (const { f, text } of files) {
     if (/houseButton\(|@shared\/house-button/.test(text)) found.push(`${f}: a House button of its own; the level select draws it`);
-    for (const lock of LOCKS) if (text.includes(lock)) found.push(`${f}: draws its own lock`);
+    for (const lock of LOCKS) if (text.includes(lock)) found.push(`${f}: draws an old lock of its own`);
     const rule = OWN_RULES.exec(text);
-    if (rule) found.push(`${f}: an unlock rule of its own (${rule[0]}); use @shared/unlock`);
+    if (rule) found.push(`${f}: an old unlock rule of its own (${rule[0]}); use @shared/unlock`);
   }
   return found;
 }
