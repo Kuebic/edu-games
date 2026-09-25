@@ -17,6 +17,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: false,
       workbox: {
+        // A new asset file type (mp3, webp, woff2) must be added here, or it isn't precached.
         globPatterns: ['**/*.{js,css,html,png,svg,ogg,webmanifest}'],
         // Each game has its own index.html; never answer a game URL with the hub page.
         navigateFallback: null,

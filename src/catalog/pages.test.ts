@@ -51,7 +51,8 @@ const pages = [
 ];
 
 describe.each(pages)('$file', ({ file, name, icon, script, slug }) => {
-  const page = readPage(readFileSync(new URL(file, root), 'utf8'));
+  const html = readFileSync(new URL(file, root), 'utf8');
+  const page = readPage(html);
 
   it('is English UTF-8 with the site viewport', () => {
     expect(page.lang).toBe('en');
@@ -75,6 +76,16 @@ describe.each(pages)('$file', ({ file, name, icon, script, slug }) => {
     const touchIcons = page.link('apple-touch-icon');
     expect(touchIcons).toHaveLength(1);
     expect(existsSync(fileFor(touchIcons[0]!, slug)), touchIcons[0]).toBe(true);
+  });
+
+  // Anything else a Game uses is imported from src/assets/ (ADR 0005).
+  it('links only its own public files and site files', () => {
+    for (const [, url] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
+      if (url === script) continue;
+      const own = !!slug && url!.startsWith(`/${slug}/`);
+      const site = /^\/[^/]+$/.test(url!);
+      expect((own || site) && existsSync(fileFor(url!, slug)), url).toBe(true);
+    }
   });
 
   it('leaves the manifest to the site-wide app (ADR 0002)', () => {
