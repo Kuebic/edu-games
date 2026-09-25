@@ -3,11 +3,11 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { discoverGames } from '../src/catalog/discover.ts';
 
 const gamesDir = new URL('../games/', import.meta.url);
-const slugs = readdirSync(gamesDir, { withFileTypes: true })
-  .filter((dir) => dir.isDirectory() && existsSync(new URL(`${dir.name}/game.json`, gamesDir)))
-  .map((dir) => dir.name)
+const slugs = discoverGames(fileURLToPath(gamesDir))
+  .map((game) => game.slug)
   .sort();
 
 function tasksOf(slug: string): string[] {

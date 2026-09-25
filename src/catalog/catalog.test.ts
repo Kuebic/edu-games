@@ -5,7 +5,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { GAMES } from './catalog.ts';
-import { discoverGames } from './discover.ts';
+import { discoverGames, filesIn } from './discover.ts';
 import { parseEntry } from './entry.ts';
 
 const gamesDir = new URL('../../games/', import.meta.url);
@@ -13,14 +13,6 @@ const inGames = (path: string) => new URL(path, gamesDir);
 const folders = readdirSync(gamesDir, { withFileTypes: true })
   .filter((dir) => dir.isDirectory())
   .map((dir) => dir.name);
-
-/** Every file under a folder, as absolute paths. */
-const filesIn = (dir: string): string[] =>
-  !existsSync(dir)
-    ? []
-    : readdirSync(dir, { recursive: true, withFileTypes: true })
-        .filter((d) => d.isFile())
-        .map((d) => join(d.parentPath, d.name));
 
 const entry = { name: 'X', category: 'logic', tile: 'icon.svg', shelf: 'on', added: '2026-01-01' };
 

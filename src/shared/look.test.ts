@@ -1,21 +1,20 @@
 // The Shared look (ADR 0007): base.css draws what every Game shares, and a Game only adds its own.
 // A Game that copies a shared rule back, or uses a --site-* token base.css doesn't have, fails here.
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { GAMES } from '../catalog/catalog.ts';
+import { filesIn } from '../catalog/discover.ts';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const read = (path: string) => readFileSync(join(root, path), 'utf8');
 
 /** Every non-test .ts and .css file under a folder, relative to the repo. */
 const sources = (dir: string): string[] =>
-  !existsSync(join(root, dir))
-    ? []
-    : readdirSync(join(root, dir), { recursive: true, withFileTypes: true })
-        .filter((d) => d.isFile() && /\.(ts|css)$/.test(d.name) && !d.name.endsWith('.test.ts'))
-        .map((d) => relative(root, join(d.parentPath, d.name)));
+  filesIn(join(root, dir))
+    .filter((f) => /\.(ts|css)$/.test(f) && !f.endsWith('.test.ts'))
+    .map((f) => relative(root, f));
 
 const base = read('src/shared/base.css');
 const shared = sources('src/shared');

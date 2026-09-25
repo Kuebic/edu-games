@@ -1,4 +1,4 @@
-// Node side of the Catalog: the Vite plugin and the tests find Games by scanning games/.
+// Node side of the Catalog: the Vite plugin, the tests and the task runner find Games by scanning games/.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { byAdded, parseEntry, type Game } from './entry.ts';
