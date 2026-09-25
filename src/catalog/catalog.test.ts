@@ -14,6 +14,9 @@ const folders = readdirSync(gamesDir, { withFileTypes: true })
   .filter((dir) => dir.isDirectory())
   .map((dir) => dir.name);
 
+/** A module's first import statement. Imports run in order, and so does the CSS they bring in. */
+const firstImport = (code: string) => /^import\b[^;]*;/m.exec(code)?.[0];
+
 const entry = { name: 'X', category: 'logic', tile: 'icon.svg', shelf: 'on', added: '2026-01-01' };
 
 describe('Catalog', () => {
@@ -45,7 +48,8 @@ describe('Catalog', () => {
     const code = filesIn(join(dir, 'src')).filter((f) => /\.(ts|css)$/.test(f) && !f.endsWith('.test.ts'));
 
     it('its code finds files relative to itself, never by site path', () => {
-      const sitePath = new RegExp(`(?<![\\w-])(${folders.join('|')})/|url\\(\\s*['"]?/|BASE_URL`);
+      // A slug path, a root url() in CSS, a string that starts with a root path ('/cheer.ogg', `/${dir}/…`), or BASE_URL.
+      const sitePath = new RegExp(`(?<![\\w-])(${folders.join('|')})/|url\\(\\s*['"]?/|['"\`]/[\\w$.]|BASE_URL`);
       for (const f of code) expect(readFileSync(f, 'utf8'), relative(dir, f)).not.toMatch(sitePath);
     });
 
@@ -66,11 +70,8 @@ describe('Catalog', () => {
       expect(main).toMatch(new RegExp(`startGame\\('${game.slug}'[,)]`));
     });
 
-    it('imports the shell before its own CSS', () => {
-      const shell = main.search(/import [^;]*'@shared\/shell'/);
-      const css = main.search(/import '[^']+\.css'/);
-      expect(shell).toBeGreaterThanOrEqual(0);
-      if (css >= 0) expect(shell).toBeLessThan(css);
+    it('imports the shell first, so base.css loads before any of its own CSS', () => {
+      expect(firstImport(main)).toMatch(/['"]@shared\/shell['"]/);
     });
 
     it('saves and registers offline only through the shell', () => {
@@ -96,12 +97,10 @@ describe('Catalog', () => {
     });
   });
 
-  it('the Hub also starts through the shell, before its own CSS', () => {
+  it('the Hub also starts through the shell, imported first', () => {
     const hub = readFileSync(new URL('../hub/main.ts', import.meta.url), 'utf8');
-    const shell = hub.search(/import [^;]*'(@shared|\.\.\/shared)\/shell'/);
     expect(hub).toMatch(/\bstartPage\(\)/);
-    expect(shell).toBeGreaterThanOrEqual(0);
-    expect(shell).toBeLessThan(hub.search(/import '[^']+\.css'/));
+    expect(firstImport(hub)).toMatch(/['"](@shared|\.\.\/shared)\/shell['"]/);
   });
 
   it('accepts a good entry', () => {

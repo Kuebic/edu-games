@@ -46,7 +46,7 @@ function drift(slug: string): string[] {
 }
 
 describe('the Shared look', () => {
-  // catalog.test.ts checks that every page imports the shell before its own CSS.
+  // catalog.test.ts checks that every page imports the shell first.
   it('comes in through the shell, so it loads before every page’s own CSS', () => {
     expect(read('src/shared/shell.ts')).toMatch(/^import '\.\/base\.css';$/m);
   });
