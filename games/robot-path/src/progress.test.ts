@@ -1,3 +1,4 @@
+import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
 import { WORLDS } from './levels';
 import {
@@ -12,36 +13,34 @@ import {
   type Progress,
 } from './progress';
 
-function memory() {
-  const items = new Map<string, string>();
-  return { getItem: (k: string) => items.get(k) ?? null, setItem: (k: string, v: string) => void items.set(k, v) };
-}
+/** A device holding these raw saves, under their real keys. */
+const device = (seed: Record<string, string> = {}) => gameStorage('robot-path', memoryStorage(seed));
 
 const winAll = (progress: Progress, world: number, count: number) =>
   WORLDS[world]!.levels.slice(0, count).reduce((p, level) => withWin(p, level.id, false), progress);
 
 describe('progress', () => {
   it('starts fresh and survives a save', () => {
-    const storage = memory();
+    const storage = device();
     expect(loadProgress(storage)).toEqual(freshProgress());
     const saved = withDraft(withWin(freshProgress(), 'w1-01', true), 'w1-02', [{ op: 'up' }]);
     saveProgress({ ...saved, skin: 'planet' }, storage);
     expect(loadProgress(storage)).toEqual({ ...saved, skin: 'planet' });
   });
 
-  it('runs with storage blocked or broken', () => {
-    expect(loadProgress(undefined)).toEqual(freshProgress());
-    const throwing = { getItem: () => { throw new Error('blocked'); }, setItem: () => { throw new Error('blocked'); } };
-    expect(loadProgress(throwing)).toEqual(freshProgress());
-    expect(() => saveProgress(freshProgress(), throwing)).not.toThrow();
-    const broken = memory();
-    broken.setItem('robot-path:v1', '{not json');
-    expect(loadProgress(broken)).toEqual(freshProgress());
+  it('loads a save written before the shell, from its old key', () => {
+    const backing = memoryStorage({
+      'robot-path:v1': JSON.stringify({ version: 2, skin: 'planet', levels: { 'w1-01': { done: true, sparkle: true } } }),
+    });
+    const progress = loadProgress(gameStorage('robot-path', backing));
+    expect(progress.skin).toBe('planet');
+    expect(progress.levels['w1-01']).toEqual({ done: true, sparkle: true });
+    saveProgress(progress, gameStorage('robot-path', backing));
+    expect(Object.keys(backing.dump())).toEqual(['robot-path:v1']);
   });
 
   it('keeps what still makes sense from an odd save', () => {
-    const storage = memory();
-    storage.setItem('robot-path:v1', JSON.stringify({ skin: 'moon', levels: { 'w1-01': { done: true, draft: 'x' } }, settings: { speed: 'warp', voice: false } }));
+    const storage = device({ 'robot-path:v1': JSON.stringify({ skin: 'moon', levels: { 'w1-01': { done: true, draft: 'x' } }, settings: { speed: 'warp', voice: false } }) });
     const progress = loadProgress(storage);
     expect(progress.skin).toBe('garden');
     expect(progress.levels['w1-01']).toEqual({ done: true, sparkle: false });
@@ -49,9 +48,8 @@ describe('progress', () => {
   });
 
   it('moves version 1 saves past the maze Worlds', () => {
-    const storage = memory();
     const old = { version: 1, levels: { 'w2-08': { done: true }, 'w3-01': { done: true, sparkle: true }, 'w5-08': { done: true } } };
-    storage.setItem('robot-path:v1', JSON.stringify(old));
+    const storage = device({ 'robot-path:v1': JSON.stringify(old) });
     expect(Object.keys(loadProgress(storage).levels)).toEqual(['w2-08', 'w6-01', 'w8-08']);
     saveProgress(loadProgress(storage), storage);
     expect(Object.keys(loadProgress(storage).levels)).toEqual(['w2-08', 'w6-01', 'w8-08']);

@@ -1,10 +1,12 @@
 // What's saved on the device: Levels done, Sparkles, each Level's Draft, the Skin and settings.
 // Storage can be blocked (private browsing); then the game still plays, it just won't remember.
 
+import type { GameStorage } from '@shared/storage';
 import type { Program } from './game/level';
 import { LEVELS_PER_WORLD, WORLDS } from './levels';
 
-const KEY = 'robot-path:v1';
+/** Saved as "robot-path:v1": the shell puts the Slug in front. */
+const KEY = 'v1';
 const VERSION = 2;
 /** Levels done in a World before the next World opens, so one stuck Level never blocks him. */
 export const WORLD_UNLOCK_AT = 6;
@@ -27,16 +29,6 @@ export interface Progress {
   levels: Record<string, LevelProgress>;
   settings: { sound: boolean; voice: boolean; speed: Speed };
   unlockAll: boolean;
-}
-
-type Store = Pick<Storage, 'getItem' | 'setItem'>;
-
-function device(): Store | undefined {
-  try {
-    return localStorage;
-  } catch {
-    return undefined;
-  }
 }
 
 export function freshProgress(): Progress {
@@ -81,20 +73,12 @@ export function migrate(raw: unknown): Progress {
   return progress;
 }
 
-export function loadProgress(storage: Store | undefined = device()): Progress {
-  try {
-    return migrate(JSON.parse(storage?.getItem(KEY) ?? 'null'));
-  } catch {
-    return freshProgress();
-  }
+export function loadProgress(storage: GameStorage): Progress {
+  return migrate(storage.read(KEY));
 }
 
-export function saveProgress(progress: Progress, storage: Store | undefined = device()): void {
-  try {
-    storage?.setItem(KEY, JSON.stringify(progress));
-  } catch {
-    // Full or blocked: keep playing.
-  }
+export function saveProgress(progress: Progress, storage: GameStorage): void {
+  storage.write(KEY, progress);
 }
 
 const levelOf = (progress: Progress, id: string): LevelProgress => progress.levels[id] ?? { done: false, sparkle: false };

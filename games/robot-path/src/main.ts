@@ -1,4 +1,4 @@
-import { registerOffline } from '@shared/pwa';
+import { startGame } from '@shared/shell';
 import { showHome } from './home';
 import { showParent } from './parent';
 import { showPlay } from './play';
@@ -7,8 +7,16 @@ import { setMuted, setSkinSound, unlockAudio } from './sound';
 import { setVoiceEnabled, unlockSpeech } from './speech';
 import './style.css';
 
-const root = document.querySelector<HTMLElement>('#app')!;
-let progress = loadProgress();
+// Browsers only start audio and speech after a touch.
+let spoke = false;
+const { root, storage } = startGame('robot-path', {
+  unlock() {
+    unlockAudio();
+    if (!spoke) unlockSpeech();
+    spoke = true;
+  },
+});
+let progress = loadProgress(storage);
 let leave: () => void = () => {};
 let onHome = true;
 
@@ -20,7 +28,7 @@ function apply(): void {
 
 function update(next: Progress): void {
   progress = next;
-  saveProgress(progress);
+  saveProgress(progress, storage);
   apply();
 }
 
@@ -53,30 +61,5 @@ function openParent(): void {
   });
 }
 
-// Browsers only start audio and speech after a touch.
-let unlocked = false;
-document.addEventListener(
-  'pointerdown',
-  () => {
-    unlockAudio();
-    if (!unlocked) unlockSpeech();
-    unlocked = true;
-  },
-  { capture: true },
-);
-// Keep stray little fingers from zooming, selecting, or opening menus.
-document.addEventListener('contextmenu', (event) => event.preventDefault());
-for (const type of ['gesturestart', 'gesturechange']) {
-  document.addEventListener(type, (event) => event.preventDefault(), { passive: false });
-}
-document.addEventListener(
-  'touchmove',
-  (event) => {
-    if (event.touches.length > 1) event.preventDefault();
-  },
-  { passive: false },
-);
-
 apply();
 openHome();
-if (import.meta.env.PROD) registerOffline();
