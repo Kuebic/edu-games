@@ -1,23 +1,22 @@
 import { startGame } from '@shared/shell';
 import './style.css';
-import type { App, Screen, ScreenName } from './app';
+import type { App } from './app';
 import { loadSave, writeSave } from './progress';
 import { grownupScreen } from './screens/grownup';
-import { homeScreen } from './screens/home';
 import { playScreen } from './screens/play';
+import { showSelect } from './screens/select';
 import { stickersScreen } from './screens/stickers';
 import { setSoundEnabled } from './sfx';
 import { hush, setVoiceEnabled } from './speech';
 
-const screens: Record<ScreenName, Screen> = {
-  home: homeScreen,
-  play: playScreen,
-  stickers: stickersScreen,
-  grownup: grownupScreen,
-};
-
 const { root, storage } = startGame('snack-math');
 let cleanup: (() => void) | void;
+
+function show(screen: () => (() => void) | void): void {
+  cleanup?.();
+  root.replaceChildren();
+  cleanup = screen();
+}
 
 const app: App = {
   root,
@@ -25,11 +24,10 @@ const app: App = {
   persist() {
     writeSave(app.save, storage);
   },
-  go(name) {
-    cleanup?.();
-    root.replaceChildren();
-    cleanup = screens[name](app);
-  },
+  home: (stage) => show(() => showSelect(app, stage).leave),
+  play: (stage, round) => show(() => playScreen(app, stage, round)),
+  stickers: () => show(() => stickersScreen(app)),
+  grownup: () => show(() => grownupScreen(app)),
 };
 
 setVoiceEnabled(app.save.voice);
@@ -39,4 +37,4 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) hush();
 });
 
-app.go('home');
+app.home();

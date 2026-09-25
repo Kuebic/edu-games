@@ -29,7 +29,7 @@ export const stickersScreen: Screen = (app) => {
     ),
   );
 
-  home.addEventListener('click', () => app.go('home'));
+  home.addEventListener('click', () => app.home());
   grid.addEventListener('click', (e) => {
     const s = (e.target as Element).closest('.sticker:not(.empty)') as HTMLElement | null;
     if (!s) return;

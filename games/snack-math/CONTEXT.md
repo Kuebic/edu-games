@@ -52,18 +52,14 @@ _Avoid_: Options, answers, keypad
 The help the game gives after a wrong pick: it counts the Plate aloud with the child, then offers the choices again.
 _Avoid_: Hint, correction, retry
 
-**First Try**:
-A Problem answered correctly with the first Answer Choice tapped.
-_Avoid_: Perfect, streak
-
 ### Progress
 
 **Round**:
-Five Problems with one Friend, ending in a Sticker.
-_Avoid_: Level, session, game
+Five Problems with one Friend, ending in a Sticker. Done once it's finished; there's no failing one.
+_Avoid_: Level (the site word; say Round here), session, game
 
 **Stage**:
-A difficulty step setting which kinds of Problems appear and how big the numbers get.
+A difficulty step setting which kinds of Problems appear and how big the numbers get. A Group of four Rounds; any Stage can be picked. Its badge is its sign (+, − or ±) over a Plate of 5 or 10 Snacks. A Group (site term).
 _Avoid_: Level, tier, difficulty
 
 **Sticker**:
@@ -75,5 +71,5 @@ Where the child sees every Sticker earned.
 _Avoid_: Collection, trophy room
 
 **Grown-up Corner**:
-Snack Math's Grown-up Corner (a site term): where a grown-up changes the Stage, sound, or resets progress.
+Snack Math's Grown-up Corner (a site term): where a grown-up turns the voice or sounds off, or resets progress.
 _Avoid_: Parent mode, admin, settings screen

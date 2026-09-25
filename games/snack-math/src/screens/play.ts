@@ -1,11 +1,11 @@
-import type { Screen } from '../app';
+import type { App } from '../app';
 import { dragOrTap, flipMove, flyInto, h, inside, sparkle, wait } from '../dom';
 import { FRIENDS, snackWord } from '../friends';
 import { PLATE_SIZE, ROUND_LENGTH, answerChoices, makeRound, type Problem } from '../problems';
-import { nextStage, pickSticker } from '../progress';
+import { finishRound, pickSticker, roundAfter } from '../progress';
 import { buzz, play } from '../sfx';
 import { hush, say } from '../speech';
-import { backIcon, playIcon } from './icons';
+import { backIcon, nextIcon } from './icons';
 
 const IDLE_MS = 8000;
 const MAX_NUDGES = 3;
@@ -13,13 +13,14 @@ const MAX_NUDGES = 3;
 /** What a tap on a Snack on the Plate does right now. */
 type PlateMode = 'none' | 'eat' | 'count';
 
-export const playScreen: Screen = (app) => {
+/** One Round of a Stage, both counting from 0: five Problems with the next Friend, then a Sticker. */
+export function playScreen(app: App, stage: number, round: number): () => void {
   let alive = true;
   const friend = FRIENDS[app.save.nextFriend % FRIENDS.length];
   app.save.nextFriend++;
+  app.save.stage = stage;
   app.persist();
-  const stageAtStart = app.save.stage;
-  const problems = makeRound(stageAtStart);
+  const problems = makeRound(stage);
   const word = (n: number) => snackWord(friend, n);
 
   // ---- Layout ------------------------------------------------------------
@@ -104,7 +105,7 @@ export const playScreen: Screen = (app) => {
   screen.addEventListener('pointerdown', touched, { capture: true });
 
   // ---- Input wiring ----------------------------------------------------------
-  homeBtn.addEventListener('click', () => app.go('home'));
+  homeBtn.addEventListener('click', () => app.home(stage));
 
   friendEl.addEventListener('click', () => {
     if (prompt) void say(prompt);
@@ -250,7 +251,7 @@ export const playScreen: Screen = (app) => {
     sumEl.setAttribute('aria-label', `${p.start} ${p.op === 'add' ? 'plus' : 'minus'} ${p.change} equals ${answer ?? 'what'}`);
   }
 
-  async function runProblem(p: Problem, index: number): Promise<boolean> {
+  async function runProblem(p: Problem, index: number): Promise<void> {
     plateMode = 'none';
     counted = [];
     hint = null;
@@ -272,14 +273,14 @@ export const playScreen: Screen = (app) => {
 
     if (p.op === 'add') await addActOut(p.change);
     else await takeActOut(p.change);
-    if (!alive) return false;
+    if (!alive) return;
 
     if (p.op === 'take') {
       packPlate();
       await wait(350);
     }
     await wait(300);
-    if (!alive) return false;
+    if (!alive) return;
 
     const question = p.op === 'add' ? `How many ${friend.snack.many} now?` : `How many ${friend.snack.many} are left?`;
     prompt = question;
@@ -292,19 +293,17 @@ export const playScreen: Screen = (app) => {
     };
     touched();
 
-    let firstTry = true;
     for (;;) {
       const b = await pick();
-      if (!alive) return false;
+      if (!alive) return;
       if (Number(b.dataset.value) === p.result) {
         b.classList.add('right');
         break;
       }
-      firstTry = false;
       b.classList.add('gone');
       play('boop');
       await countAlong(question);
-      if (!alive) return false;
+      if (!alive) return;
       hint = () => {
         void say(question);
         nudge(buttons.filter((x) => !x.classList.contains('gone')));
@@ -328,32 +327,29 @@ export const playScreen: Screen = (app) => {
         : `Yes! ${p.start} take away ${p.change} leaves ${p.result}!`;
     await Promise.all([say(sentence), wait(1200)]);
     await wait(500);
-    return firstTry;
   }
 
   // ---- The Round -----------------------------------------------------------------
   async function runRound() {
     await wait(250);
-    let firstTries = 0;
     for (let i = 0; i < problems.length; i++) {
       if (!alive) return;
-      if (await runProblem(problems[i], i)) firstTries++;
+      await runProblem(problems[i], i);
     }
     if (!alive) return;
 
     const sticker = pickSticker(app.save.stickers);
-    const stage = nextStage(stageAtStart, firstTries);
-    const movedUp = stage > app.save.stage;
+    const stageDone = finishRound(app.save, stage, round);
     app.save.stickers.push(sticker);
-    app.save.stage = Math.max(app.save.stage, stage);
     app.persist();
-    showReward(sticker, movedUp);
+    showReward(sticker, stageDone);
   }
 
-  function showReward(sticker: string, movedUp: boolean) {
+  /** The Sticker, then Next: the next Round, up into the next Stage, or after the very last back to its Stage. */
+  function showReward(sticker: string, stageDone: boolean) {
     clearTimeout(idleTimer);
     hint = null;
-    const again = h('button', { class: 'site-next', label: 'Play again', html: playIcon });
+    const next = h('button', { class: 'site-next', label: 'Next', html: nextIcon });
     const home = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
     const book = h('button', { class: 'round-btn', label: 'Sticker Book', text: '📒' });
     const confetti = h('div', { class: 'confetti' });
@@ -373,15 +369,19 @@ export const playScreen: Screen = (app) => {
       confetti,
       h('div', { class: 'reward-friend', text: friend.emoji }),
       h('div', { class: 'sticker-reveal', text: sticker }),
-      h('div', { class: 'reward-actions' }, home, again, book),
+      h('div', { class: 'reward-actions' }, home, next, book),
     );
     screen.replaceChildren(reward);
-    again.addEventListener('click', () => app.go('play'));
-    home.addEventListener('click', () => app.go('home'));
-    book.addEventListener('click', () => app.go('stickers'));
+    next.addEventListener('click', () => {
+      const to = roundAfter(stage, round);
+      if (to) app.play(to.stage, to.round);
+      else app.home(stage);
+    });
+    home.addEventListener('click', () => app.home(stage));
+    book.addEventListener('click', () => app.stickers());
     play('fanfare');
     buzz(80);
-    void say(`You did it! Here's a sticker for you!${movedUp ? " You're getting so good at this!" : ''}`);
+    void say(`You did it! Here's a sticker for you!${stageDone ? " You're getting so good at this!" : ''}`);
   }
 
   void runRound();
@@ -391,4 +391,4 @@ export const playScreen: Screen = (app) => {
     clearTimeout(idleTimer);
     hush();
   };
-};
+}

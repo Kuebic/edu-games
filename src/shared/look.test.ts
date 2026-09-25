@@ -39,7 +39,7 @@ const SELECT_CLASSES = [...classesIn(read('src/shared/level-select.css'))].filte
  * Games that still draw their own level select, with their own House button and unlock rule.
  * A Game leaves this list when it moves to showLevelSelect(), and nothing joins it.
  */
-const OWN_LEVEL_SELECT = ['snack-math'];
+const OWN_LEVEL_SELECT: string[] = [];
 
 /** Where a Game has drifted from the Shared look; empty when it hasn't. */
 function drift(slug: string): string[] {

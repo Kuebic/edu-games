@@ -1,22 +1,11 @@
 import type { Screen } from '../app';
 import { h } from '../dom';
-import { PROMOTE_AT, defaultSave } from '../progress';
-import { ROUND_LENGTH, STAGES } from '../problems';
+import { defaultSave } from '../progress';
 import { setSoundEnabled } from '../sfx';
 import { setVoiceEnabled } from '../speech';
 
 export const grownupScreen: Screen = (app) => {
   const { save } = app;
-
-  const stageButtons = STAGES.map((stage, i) => {
-    const b = h('button', { class: 'stage-btn' }, h('b', { text: String(i + 1) }), h('span', { text: stage.label }));
-    b.addEventListener('click', () => {
-      save.stage = i;
-      app.persist();
-      sync();
-    });
-    return b;
-  });
 
   const toggle = (label: string, get: () => boolean, set: (on: boolean) => void) => {
     const b = h('button', { class: 'toggle' });
@@ -47,7 +36,7 @@ export const grownupScreen: Screen = (app) => {
   const reset = h('button', { class: 'danger' });
   let armed = false;
   const renderReset = () => {
-    reset.textContent = armed ? 'Tap again to erase stage and stickers' : 'Reset progress';
+    reset.textContent = armed ? 'Tap again to erase rounds and stickers' : 'Reset progress';
     reset.classList.toggle('armed', armed);
   };
   reset.addEventListener('click', () => {
@@ -58,6 +47,7 @@ export const grownupScreen: Screen = (app) => {
     }
     const fresh = defaultSave();
     save.stage = fresh.stage;
+    save.rounds = fresh.rounds;
     save.stickers = fresh.stickers;
     app.persist();
     armed = false;
@@ -67,13 +57,9 @@ export const grownupScreen: Screen = (app) => {
   renderReset();
 
   const done = h('button', { class: 'done', text: 'Done' });
-  done.addEventListener('click', () => app.go('home'));
+  done.addEventListener('click', () => app.home());
 
   function sync() {
-    stageButtons.forEach((b, i) => {
-      b.classList.toggle('current', i === save.stage);
-      b.setAttribute('aria-pressed', String(i === save.stage));
-    });
     stickerCount.textContent = `Stickers earned: ${save.stickers.length}`;
   }
   sync();
@@ -86,13 +72,11 @@ export const grownupScreen: Screen = (app) => {
         'div',
         { class: 'scroll' },
         h('h1', { text: 'Grown-Up Corner' }),
-        h('h2', { text: 'Stage' }),
         h(
           'p',
           { class: 'muted' },
-          `Moves up by itself after ${PROMOTE_AT} of ${ROUND_LENGTH} answers are right on the first tap. It never moves down on its own.`,
+          'Every stage is open on the home screen: + is adding, − is taking away and ± is both, up to 5 (one row of dots) or 10 (two rows). A stage’s four rounds open in order, and Next goes on to the next stage.',
         ),
-        h('div', { class: 'stage-list' }, ...stageButtons),
         h('h2', { text: 'Sound' }),
         h('div', { class: 'toggle-row' }, voice, sound),
         h('h2', { text: 'Progress' }),
