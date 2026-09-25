@@ -1,3 +1,4 @@
+import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
 import { LEVELS } from './levels';
 import { GROWN_UP_PACK, type PoolPuzzle } from './packs';
@@ -13,16 +14,14 @@ import {
   takePoolPuzzle,
 } from './progress';
 
-function memory() {
-  const items = new Map<string, string>();
-  return { getItem: (k: string) => items.get(k) ?? null, setItem: (k: string, v: string) => void items.set(k, v) };
-}
+/** A device holding these raw saves, under their real keys. */
+const device = (seed: Record<string, string> = {}) => gameStorage('way-out', memoryStorage(seed));
 
 const level = (pack: number, index: number) => LEVELS.find((l) => l.pack === pack && l.index === index)!;
 
 describe('progress', () => {
   it('starts fresh and survives a save', () => {
-    const storage = memory();
+    const storage = device();
     expect(loadProgress(storage)).toEqual(freshProgress());
     const progress = freshProgress();
     progress.skin = 'farm';
@@ -36,26 +35,19 @@ describe('progress', () => {
     expect(loadProgress(storage)).toEqual(progress);
   });
 
-  it('keeps playing when storage is broken or blocked', () => {
-    const storage = memory();
-    storage.setItem('way-out:v1', '{not json');
-    expect(loadProgress(storage)).toEqual(freshProgress());
-    const blocked = {
-      getItem: () => {
-        throw new Error('blocked');
-      },
-      setItem: () => {
-        throw new Error('blocked');
-      },
-    };
-    expect(loadProgress(blocked)).toEqual(freshProgress());
-    expect(() => saveProgress(freshProgress(), blocked)).not.toThrow();
-    expect(loadProgress(undefined)).toEqual(freshProgress());
+  it('loads a save written before the shell, from its old key', () => {
+    const backing = memoryStorage({
+      'way-out:v1': JSON.stringify({ version: 1, skin: 'farm', levels: { 'p1-01': { done: true, sparkle: true, bestMoves: 7 } } }),
+    });
+    const progress = loadProgress(gameStorage('way-out', backing));
+    expect(progress.skin).toBe('farm');
+    expect(progress.levels['p1-01']).toEqual({ done: true, sparkle: true, bestMoves: 7 });
+    saveProgress(progress, gameStorage('way-out', backing));
+    expect(Object.keys(backing.dump())).toEqual(['way-out:v1']);
   });
 
   it('keeps the good parts of a damaged save', () => {
-    const storage = memory();
-    storage.setItem('way-out:v1', JSON.stringify({ skin: 'moon', levels: { 'p1-01': { done: true, sparkle: 'yes' } }, unlockAll: true }));
+    const storage = device({ 'way-out:v1': JSON.stringify({ skin: 'moon', levels: { 'p1-01': { done: true, sparkle: 'yes' } }, unlockAll: true }) });
     const progress = loadProgress(storage);
     expect(progress.skin).toBe('city');
     expect(progress.levels['p1-01']).toEqual({ done: true, sparkle: false });

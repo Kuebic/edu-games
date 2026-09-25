@@ -1,11 +1,13 @@
-// What the child has done, saved on the device. Every read and write is wrapped so the
+// What the child has done, saved on the device. The shell's storage never throws, so the
 // game still plays with storage blocked; it just won't remember.
 
+import type { GameStorage } from '@shared/storage';
 import type { Board } from './game/board';
 import { GROWN_UP_PACK, LEVELS_PER_PACK, OPENS_NEXT, type Level, type PoolPuzzle } from './packs';
 import type { SkinId } from './skins';
 
-const KEY = 'way-out:v1';
+/** Saved as "way-out:v1": the shell puts the Slug in front. */
+const KEY = 'v1';
 
 /** The board and Move count at one point, for Undo. */
 export interface Snapshot {
@@ -53,16 +55,6 @@ export function freshProgress(): Progress {
   };
 }
 
-type Store = Pick<Storage, 'getItem' | 'setItem'>;
-
-function deviceStorage(): Store | undefined {
-  try {
-    return localStorage;
-  } catch {
-    return undefined;
-  }
-}
-
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
@@ -70,14 +62,9 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
  * Reads a save, keeping whatever parts of it make sense. A save from a future version is
  * read the same way; when the format changes, bump `version` and convert old saves here.
  */
-export function loadProgress(storage: Store | undefined = deviceStorage()): Progress {
+export function loadProgress(storage: GameStorage): Progress {
   const progress = freshProgress();
-  let saved: unknown;
-  try {
-    saved = JSON.parse(storage?.getItem(KEY) ?? 'null');
-  } catch {
-    return progress;
-  }
+  const saved = storage.read(KEY);
   if (!isRecord(saved)) return progress;
   if (saved.skin === 'city' || saved.skin === 'farm' || saved.skin === 'space') progress.skin = saved.skin;
   if (isRecord(saved.levels)) {
@@ -117,12 +104,8 @@ export function loadProgress(storage: Store | undefined = deviceStorage()): Prog
   return progress;
 }
 
-export function saveProgress(progress: Progress, storage: Store | undefined = deviceStorage()): void {
-  try {
-    storage?.setItem(KEY, JSON.stringify(progress));
-  } catch {
-    // Full or blocked: keep playing without saving.
-  }
+export function saveProgress(progress: Progress, storage: GameStorage): void {
+  storage.write(KEY, progress);
 }
 
 export function levelProgress(progress: Progress, id: string): LevelProgress {

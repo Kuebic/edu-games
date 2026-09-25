@@ -1,4 +1,4 @@
-import { registerOffline } from '@shared/pwa';
+import { startGame } from '@shared/shell';
 import type { App } from './app';
 import { showHome } from './home';
 import { showPack } from './pack-screen';
@@ -10,8 +10,8 @@ import { hush, setVoiceEnabled } from './speech';
 import { skinById } from './skins';
 import './style.css';
 
-const root = document.querySelector<HTMLElement>('#app')!;
-const progress = loadProgress();
+const { root, storage } = startGame('way-out', { unlock: unlockAudio });
+const progress = loadProgress(storage);
 setSoundEnabled(progress.settings.sound);
 setVoiceEnabled(progress.settings.voice);
 
@@ -39,7 +39,7 @@ function play(puzzle: Puzzle): void {
 const app: App = {
   root,
   progress,
-  save: () => saveProgress(progress),
+  save: () => saveProgress(progress, storage),
   skin: () => skinById(progress.skin),
   home: () => show(() => showHome(app), () => app.home()),
   pack: (pack) => show(() => showPack(app, pack), () => app.pack(pack)),
@@ -48,27 +48,11 @@ const app: App = {
     // The Pools only download when first asked for.
     void import('./pools').then(({ POOLS }) => {
       const puzzle = takePoolPuzzle(progress, pack, POOLS[pack - 1]!);
-      saveProgress(progress);
+      saveProgress(progress, storage);
       play({ kind: 'pool', pack, puzzle });
     });
   },
   parent: () => showParent(app, () => again()),
 };
 
-// Browsers only start audio after a touch.
-document.addEventListener('pointerdown', unlockAudio, { capture: true });
-// Keep stray little fingers from zooming, selecting, or opening menus.
-document.addEventListener('contextmenu', (event) => event.preventDefault());
-for (const type of ['gesturestart', 'gesturechange']) {
-  document.addEventListener(type, (event) => event.preventDefault(), { passive: false });
-}
-document.addEventListener(
-  'touchmove',
-  (event) => {
-    if (event.touches.length > 1) event.preventDefault();
-  },
-  { passive: false },
-);
-
 app.home();
-if (import.meta.env.PROD) registerOffline();
