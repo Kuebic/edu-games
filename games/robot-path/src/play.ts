@@ -67,23 +67,23 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   let numbers: number[] = [];
 
   const screen = document.createElement('main');
-  screen.className = 'rp-play';
+  screen.className = 'site-screen rp-play';
   screen.style.setProperty('--world', WORLDS[world]!.color);
   screen.style.setProperty('--sky', SKIN_ART[skin].sky);
   screen.style.setProperty('--frame', SKIN_ART[skin].frame);
 
   // Header: back, level, speaker, gear.
   const bar = document.createElement('header');
-  bar.className = 'rp-bar';
+  bar.className = 'site-bar';
   const badge = document.createElement('div');
   badge.className = 'rp-badge';
   badge.setAttribute('aria-label', `${WORLDS[world]!.name}, level ${index + 1}`);
   badge.innerHTML = `<span class="rp-badge-icon">${WORLD_ICONS[world]}</span><span>${index + 1}</span>`;
   const tools = document.createElement('div');
   tools.className = 'rp-tools';
-  if (canSpeak) tools.append(iconButton('rp-tool', ICONS.speaker, 'Say it again', () => say(level.voice)));
-  tools.append(holdButton('rp-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
-  bar.append(iconButton('rp-tool', ICONS.back, 'All levels', hooks.home), badge, tools);
+  if (canSpeak) tools.append(iconButton('site-tool', ICONS.speaker, 'Say it again', () => say(level.voice)));
+  tools.append(holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
+  bar.append(iconButton('site-tool', ICONS.back, 'All levels', hooks.home), badge, tools);
 
   const goals = new GoalStrip(level, skin);
 
@@ -369,9 +369,9 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
     const buttons = document.createElement('div');
     buttons.className = 'rp-done-buttons';
     buttons.append(
-      iconButton('rp-tool', ICONS.levels, 'All levels', hooks.home),
-      iconButton('rp-next', ICONS.next, 'Next level', () => (next ? hooks.open(next.world, next.index) : hooks.home())),
-      iconButton('rp-tool', OP_ICONS.repeat, 'Play again', () => {
+      iconButton('site-tool', ICONS.levels, 'All levels', hooks.home),
+      iconButton('site-next', ICONS.next, 'Next level', () => (next ? hooks.open(next.world, next.index) : hooks.home())),
+      iconButton('site-tool', OP_ICONS.repeat, 'Play again', () => {
         done.remove();
         won = false;
         session = null;

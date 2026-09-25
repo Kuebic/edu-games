@@ -17,16 +17,16 @@ export interface HomeHooks {
 export function showHome(root: HTMLElement, hooks: HomeHooks): () => void {
   const progress = hooks.progress();
   const screen = document.createElement('main');
-  screen.className = 'rp-home';
+  screen.className = 'site-screen rp-home';
   screen.style.setProperty('--sky', SKIN_ART[progress.skin].sky);
   screen.style.setProperty('--frame', SKIN_ART[progress.skin].frame);
   screen.style.setProperty('--title', SKIN_ART[progress.skin].title);
 
   const bar = document.createElement('header');
-  bar.className = 'rp-bar';
+  bar.className = 'site-bar';
   const title = document.createElement('h1');
   title.textContent = 'Robot Path';
-  bar.append(houseButton('rp-tool'), title, holdButton('rp-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
+  bar.append(houseButton('site-tool'), title, holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
 
   const skins = document.createElement('div');
   skins.className = 'rp-skins';

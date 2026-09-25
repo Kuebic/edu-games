@@ -16,7 +16,7 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
   const veil = document.createElement('div');
   veil.className = 'rp-veil';
   const panel = document.createElement('section');
-  panel.className = 'rp-parent';
+  panel.className = 'rp-parent site-grownup';
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-label', 'Grown-ups');
   veil.append(panel);
@@ -47,7 +47,7 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
 
     const heading = document.createElement('header');
     heading.innerHTML = '<h2>Grown-ups</h2>';
-    heading.append(iconButton('rp-tool', ICONS.close, 'Close', close));
+    heading.append(iconButton('site-tool', ICONS.close, 'Close', close));
 
     const speed = document.createElement('div');
     speed.className = 'rp-choice';
