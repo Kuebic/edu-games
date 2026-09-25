@@ -8,9 +8,6 @@
   font-family: ui-rounded, 'Nunito', 'Varela Round', system-ui, sans-serif;
   color: var(--ink);
   background: var(--sky);
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 * {
@@ -18,20 +15,19 @@
 }
 
 html,
-body,
+body {
+  overflow: hidden;
+}
+
 #app {
-  margin: 0;
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
 }
 
+/* Until Push Pals takes the Shared look, its buttons keep the browser's padding. */
 button {
-  font: inherit;
-  color: inherit;
-  border: none;
-  cursor: pointer;
-  touch-action: manipulation;
+  padding: revert;
 }
 
 button svg {

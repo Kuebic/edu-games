@@ -40,6 +40,18 @@ _Avoid_: Home page, launcher, menu
 The big house picture in every Game that goes back to the Hub.
 _Avoid_: home button, back button
 
+**Shared look**:
+What every Game draws the same way: the rounded font, the header with the House button, the press-down tool buttons, the Next button, the gear, big tap sizes, notch margins and calm motion. A Game's colours, characters and boards sit inside it.
+_Avoid_: theme, skin, frame, design system, house style
+
+**Next button**:
+The big round green arrow that appears when a child finishes, and goes on to the next puzzle. It looks the same in every Game.
+_Avoid_: continue, play button
+
+**Grown-up Corner**:
+A Game's settings for grown-ups, opened by holding the gear for 3 seconds. Words are fine there.
+_Avoid_: parent menu, grown-up menu, settings
+
 **Catalog**:
 Every Game's entry: name, Category, Tile picture, Shelf status and date added. Each Game carries its own entry in `game.json`, and the Hub and the build both read the Catalog.
 _Avoid_: Registry, manifest, game list

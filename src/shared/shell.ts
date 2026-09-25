@@ -1,6 +1,7 @@
 // What every page on the site does when it starts: the Hub calls startPage(), a Game calls startGame().
-// A Game imports this before its own CSS, so any shared styles loaded here come first.
+// A Game imports this before its own CSS, so the Shared look loads first and the Game's CSS can override it.
 
+import './base.css';
 import { registerOffline } from './pwa';
 import { deviceStorage, gameStorage, type Backing, type GameStorage } from './storage';
 

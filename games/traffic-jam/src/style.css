@@ -2,39 +2,12 @@
   --sky: #c4e8fb;
   --sky-dark: #8fbcd6;
   --ink: #2b3445;
-  font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', system-ui, sans-serif;
   color: var(--ink);
   background: var(--sky);
 }
 
-html,
-body {
-  margin: 0;
-  height: 100%;
-  overscroll-behavior: none;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-
 #app {
   height: 100dvh;
-}
-
-button {
-  font: inherit;
-  color: inherit;
-  border: 0;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-button:focus-visible {
-  outline: 4px solid var(--ink);
-  outline-offset: 3px;
 }
 
 .tj-play,

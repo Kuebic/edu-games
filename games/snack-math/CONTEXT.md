@@ -75,5 +75,5 @@ Where the child sees every Sticker earned.
 _Avoid_: Collection, trophy room
 
 **Grown-Up Corner**:
-The settings area, behind a long-press, where a grown-up changes the Stage, sound, or resets progress.
+Snack Math's Grown-up Corner (a site term): where a grown-up changes the Stage, sound, or resets progress.
 _Avoid_: Parent mode, admin, settings screen

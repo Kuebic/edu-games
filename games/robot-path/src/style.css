@@ -4,43 +4,12 @@
   --go: #22c55e;
   --go-dark: #15803d;
   --bonk: #f97316;
-  font-family: ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', system-ui, sans-serif;
   color: var(--ink);
   background: #dff3c9;
 }
 
-html,
-body {
-  margin: 0;
-  height: 100%;
-  overscroll-behavior: none;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-
 #app {
   height: 100dvh;
-}
-
-button {
-  font: inherit;
-  color: inherit;
-  border: 0;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-button:focus-visible {
-  outline: 4px solid var(--ink);
-  outline-offset: 3px;
-}
-
-button:disabled {
-  cursor: default;
 }
 
 svg {

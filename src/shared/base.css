@@ -1,0 +1,154 @@
+/* The Shared look: what every Game draws the same way. A Game's own palette and art stay in its style.css,
+   which loads after this, so a Game changes a colour by setting a --site-* token. */
+:root {
+  --site-font: ui-rounded, 'SF Pro Rounded', 'Nunito', 'Varela Round', system-ui, sans-serif;
+  --site-font-grownup: system-ui, sans-serif;
+  --site-ink: #2b3445;
+  --site-tool-ink: #2b3445;
+  --site-focus: var(--site-ink);
+  --site-tool: 56px;
+  --site-radius: 18px;
+  --site-lift: 5px;
+  --site-lip: #00000026;
+  --site-go: #22c55e;
+  --site-go-dark: #15803d;
+  --site-next: 128px;
+  --site-ring: var(--site-go);
+  font-family: var(--site-font);
+  color: var(--site-ink);
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:focus-visible {
+  outline: 4px solid var(--site-focus);
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* A screen fills the page and keeps clear of notches and home bars. */
+.site-screen {
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow: hidden;
+}
+
+/* The header: House button or back on the left, title in the middle, tools on the right. */
+.site-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px 8px;
+}
+
+.site-bar h1 {
+  flex: 1;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* Tool buttons: house, back, sound, gear. White and rounded, with a lip that squashes when pressed. */
+.site-tool {
+  position: relative;
+  flex: none;
+  width: var(--site-tool);
+  height: var(--site-tool);
+  border-radius: var(--site-radius);
+  background: #fff;
+  color: var(--site-tool-ink);
+  box-shadow: 0 var(--site-lift) 0 var(--site-lip);
+  display: grid;
+  place-items: center;
+}
+
+.site-tool svg {
+  width: 58%;
+  height: 58%;
+}
+
+.site-tool:active:not(:disabled) {
+  transform: translateY(calc(var(--site-lift) - 1px));
+  box-shadow: 0 1px 0 var(--site-lip);
+}
+
+/* The Next button on a win: the same in every Game, so a child learns it once. */
+.site-next {
+  width: var(--site-next);
+  height: var(--site-next);
+  border-radius: 50%;
+  background: var(--site-go);
+  color: #fff;
+  box-shadow: 0 8px 0 var(--site-go-dark);
+  display: grid;
+  place-items: center;
+  animation: site-breathe 1.6s 1s ease-in-out infinite;
+}
+
+.site-next svg {
+  width: 56%;
+  height: 56%;
+  margin-left: 8%;
+}
+
+.site-next:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--site-go-dark);
+}
+
+@keyframes site-breathe {
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+/* The Grown-up Corner: plain system text that a grown-up can select. */
+.site-grownup {
+  font-family: var(--site-font-grownup);
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Calm motion: nothing loops forever. A Game may stop more. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-iteration-count: 1 !important;
+  }
+
+  .site-next {
+    animation: none;
+  }
+}
