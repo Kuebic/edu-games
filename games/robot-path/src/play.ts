@@ -9,15 +9,15 @@ import { GoalStrip } from './goals';
 import { holdButton, ICONS, iconButton, OP_ICONS, OP_LABELS, WORLD_ICONS } from './icons';
 import { levelAt, WORLDS } from './levels';
 import { ProgramBar, type RunMarks } from './program-bar';
-import { nextLevel, SPEEDS, withDraft, withWin, type Progress, type Speed } from './progress';
-import { SKIN_ART } from './skins';
+import { levelAfter, SPEEDS, withDraft, withWin, type Progress, type Speed } from './progress';
 import * as sfx from './sound';
 import { canSpeak, hush, say, spellOut } from './speech';
 
 export interface PlayHooks {
   progress(): Progress;
   update(progress: Progress): void;
-  home(): void;
+  /** Back to this World's Levels. */
+  levels(): void;
   open(world: number, index: number): void;
   parent(): void;
 }
@@ -69,8 +69,6 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   const screen = document.createElement('main');
   screen.className = 'site-screen rp-play';
   screen.style.setProperty('--world', WORLDS[world]!.color);
-  screen.style.setProperty('--sky', SKIN_ART[skin].sky);
-  screen.style.setProperty('--frame', SKIN_ART[skin].frame);
 
   // Header: back, level, speaker, gear.
   const bar = document.createElement('header');
@@ -83,7 +81,7 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   tools.className = 'rp-tools';
   if (canSpeak) tools.append(iconButton('site-tool', ICONS.speaker, 'Say it again', () => say(level.voice)));
   tools.append(holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
-  bar.append(iconButton('site-tool', ICONS.back, 'All levels', hooks.home), badge, tools);
+  bar.append(iconButton('site-tool', ICONS.back, 'All levels', hooks.levels), badge, tools);
 
   const goals = new GoalStrip(level, skin);
 
@@ -365,12 +363,13 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
       burst.setAttribute('aria-label', 'Sparkle!');
       done.append(burst);
     }
-    const next = nextLevel(hooks.progress(), world, index);
+    // After the very last Level, Next goes to its World.
+    const next = levelAfter(world, index);
     const buttons = document.createElement('div');
     buttons.className = 'rp-done-buttons';
     buttons.append(
-      iconButton('site-tool', ICONS.levels, 'All levels', hooks.home),
-      iconButton('site-next', ICONS.next, 'Next level', () => (next ? hooks.open(next.world, next.index) : hooks.home())),
+      iconButton('site-tool', ICONS.levels, 'All levels', hooks.levels),
+      iconButton('site-next', ICONS.next, 'Next level', () => (next ? hooks.open(next.world, next.index) : hooks.levels())),
       iconButton('site-tool', OP_ICONS.repeat, 'Play again', () => {
         done.remove();
         won = false;

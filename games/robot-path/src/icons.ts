@@ -47,7 +47,6 @@ export const ICONS = {
   levels: icon(
     '<rect x="8" y="8" width="13" height="13" rx="3" fill="currentColor"/><rect x="27" y="8" width="13" height="13" rx="3" fill="currentColor"/><rect x="8" y="27" width="13" height="13" rx="3" fill="currentColor"/><rect x="27" y="27" width="13" height="13" rx="3" fill="currentColor"/>',
   ),
-  lock: icon('<rect x="11" y="22" width="26" height="19" rx="4" fill="currentColor"/><path d="M16 22v-6a8 8 0 0 1 16 0v6"/>'),
   check: icon('<path d="m11 25 9 9 17-19" stroke-width="7"/>'),
   close: icon('<path d="M14 14l20 20M34 14 14 34" stroke-width="7"/>'),
   sparkle: icon('<path d="M24 4c2 12 8 18 20 20-12 2-18 8-20 20-2-12-8-18-20-20 12-2 18-8 20-20Z" fill="currentColor" stroke-width="2"/>'),
@@ -65,7 +64,7 @@ export const ICONS = {
   hand: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M18 44c-4-5-9-10-10-14-1-3 2-5 5-3l4 4V9a3 3 0 0 1 6 0v13l1-4a3 3 0 0 1 6 1v4l1-3a3 3 0 0 1 6 1v4l1-2a3 3 0 0 1 5 2v8c0 6-3 10-6 14Z" fill="#fff" stroke="#2b3445" stroke-width="3" stroke-linejoin="round"/></svg>`,
 };
 
-/** One picture per World, for the map and the level badge. */
+/** One picture per World, for its badge on the level select and in play. */
 export const WORLD_ICONS = [
   icon('<path d="M24 6v36M6 24h36"/><path d="M17 13l7-7 7 7M17 35l7 7 7-7M13 17l-7 7 7 7M35 17l7 7-7 7"/>'),
   icon('<path d="M24 6 38 18 24 42 10 18Z" fill="currentColor" stroke-width="3"/><path d="M10 18h28" stroke="#ffffff99" stroke-width="3"/>'),

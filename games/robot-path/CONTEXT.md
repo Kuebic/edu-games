@@ -11,7 +11,7 @@ One puzzle: a grid of floor and walls, the robot's start, some items, the Goals,
 _Avoid_: Stage, puzzle, map
 
 **World**:
-A group of 8 Levels that brings in one new idea (arrows, collecting, twisty paths, mazes, big mazes, Repeat, Fix-it, turns).
+A group of 8 Levels that brings in one new idea (arrows, collecting, twisty paths, mazes, big mazes, Repeat, Fix-it, turns). A Group (site term).
 _Avoid_: Chapter, pack
 
 **Goal**:

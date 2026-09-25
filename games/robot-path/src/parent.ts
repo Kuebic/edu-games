@@ -80,7 +80,7 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
       toggle('Sound', settings.sound, () => set({ settings: { ...settings, sound: !settings.sound } })),
       ...(canSpeak ? [toggle('Voice', settings.voice, () => set({ settings: { ...settings, voice: !settings.voice } }))] : []),
       speed,
-      toggle('Unlock every level', progress.unlockAll, () => set({ unlockAll: !progress.unlockAll })),
+      toggle('Every level open', progress.unlockAll, () => set({ unlockAll: !progress.unlockAll })),
       reset,
     );
   };

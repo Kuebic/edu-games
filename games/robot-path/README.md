@@ -18,7 +18,7 @@ npm run game robot-path levels          # the validator: checks every level, pri
 - `src/game/editor.ts`: tap-only Program editing (add, replace, delete, Repeat Block bodies)
 - `src/levels/world-N.json`: the hand-made levels, one file per World
 - `src/board.ts`: draws the grid as SVG and plays a Trace back as animation
-- `src/play.ts`, `src/home.ts`, `src/parent.ts`: the screens
+- `src/select.ts`, `src/play.ts`, `src/parent.ts`: the screens (the Worlds on the shared level select, a Level, the Grown-up Corner)
 - `src/skins.ts`: the three Skins' art, drawn in code
 
 A new level goes in its World's JSON file. `npm run game robot-path levels` shows what's wrong with it, and for worlds 1-5 the solver tells you the Par.

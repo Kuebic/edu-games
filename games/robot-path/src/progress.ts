@@ -2,14 +2,13 @@
 // Storage can be blocked (private browsing); then the game still plays, it just won't remember.
 
 import type { GameStorage } from '@shared/storage';
+import { nextLevel } from '@shared/unlock';
 import type { Program } from './game/level';
-import { LEVELS_PER_WORLD, WORLDS } from './levels';
+import { WORLDS } from './levels';
 
 /** Saved as "robot-path:v1": the shell puts the Slug in front. */
 const KEY = 'v1';
 const VERSION = 2;
-/** Levels done in a World before the next World opens, so one stuck Level never blocks him. */
-export const WORLD_UNLOCK_AT = 6;
 
 export const SKINS = ['garden', 'planet', 'sea'] as const;
 export type SkinId = (typeof SKINS)[number];
@@ -93,27 +92,11 @@ export function withWin(progress: Progress, id: string, sparkle: boolean): Progr
   return { ...progress, levels: { ...progress.levels, [id]: { ...before, done: true, sparkle: before.sparkle || sparkle } } };
 }
 
-export function doneIn(progress: Progress, world: number): number {
-  return WORLDS[world]!.levels.filter((level) => progress.levels[level.id]?.done).length;
-}
-
-/** Worlds count from 0. */
-export function isWorldUnlocked(progress: Progress, world: number): boolean {
-  if (progress.unlockAll || world === 0) return true;
-  return isWorldUnlocked(progress, world - 1) && doneIn(progress, world - 1) >= WORLD_UNLOCK_AT;
-}
-
-/** Levels count from 0 within their World. Finishing one opens the next. */
-export function isLevelUnlocked(progress: Progress, world: number, index: number): boolean {
-  if (!isWorldUnlocked(progress, world)) return false;
-  if (progress.unlockAll || index === 0) return true;
-  const levels = WORLDS[world]!.levels;
-  return !!(progress.levels[levels[index - 1]!.id]?.done || progress.levels[levels[index]!.id]?.done);
-}
-
-/** Where "next" goes after a win: the next Level in the World, then the next World if it's open. */
-export function nextLevel(progress: Progress, world: number, index: number): { world: number; index: number } | null {
-  if (index + 1 < LEVELS_PER_WORLD) return { world, index: index + 1 };
-  if (world + 1 < WORLDS.length && isWorldUnlocked(progress, world + 1)) return { world: world + 1, index: 0 };
-  return null;
+/**
+ * Where Next goes after a win: the next Level in the World, else the next World's first (every World
+ * is open, ADR 0009), else undefined after the very last. Worlds and Levels count from 0.
+ */
+export function levelAfter(world: number, index: number): { world: number; index: number } | undefined {
+  const to = nextLevel(WORLDS.map((w) => w.levels.length), world, index);
+  return to && { world: to.group, index: to.level };
 }

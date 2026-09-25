@@ -134,3 +134,13 @@ export function tileMarkup(value: string | number): string {
 export function spriteSvg(markup: string, className = ''): string {
   return `<svg class="${className}" viewBox="-0.5 -0.5 1 1" aria-hidden="true">${markup}</svg>`;
 }
+
+/** A Skin's chip on the World list: its gem beside its robot, facing right. */
+export function skinPicture(id: SkinId): string {
+  const art = SKIN_ART[id];
+  return (
+    '<svg viewBox="-0.75 -0.5 1.5 1" aria-hidden="true">' +
+    `<g transform="translate(-0.45 0) scale(0.6)">${art.gem}</g>` +
+    `<g transform="translate(0.3 0) rotate(90) scale(0.95)">${art.robot}</g></svg>`
+  );
+}

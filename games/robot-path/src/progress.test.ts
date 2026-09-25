@@ -1,23 +1,9 @@
 import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
-import { WORLDS } from './levels';
-import {
-  freshProgress,
-  isLevelUnlocked,
-  isWorldUnlocked,
-  loadProgress,
-  nextLevel,
-  saveProgress,
-  withDraft,
-  withWin,
-  type Progress,
-} from './progress';
+import { freshProgress, levelAfter, loadProgress, saveProgress, withDraft, withWin } from './progress';
 
 /** A device holding these raw saves, under their real keys. */
 const device = (seed: Record<string, string> = {}) => gameStorage('robot-path', memoryStorage(seed));
-
-const winAll = (progress: Progress, world: number, count: number) =>
-  WORLDS[world]!.levels.slice(0, count).reduce((p, level) => withWin(p, level.id, false), progress);
 
 describe('progress', () => {
   it('starts fresh and survives a save', () => {
@@ -60,25 +46,10 @@ describe('progress', () => {
     expect(withWin(once, 'w1-01', false).levels['w1-01']!.sparkle).toBe(true);
   });
 
-  it('opens Levels one by one, and the next World at 6 of 8', () => {
-    let progress = freshProgress();
-    expect(isLevelUnlocked(progress, 0, 0)).toBe(true);
-    expect(isLevelUnlocked(progress, 0, 1)).toBe(false);
-    progress = winAll(progress, 0, 1);
-    expect(isLevelUnlocked(progress, 0, 1)).toBe(true);
-    progress = winAll(progress, 0, 5);
-    expect(isWorldUnlocked(progress, 1)).toBe(false);
-    progress = winAll(progress, 0, 6);
-    expect(isWorldUnlocked(progress, 1)).toBe(true);
-    expect(isLevelUnlocked(progress, 1, 0)).toBe(true);
-    expect(isWorldUnlocked(progress, 2)).toBe(false);
-    expect(isLevelUnlocked({ ...progress, unlockAll: true }, 7, 7)).toBe(true);
-  });
-
-  it('goes on to the next Level, then the next World when it is open', () => {
-    expect(nextLevel(freshProgress(), 0, 3)).toEqual({ world: 0, index: 4 });
-    expect(nextLevel(freshProgress(), 0, 7)).toBeNull();
-    expect(nextLevel(winAll(freshProgress(), 0, 8), 0, 7)).toEqual({ world: 1, index: 0 });
-    expect(nextLevel({ ...freshProgress(), unlockAll: true }, 7, 7)).toBeNull();
+  it('goes on to the next Level, then the next World, and stops after the last', () => {
+    expect(levelAfter(0, 3)).toEqual({ world: 0, index: 4 });
+    expect(levelAfter(0, 7)).toEqual({ world: 1, index: 0 });
+    expect(levelAfter(6, 7)).toEqual({ world: 7, index: 0 });
+    expect(levelAfter(7, 7)).toBeUndefined();
   });
 });
