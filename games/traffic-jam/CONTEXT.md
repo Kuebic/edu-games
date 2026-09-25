@@ -65,12 +65,9 @@ One board: its Streets and the Vehicles on them.
 _Avoid_: Puzzle, stage, map
 
 **Chapter**:
-Eight Levels that share one new idea (straight only, crossings with trucks, turns, U-turns, more trucks, two-lane Streets, T-junctions, buses and everything). Easiest first.
+Eight Levels that share one new idea (straight only, crossings with trucks, turns, U-turns, more trucks, two-lane Streets, T-junctions, buses and everything). Easiest first. A Group (site term).
 _Avoid_: World, pack, set
 
 **Wave**:
 All the Vehicles that are Free together: the first Wave is everyone Free at the start, the next is everyone freed once those have left, and so on. How many Waves a Level takes is its main difficulty measure. Used by the generator and tests, never shown.
 _Avoid_: Round, step, turn
-
-**Unlocked**:
-A Level the child may open: Clearing a Level unlocks the next, and every Chapter's first Level is always open.

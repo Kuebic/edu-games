@@ -1,14 +1,12 @@
 import { startGame } from '@shared/shell';
 import { LEVELS_PER_CHAPTER } from './chapters';
-import { LEVELS } from './levels';
-import { showPicker } from './picker';
 import { showPlay } from './play';
-import { loadProgress, saveProgress, withCleared } from './progress';
+import { levelAfter, loadProgress, saveProgress, withCleared } from './progress';
+import { showSelect, type SelectHooks } from './select';
 import { setMuted, unlockAudio } from './sound';
 import './style.css';
 
 const { root, storage } = startGame('traffic-jam', { unlock: unlockAudio });
-const total = LEVELS.length * LEVELS_PER_CHAPTER;
 let progress = loadProgress(storage);
 let leave: () => void = () => {};
 setMuted(progress.muted);
@@ -19,13 +17,17 @@ function toggleMute(): void {
   setMuted(progress.muted);
 }
 
-function openLevels(): void {
+const select: SelectHooks = { progress: () => progress, toggleMute, open: openLevel };
+
+/** The Chapter list, or with `chapter` that Chapter's Levels. */
+function openLevels(chapter?: number): void {
   leave();
-  leave = showPicker(root, progress, { open: openLevel, toggleMute });
+  leave = showSelect(root, select, chapter).leave;
 }
 
 function openLevel(index: number): void {
   leave();
+  const chapter = Math.floor(index / LEVELS_PER_CHAPTER);
   leave = showPlay(root, index, {
     muted: () => progress.muted,
     toggleMute,
@@ -33,8 +35,13 @@ function openLevel(index: number): void {
       progress = withCleared(progress, index);
       saveProgress(progress, storage);
     },
-    next: () => (index + 1 < total ? openLevel(index + 1) : openLevels()),
-    levels: openLevels,
+    next() {
+      // After the very last Level, Next goes to its Chapter.
+      const after = levelAfter(index);
+      if (after === undefined) openLevels(chapter);
+      else openLevel(after);
+    },
+    levels: () => openLevels(chapter),
   });
 }
 

@@ -12,8 +12,6 @@ export const ICONS = {
     '<path d="M8 19h8l10-8v26l-10-8H8Z" fill="currentColor" stroke-width="3"/><path d="M33 17c3 4 3 10 0 14M38 12c6 7 6 17 0 24"/>',
   ),
   soundOff: icon('<path d="M8 19h8l10-8v26l-10-8H8Z" fill="currentColor" stroke-width="3"/><path d="m33 19 10 10m0-10L33 29"/>'),
-  lock: icon('<rect x="11" y="22" width="26" height="19" rx="4" fill="currentColor"/><path d="M16 22v-6a8 8 0 0 1 16 0v6"/>'),
-  check: icon('<path d="m11 25 9 9 17-19" stroke-width="7"/>'),
 };
 
 export function iconButton(className: string, svg: string, label: string, onClick: () => void): HTMLButtonElement {

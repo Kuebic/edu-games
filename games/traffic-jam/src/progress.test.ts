@@ -1,6 +1,6 @@
 import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
-import { isUnlocked, loadProgress, saveProgress, withCleared } from './progress';
+import { levelAfter, loadProgress, saveProgress, withCleared } from './progress';
 
 /** A device holding these raw saves, under their real keys. */
 const device = (seed: Record<string, string> = {}) => gameStorage('traffic-jam', memoryStorage(seed));
@@ -26,11 +26,16 @@ describe('progress', () => {
     expect(loadProgress(storage)).toEqual({ cleared: [], muted: false });
   });
 
-  it('unlocks the next level and every chapter start', () => {
-    const progress = withCleared({ cleared: [], muted: false }, 0);
-    expect(isUnlocked(progress, 1)).toBe(true);
-    expect(isUnlocked(progress, 2)).toBe(false);
-    expect(isUnlocked(progress, 8)).toBe(true);
-    expect(withCleared(progress, 0)).toBe(progress);
+  it('clears a Level once', () => {
+    const progress = withCleared({ cleared: [], muted: false }, 3);
+    expect(withCleared(progress, 0).cleared).toEqual([0, 3]);
+    expect(withCleared(progress, 3)).toBe(progress);
+  });
+
+  it('goes on to the next Level, into the next Chapter, and stops after the last', () => {
+    expect(levelAfter(0)).toBe(1);
+    expect(levelAfter(7)).toBe(8);
+    expect(levelAfter(62)).toBe(63);
+    expect(levelAfter(63)).toBeUndefined();
   });
 });

@@ -11,8 +11,7 @@
   height: 100dvh;
 }
 
-.tj-play,
-.tj-picker {
+.tj-play {
   display: flex;
   flex-direction: column;
 }
@@ -117,99 +116,6 @@
 
 @keyframes tj-fall {
   to { transform: translate(var(--drift), 110vh) rotate(var(--spin)); }
-}
-
-/* Level list */
-
-.tj-chapters {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 14px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.tj-chapter {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px;
-  border-radius: 22px;
-  background: #ffffffb3;
-  box-shadow: 0 5px 0 var(--sky-dark);
-}
-
-.tj-chapter-badge {
-  flex: none;
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: var(--chapter);
-  display: grid;
-  place-items: center;
-}
-
-.tj-chapter-badge .tj-chapter-icon {
-  width: 50px;
-  height: 50px;
-}
-
-.tj-levels {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.tj-level {
-  position: relative;
-  aspect-ratio: 1;
-  min-height: 52px;
-  border-radius: 14px;
-  border: 3px solid var(--chapter);
-  background: #fff;
-  color: var(--chapter);
-  font-size: 24px;
-  font-weight: 800;
-  display: grid;
-  place-items: center;
-}
-
-.tj-level.tj-cleared {
-  background: var(--chapter);
-  color: #fff;
-}
-
-.tj-tick {
-  position: absolute;
-  top: -7px;
-  right: -7px;
-  width: 24px;
-  height: 24px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: #22c55e;
-  color: #fff;
-  display: grid;
-  place-items: center;
-}
-
-.tj-tick svg {
-  width: 72%;
-  height: 72%;
-}
-
-.tj-level:disabled {
-  border-color: #cfdbe3;
-  background: #e8eff4;
-  color: #9fb1be;
-  cursor: default;
-}
-
-.tj-level:disabled svg {
-  width: 44%;
-  height: 44%;
 }
 
 @media (prefers-reduced-motion: reduce) {
