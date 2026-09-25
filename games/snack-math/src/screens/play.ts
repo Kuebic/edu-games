@@ -24,7 +24,7 @@ export function playScreen(app: App, stage: number, round: number): () => void {
   const word = (n: number) => snackWord(friend, n);
 
   // ---- Layout ------------------------------------------------------------
-  const homeBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
+  const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
   const sumEl = h('div', { class: 'sum', label: 'Problem' });
   const dots = Array.from({ length: ROUND_LENGTH }, () => h('span', { class: 'dot' }));
   const friendEl = h('button', { class: 'friend', text: friend.emoji, label: `${friend.name}, tap to hear again` });
@@ -37,7 +37,7 @@ export function playScreen(app: App, stage: number, round: number): () => void {
   const screen = h(
     'div',
     { class: 'site-screen screen play' },
-    h('header', { class: 'play-top' }, homeBtn, h('div', { class: 'sum-wrap' }, sumEl, h('div', { class: 'dots' }, ...dots))),
+    h('header', { class: 'play-top' }, backBtn, h('div', { class: 'sum-wrap' }, sumEl, h('div', { class: 'dots' }, ...dots))),
     h('main', { class: 'table' }, friendEl, plate, pile),
     choicesEl,
     fx,
@@ -105,7 +105,7 @@ export function playScreen(app: App, stage: number, round: number): () => void {
   screen.addEventListener('pointerdown', touched, { capture: true });
 
   // ---- Input wiring ----------------------------------------------------------
-  homeBtn.addEventListener('click', () => app.home(stage));
+  backBtn.addEventListener('click', () => app.stages(stage));
 
   friendEl.addEventListener('click', () => {
     if (prompt) void say(prompt);
@@ -350,7 +350,7 @@ export function playScreen(app: App, stage: number, round: number): () => void {
     clearTimeout(idleTimer);
     hint = null;
     const next = h('button', { class: 'site-next', label: 'Next', html: nextIcon });
-    const home = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
+    const back = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
     const book = h('button', { class: 'round-btn', label: 'Sticker Book', text: '📒' });
     const confetti = h('div', { class: 'confetti' });
     const colors = ['#FF7B6B', '#FFCE4F', '#6FD3A8', '#7CC3F5', '#B79CF2'];
@@ -369,15 +369,15 @@ export function playScreen(app: App, stage: number, round: number): () => void {
       confetti,
       h('div', { class: 'reward-friend', text: friend.emoji }),
       h('div', { class: 'sticker-reveal', text: sticker }),
-      h('div', { class: 'reward-actions' }, home, next, book),
+      h('div', { class: 'reward-actions' }, back, next, book),
     );
     screen.replaceChildren(reward);
     next.addEventListener('click', () => {
       const to = roundAfter(stage, round);
       if (to) app.play(to.stage, to.round);
-      else app.home(stage);
+      else app.stages(stage);
     });
-    home.addEventListener('click', () => app.home(stage));
+    back.addEventListener('click', () => app.stages(stage));
     book.addEventListener('click', () => app.stickers());
     play('fanfare');
     buzz(80);

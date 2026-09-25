@@ -1,10 +1,11 @@
-import type { Screen } from '../app';
+import type { App } from '../app';
 import { h } from '../dom';
 import { defaultSave } from '../progress';
 import { setSoundEnabled } from '../sfx';
 import { setVoiceEnabled } from '../speech';
 
-export const grownupScreen: Screen = (app) => {
+/** The Grown-up Corner, opened from the Stage list or from `stage`'s Rounds, where Done goes back to. */
+export function grownupScreen(app: App, stage?: number): void {
   const { save } = app;
 
   const toggle = (label: string, get: () => boolean, set: (on: boolean) => void) => {
@@ -57,7 +58,7 @@ export const grownupScreen: Screen = (app) => {
   renderReset();
 
   const done = h('button', { class: 'done', text: 'Done' });
-  done.addEventListener('click', () => app.home());
+  done.addEventListener('click', () => app.stages(stage));
 
   function sync() {
     stickerCount.textContent = `Stickers earned: ${save.stickers.length}`;
@@ -75,7 +76,7 @@ export const grownupScreen: Screen = (app) => {
         h(
           'p',
           { class: 'muted' },
-          'Every stage is open on the home screen: + is adding, − is taking away and ± is both, up to 5 (one row of dots) or 10 (two rows). A stage’s four rounds open in order, and Next goes on to the next stage.',
+          'Every stage is open on the stage list: + is adding, − is taking away and ± is both, up to 5 (one row of dots) or 10 (two rows). A stage’s four rounds open in order, and Next goes on to the next stage.',
         ),
         h('h2', { text: 'Sound' }),
         h('div', { class: 'toggle-row' }, voice, sound),
@@ -86,4 +87,4 @@ export const grownupScreen: Screen = (app) => {
       ),
     ),
   );
-};
+}

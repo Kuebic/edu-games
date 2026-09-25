@@ -18,18 +18,18 @@ export const stickersScreen: Screen = (app) => {
     }),
     ...Array.from({ length: empties }, () => h('div', { class: 'sticker empty' })),
   );
-  const home = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
+  const back = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
 
   app.root.append(
     h(
       'div',
       { class: 'site-screen screen stickers' },
-      h('header', { class: 'book-top' }, home, h('h1', { class: 'book-title', text: '📒' })),
+      h('header', { class: 'book-top' }, back, h('h1', { class: 'book-title', text: '📒' })),
       h('div', { class: 'scroll' }, grid),
     ),
   );
 
-  home.addEventListener('click', () => app.home());
+  back.addEventListener('click', () => app.stages());
   grid.addEventListener('click', (e) => {
     const s = (e.target as Element).closest('.sticker:not(.empty)') as HTMLElement | null;
     if (!s) return;

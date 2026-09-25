@@ -70,7 +70,7 @@ body::before {
     linear-gradient(var(--cream), var(--cream-2));
 }
 
-/* ---------- Home: the level select ---------- */
+/* ---------- The level select ---------- */
 
 /* The Sticker Book, under the Stage list. */
 .book-btn {

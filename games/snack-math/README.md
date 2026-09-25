@@ -18,6 +18,6 @@ The page is `index.html`; its icons are in `public/`, served at `/snack-math/`.
 
 ## For grown-ups
 
-Home is the level select: six Stages of four Rounds each (+ is adding, − is taking away, ± is both; one row of dots is up to 5, two rows up to 10). Every Stage is open, so pick the one your child is ready for; its Rounds open in order, and Next goes on up the ladder. The Sticker Book is under the Stages.
+The Game opens on the Stage list: six Stages of four Rounds each (+ is adding, − is taking away, ± is both; one row of dots is up to 5, two rows up to 10). Every Stage is open, so pick the one your child is ready for; its Rounds open in order, and Next goes on up the ladder. The Sticker Book is under the Stages.
 
 Press and hold the gear for 3 seconds to open the Grown-up Corner, where you can turn the voice or sounds off, or reset progress.

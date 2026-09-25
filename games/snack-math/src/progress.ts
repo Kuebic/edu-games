@@ -65,15 +65,15 @@ export function loadSave(storage: GameStorage): Save {
   if (Number.isInteger(r.stage) && (r.stage as number) >= 0 && (r.stage as number) < STAGES.length) {
     save.stage = r.stage as number;
   }
-  if (Array.isArray(r.rounds)) {
+  if (!('rounds' in r)) {
+    // Saved before Stages were Groups, when a child moved up by playing: the Stages below theirs count as done.
+    save.rounds = STAGES.map((_, s) => (s < save.stage ? ROUNDS_PER_STAGE : 0));
+  } else if (Array.isArray(r.rounds)) {
     const saved = r.rounds as unknown[];
     save.rounds = STAGES.map((_, s) => {
       const n = saved[s];
       return Number.isInteger(n) && (n as number) >= 0 ? Math.min(n as number, ROUNDS_PER_STAGE) : 0;
     });
-  } else {
-    // Saved before Stages were Groups, when a child moved up by playing: the Stages below theirs count as done.
-    save.rounds = STAGES.map((_, s) => (s < save.stage ? ROUNDS_PER_STAGE : 0));
   }
   if (Array.isArray(r.stickers)) save.stickers = r.stickers.filter((s) => typeof s === 'string');
   if (typeof r.voice === 'boolean') save.voice = r.voice;

@@ -17,7 +17,7 @@ function app(save: object): App {
     root: undefined as never,
     save: loadSave(gameStorage('snack-math', memoryStorage({ 'snack-math:v1': JSON.stringify(save) }))),
     persist() {},
-    home: vi.fn(),
+    stages: vi.fn(),
     play: vi.fn(),
     stickers: vi.fn(),
     grownup: vi.fn(),
@@ -40,6 +40,10 @@ describe("Snack Math's level select", () => {
     expect(stage4.map((_, i) => isLevelOpen(stage4, i))).toEqual([true, false, false, false]);
     // No Sparkles: every Round finishes, so there is nothing to score (ADR 0001).
     expect(groups.flatMap((g) => g.levels).some((l) => 'sparkle' in l)).toBe(false);
+  });
+
+  it('calls its Levels Rounds', () => {
+    expect(snackMathSelect(app({})).levelWord).toBe('Round');
   });
 
   it('draws each Stage’s sign over 5 or 10 dots', () => {

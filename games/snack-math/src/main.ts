@@ -24,10 +24,10 @@ const app: App = {
   persist() {
     writeSave(app.save, storage);
   },
-  home: (stage) => show(() => showSelect(app, stage).leave),
+  stages: (stage) => show(() => showSelect(app, stage).leave),
   play: (stage, round) => show(() => playScreen(app, stage, round)),
   stickers: () => show(() => stickersScreen(app)),
-  grownup: () => show(() => grownupScreen(app)),
+  grownup: (stage) => show(() => grownupScreen(app, stage)),
 };
 
 setVoiceEnabled(app.save.voice);
@@ -37,4 +37,4 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) hush();
 });
 
-app.home();
+app.stages();

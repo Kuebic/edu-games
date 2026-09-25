@@ -75,6 +75,12 @@ describe('save', () => {
     expect(loadSave(device(JSON.stringify({ stage: 3, rounds: [9, -1, 'x', 2] }))).rounds).toEqual([4, 0, 0, 2, 0, 0]);
   });
 
+  it('counts no Rounds done from a corrupt list, whatever Stage was last played', () => {
+    // Since Stages are Groups, `stage` is only the one last played, so it says nothing about what is done.
+    expect(loadSave(device(JSON.stringify({ stage: 4, rounds: null }))).rounds).toEqual([0, 0, 0, 0, 0, 0]);
+    expect(loadSave(device(JSON.stringify({ stage: 4, rounds: 'x' }))).rounds).toEqual([0, 0, 0, 0, 0, 0]);
+  });
+
   it('falls back to defaults for missing, corrupt, or out-of-range data', () => {
     expect(loadSave(device())).toEqual(defaultSave());
     expect(loadSave(device('{not json'))).toEqual(defaultSave());

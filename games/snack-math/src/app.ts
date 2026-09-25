@@ -5,12 +5,13 @@ export interface App {
   root: HTMLElement;
   save: Save;
   persist(): void;
-  /** Home: the Stage list, or with `stage` that Stage's Rounds. */
-  home(stage?: number): void;
+  /** The level select: the Stage list, or with `stage` that Stage's Rounds. */
+  stages(stage?: number): void;
   /** Play one Round of a Stage. Both count from 0. */
   play(stage: number, round: number): void;
   stickers(): void;
-  grownup(): void;
+  /** The Grown-up Corner. Done goes back to `stage`'s Rounds, or without it to the Stage list. */
+  grownup(stage?: number): void;
 }
 
 /** Renders into `app.root`; may return a cleanup to run when leaving the screen. */

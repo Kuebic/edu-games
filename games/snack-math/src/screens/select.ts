@@ -1,4 +1,4 @@
-// Home: the level select, with the Stages as Groups of four Rounds, the gear, and the Sticker Book under the list.
+// The level select: the Stage list, with the Stages as Groups of four Rounds, the gear, and the Sticker Book under the list.
 
 import { holdToActivate } from '@shared/hold';
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
@@ -47,6 +47,7 @@ function start(): void {
 export function snackMathSelect(app: App): LevelSelectGame {
   return {
     title: 'Snack Math',
+    levelWord: 'Round',
     groups: () =>
       STAGES.map((stage, s) => ({
         name: stage.label,
@@ -54,9 +55,9 @@ export function snackMathSelect(app: App): LevelSelectGame {
         badge: () => stageBadge(stage, STAGE_COLOURS[s]!),
         levels: roundsDone(app.save, s).map((done) => ({ done })),
       })),
-    tools() {
+    tools(stage) {
       const gear = h('button', { class: 'site-tool', label: 'Grown-Up Corner (press and hold)', html: gearIcon });
-      holdToActivate(gear, 3000, () => app.grownup());
+      holdToActivate(gear, 3000, () => app.grownup(stage));
       return [gear];
     },
     underList() {
