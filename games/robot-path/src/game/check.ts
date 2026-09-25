@@ -1,4 +1,4 @@
-// The level validator. `levels.test.ts` and `npm run robot-path:levels` both run it on every Level.
+// The level validator. `levels.test.ts` and `npm run game robot-path levels` both run it on every Level.
 
 import { initialState, missing, run } from './engine';
 import {

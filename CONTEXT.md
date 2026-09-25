@@ -35,3 +35,7 @@ _Avoid_: Home page, launcher, menu
 **Catalog**:
 Every Game's entry: name, Category, Tile picture, Shelf status and date added. Each Game carries its own entry in `game.json`, and the Hub and the build both read the Catalog.
 _Avoid_: Registry, manifest, game list
+
+**Game task**:
+A grown-up tool that belongs to one Game and runs outside the site, such as rebuilding its Levels or printing a level report. Run one with `npm run game <slug> <task>`.
+_Avoid_: script, command

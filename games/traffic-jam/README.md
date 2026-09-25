@@ -9,8 +9,8 @@ From the repo root:
 ```sh
 npm run dev                                # then open /traffic-jam/
 npx vitest run games/traffic-jam           # rules, routes, the motion track, and every level
-npm run traffic-jam:levels                 # vehicles, waves, free-at-start and features per level
-npm run traffic-jam:generate -- 1          # rebuild levels.ts from seed 1 (about 1.5 minutes)
+npm run game traffic-jam levels            # vehicles, waves, free-at-start and features per level
+npm run game traffic-jam generate 1        # rebuild levels.ts from seed 1 (about 1.5 minutes)
 ```
 
 - `src/game/level.ts`: streets, lanes, where vehicles may sit

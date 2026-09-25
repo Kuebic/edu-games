@@ -14,8 +14,8 @@ From the repo root:
 ```sh
 npm run dev                         # then open /push-pals/; also on your LAN for testing on a phone
 npx vitest run games/push-pals      # rules, solver, and every level against its chapter's limits
-npm run push-pals:levels            # solver report: pushes, steps, trick, per level
-npm run push-pals:generate -- 2 3 8 1 1 20   # candidate levels: boxes minPushes maxPushes forgiving minTurns count [seed]
+npm run game push-pals levels       # solver report: pushes, steps, trick, per level
+npm run game push-pals generate 2 3 8 1 1 20   # candidate levels: boxes minPushes maxPushes forgiving minTurns count [seed]
 npm run build                       # whole site, into dist/
 ```
 

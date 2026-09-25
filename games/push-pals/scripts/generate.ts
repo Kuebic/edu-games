@@ -1,6 +1,6 @@
 // Level authoring helper: random small boards, filtered by the solver. Candidates are
 // printed for a human to pick from; nothing is written to src/levels.ts automatically.
-// usage: npm run generate -- boxes minPushes maxPushes forgiving(0/1) minTurns count [seed]
+// Usage: npm run game push-pals generate boxes minPushes maxPushes forgiving(0/1) minTurns count [seed]
 import { parseLevel, type Level } from '../src/game/level';
 import { step } from '../src/game/rules';
 import { analyse } from '../src/game/solver';

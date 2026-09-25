@@ -9,7 +9,7 @@ From the repo root:
 ```sh
 npm run dev                             # then open /robot-path/
 npx vitest run games/robot-path         # engine, editor, progress, and every level through the validator
-npm run robot-path:levels               # the validator: checks every level, prints each World's difficulty knobs
+npm run game robot-path levels          # the validator: checks every level, prints each World's difficulty knobs
 ```
 
 - `src/game/engine.ts`: the rules. `run(level, program)` returns a Trace of Steps; no DOM
@@ -21,7 +21,7 @@ npm run robot-path:levels               # the validator: checks every level, pri
 - `src/play.ts`, `src/home.ts`, `src/parent.ts`: the screens
 - `src/skins.ts`: the three Skins' art, drawn in code
 
-A new level goes in its World's JSON file. `npm run robot-path:levels` shows what's wrong with it, and for worlds 1-5 the solver tells you the Par.
+A new level goes in its World's JSON file. `npm run game robot-path levels` shows what's wrong with it, and for worlds 1-5 the solver tells you the Par.
 
 ## Credits
 

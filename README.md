@@ -11,6 +11,7 @@ npm install
 npm run dev        # also serves on your LAN, so you can open it on a phone
 npm test           # every game's tests
 npm run build      # typecheck, then the whole site into dist/
+npm run game       # list each Game's tasks; run one with npm run game <slug> <task> [args]
 ```
 
 ## Deploy
@@ -30,7 +31,7 @@ Each Game is one folder in `games/`, and the build finds it there.
 1. Copy the Game folder closest to yours and rename it. The folder name is the slug. It's in the Game's address, `/<slug>/`, and in its saved progress, so it never changes once the Game has been On.
 2. Edit `game.json`: the name, the Category (one of `src/catalog/categories.ts`), the Tile picture (a file in the folder's `public/`), today's date as `added`, and `"shelf": "hidden"` until it's ready for a Tile. Tiles sit in the order their Games were added.
 3. Fix `index.html`: the title, the icons, and the script, which is `/games/<slug>/src/main.ts`.
-4. Replace the rest with your Game. Its `src/main.ts` calls `registerOffline()` from `@shared/pwa` and shows `homeButton()` from `@shared/home-button` on its first screen. Files in `public/` are served at `/<slug>/<file>`. Prefix localStorage keys with the slug, since every Game shares one origin.
+4. Replace the rest with your Game. Its `src/main.ts` calls `registerOffline()` from `@shared/pwa` and shows `homeButton()` from `@shared/home-button` on its first screen. Files in `public/` are served at `/<slug>/<file>`. A Game task goes in `scripts/<task>.ts`, with its helpers in `scripts/lib/`. Prefix localStorage keys with the slug, since every Game shares one origin.
 5. Run `npm test`. The Catalog test names anything the copy still gets wrong.
 
 ## Turn a Game on or off

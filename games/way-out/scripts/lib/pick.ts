@@ -2,8 +2,8 @@
 // Levels climb a staircase: from one Level to the next, par or the Vehicle count goes up
 // by one (or neither), never both, while the other measures ramp up slowly.
 
-import type { Measures } from '../src/game/measure';
-import { fitsPack, LEVELS_PER_PACK, showsNeed, type PackSpec } from '../src/packs';
+import type { Measures } from '../../src/game/measure';
+import { fitsPack, LEVELS_PER_PACK, showsNeed, type PackSpec } from '../../src/packs';
 import type { Candidate } from './sources';
 
 export interface Measured extends Candidate {

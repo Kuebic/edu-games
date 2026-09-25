@@ -4,8 +4,8 @@
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { createGunzip } from 'node:zlib';
-import { canonical, cellOf, EMPTY, EXIT_ROW, HERO, isSolved, SIZE, solve, type Board } from '../src/game/board';
-import type { Level } from '../src/packs';
+import { canonical, cellOf, EMPTY, EXIT_ROW, HERO, isSolved, SIZE, solve, type Board } from '../../src/game/board';
+import type { Level } from '../../src/packs';
 
 export interface Candidate {
   board: Board;

@@ -1,7 +1,7 @@
 // Random Level builder for Traffic Jam. Proposes boards for a Chapter; the checker
 // in chapters.ts decides which are good enough, and the difficulty ranks them.
 
-import { levelProblems, report, type ChapterSpec } from '../src/chapters';
+import { levelProblems, report, type ChapterSpec } from '../../src/chapters';
 import {
   cellsOf,
   covers,
@@ -17,8 +17,8 @@ import {
   type Level,
   type Street,
   type Vehicle,
-} from '../src/game/level';
-import { routeOf } from '../src/game/rules';
+} from '../../src/game/level';
+import { routeOf } from '../../src/game/rules';
 
 export type Random = () => number;
 

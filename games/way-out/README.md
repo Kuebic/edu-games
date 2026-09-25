@@ -13,11 +13,11 @@ From the repo root:
 ```sh
 npm run dev                            # then open /way-out/
 npx vitest run games/way-out           # rules, solver, measures, progress, and every Level and Pool board
-npm run way-out:levels                 # per-Pack table of difficulty measures; "!" marks a jump
-npm run way-out:build -- 1             # rebuild levels.ts and pools.ts from seed 1 (about 5 minutes)
+npm run game way-out levels            # per-Pack table of difficulty measures; "!" marks a jump
+npm run game way-out build 1           # rebuild levels.ts and pools.ts from seed 1 (about 5 minutes)
 ```
 
-`way-out:build` needs Michael Fogleman's Rush Hour database, which stays out of the repo (23 MB):
+The `build` task needs Michael Fogleman's Rush Hour database, which stays out of the repo (23 MB):
 
 ```sh
 curl -o games/way-out/scripts/rush.txt.gz https://www.michaelfogleman.com/static/rush/rush.txt.gz

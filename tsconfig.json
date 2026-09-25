@@ -15,5 +15,5 @@
     "noEmit": true,
     "paths": { "@shared/*": ["./src/shared/*"] }
   },
-  "include": ["src", "games", "vite.config.ts"]
+  "include": ["src", "games", "scripts", "vite.config.ts"]
 }

@@ -1,5 +1,5 @@
 // Prints each Traffic Jam Level's size and difficulty.
-// Usage: npm run traffic-jam:levels
+// Usage: npm run game traffic-jam levels
 
 import { CHAPTERS, report } from '../src/chapters';
 import { LEVELS } from '../src/levels';

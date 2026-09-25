@@ -1,5 +1,5 @@
 // Prints every Way Out Level's difficulty measures, Pack by Pack, and marks any step
-// where more than one measure changed at once. Usage: npm run way-out:levels
+// where more than one measure changed at once. Usage: npm run game way-out levels
 
 import { measure, type Measures } from '../src/game/measure';
 import { LEVELS } from '../src/levels';
