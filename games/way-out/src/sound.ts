@@ -1,6 +1,7 @@
 // Sounds, made with Web Audio so there's almost nothing to download. The cheer is Kenney's
 // CC0 jingle, the same one Traffic Jam and Push Pals play.
 
+import cheerUrl from './assets/sounds/cheer.ogg';
 import type { Skin } from './skins';
 
 let context: AudioContext | undefined;
@@ -22,7 +23,7 @@ export function unlockAudio(): void {
   } catch {
     return;
   }
-  fetch('/way-out/sounds/cheer.ogg')
+  fetch(cheerUrl)
     .then((response) => response.arrayBuffer())
     .then((data) => context!.decodeAudioData(data))
     .then((buffer) => (cheerClip = buffer))
