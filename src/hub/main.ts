@@ -2,7 +2,7 @@
 // pre-reader can find a game on their own.
 
 import { registerOffline } from '../shared/pwa';
-import { CATEGORIES, GAMES } from './catalog';
+import { CATEGORIES, GAMES } from '../catalog/catalog';
 import './style.css';
 
 const root = document.querySelector<HTMLElement>('#app')!;
@@ -29,7 +29,7 @@ for (const category of CATEGORIES) {
     tile.className = 'tile';
     tile.href = `/${game.slug}/`;
     const picture = document.createElement('img');
-    picture.src = `/${game.icon}`;
+    picture.src = `/${game.slug}/${game.tile}`;
     picture.alt = '';
     const name = document.createElement('span');
     name.textContent = game.name;

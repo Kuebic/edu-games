@@ -3,7 +3,7 @@
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative } from 'node:path';
 import type { Plugin } from 'vite';
-import { GAMES } from '../hub/catalog.ts';
+import { discoverGames } from './discover.ts';
 
 const MIME: Record<string, string> = {
   '.svg': 'image/svg+xml',
@@ -24,6 +24,7 @@ const isFile = (path: string) => existsSync(path) && statSync(path).isFile();
 
 export function gameShelf(rootDir: string): Plugin {
   const gamesDir = join(rootDir, 'games');
+  const games = discoverGames(gamesDir);
   return {
     name: 'game-shelf',
     config: () => ({
@@ -31,7 +32,7 @@ export function gameShelf(rootDir: string): Plugin {
         rollupOptions: {
           input: {
             hub: join(rootDir, 'index.html'),
-            ...Object.fromEntries(GAMES.map((game) => [game.slug, join(gamesDir, game.slug, 'index.html')])),
+            ...Object.fromEntries(games.map((game) => [game.slug, join(gamesDir, game.slug, 'index.html')])),
           },
         },
       },
@@ -42,7 +43,7 @@ export function gameShelf(rootDir: string): Plugin {
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://x');
         const [, slug, ...rest] = url.pathname.split('/');
-        if (!slug || !GAMES.some((game) => game.slug === slug)) return next();
+        if (!slug || !games.some((game) => game.slug === slug)) return next();
         if (rest.length === 0) {
           res.writeHead(301, { Location: `/${slug}/${url.search}` }).end();
           return;
@@ -67,7 +68,7 @@ export function gameShelf(rootDir: string): Plugin {
           const match = /^games\/([^/]+)\/index\.html$/.exec(file.fileName);
           if (match) file.fileName = `${match[1]}/index.html`;
         }
-        for (const game of GAMES) {
+        for (const game of games) {
           const publicDir = join(gamesDir, game.slug, 'public');
           for (const path of walk(publicDir)) {
             this.emitFile({ type: 'asset', fileName: `${game.slug}/${relative(publicDir, path)}`, source: readFileSync(path) });

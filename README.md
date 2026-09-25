@@ -2,15 +2,7 @@
 
 One phone-first site of gentle learning games for little kids, grouped on Shelves by Category: Math, Reading & Writing, Logic, Strategy. It's one Vite build deployed as one static-assets Cloudflare Worker. Install it once with "Add to Home Screen" and every game works offline.
 
-| Game | Shelf | Path |
-| --- | --- | --- |
-| [Snack Math](games/snack-math/README.md) | Math | `/snack-math/` |
-| [Push Pals](games/push-pals/README.md) | Logic | `/push-pals/` |
-| [Traffic Jam](games/traffic-jam/README.md) | Logic | `/traffic-jam/` |
-| [Robot Path](games/robot-path/README.md) | Logic | `/robot-path/` |
-| [Way Out](games/way-out/README.md) | Logic | `/way-out/` |
-
-Site vocabulary is in [CONTEXT.md](./CONTEXT.md), site decisions in [docs/adr](./docs/adr). Each game has its own README, CONTEXT.md and ADRs next to its code.
+Each Game is one folder in [`games/`](./games), with its own README, CONTEXT.md and ADRs. Site vocabulary is in [CONTEXT.md](./CONTEXT.md), site decisions in [docs/adr](./docs/adr).
 
 ## Run
 
@@ -33,7 +25,10 @@ npm run deploy       # build, then wrangler deploy (Worker: edu-games)
 
 ## Add a game
 
-1. Code in `games/<slug>/src/`, with a `main.ts` that calls `registerOffline()` from `@shared/pwa` and shows `homeButton()` from `@shared/home-button` on its first screen. Its README, CONTEXT.md, docs and scripts go in `games/<slug>/`.
-2. Page at `games/<slug>/index.html` (its script is `/games/<slug>/src/main.ts`), static files in `games/<slug>/public/` (fetch them as `/<slug>/...`).
-3. An entry in `src/hub/catalog.ts` with its Category and Tile picture. The build picks up its page from there.
-4. Keep localStorage keys prefixed with the slug. Every game shares one origin.
+Each Game is one folder in `games/`, and the build finds it there.
+
+1. Copy the Game folder closest to yours and rename it. The folder name is the slug. It's in the Game's address, `/<slug>/`, and in its saved progress, so it never changes once children have played the Game.
+2. Edit `game.json`: the name, the Category (one of `src/catalog/categories.ts`), the Tile picture (a file in the folder's `public/`) and today's date as `added`. Tiles sit in the order their Games were added.
+3. Fix `index.html`: the title, the icons, and the script, which is `/games/<slug>/src/main.ts`.
+4. Replace the rest with your Game. Its `src/main.ts` calls `registerOffline()` from `@shared/pwa` and shows `homeButton()` from `@shared/home-button` on its first screen. Files in `public/` are served at `/<slug>/<file>`. Prefix localStorage keys with the slug, since every Game shares one origin.
+5. Run `npm test`. The Catalog test names anything the copy still gets wrong.
