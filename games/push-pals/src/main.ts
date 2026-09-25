@@ -1,8 +1,7 @@
 import { startGame } from '@shared/shell';
-import { LEVELS } from './levels';
-import { showPicker } from './picker';
 import { showPlay } from './play';
-import { loadProgress, saveProgress, withSolved } from './progress';
+import { chapterOf, levelAfter, loadProgress, saveProgress, withSolved } from './progress';
+import { showSelect, type SelectHooks } from './select';
 import { setMuted } from './sound';
 import './style.css';
 
@@ -11,13 +10,17 @@ let progress = loadProgress(storage);
 let leave: () => void = () => {};
 setMuted(progress.muted);
 
-function openPicker(): void {
+const select: SelectHooks = { progress: () => progress, open: openLevel };
+
+/** The Chapter list, or with `chapter` that Chapter's Levels. */
+function openLevels(chapter?: number): void {
   leave();
-  leave = showPicker(app, progress, openLevel);
+  leave = showSelect(app, select, chapter).leave;
 }
 
 function openLevel(index: number): void {
   leave();
+  const chapter = chapterOf(index);
   leave = showPlay(app, index, {
     muted: () => progress.muted,
     toggleMute() {
@@ -29,9 +32,14 @@ function openLevel(index: number): void {
       progress = withSolved(progress, index);
       saveProgress(progress, storage);
     },
-    next: () => (index + 1 < LEVELS.length ? openLevel(index + 1) : openPicker()),
-    home: openPicker,
+    next() {
+      // After the very last Level, Next goes to its Chapter.
+      const after = levelAfter(index);
+      if (after === undefined) openLevels(chapter);
+      else openLevel(after);
+    },
+    levels: () => openLevels(chapter),
   });
 }
 
-openPicker();
+openLevels();

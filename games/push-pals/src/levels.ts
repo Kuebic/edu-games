@@ -690,3 +690,8 @@ export const CHAPTERS: readonly Chapter[] = [
 export const LEVELS: readonly Level[] = CHAPTERS.flatMap((chapter) =>
   chapter.levels.map(parseLevel),
 );
+
+/** Where each Chapter starts in LEVELS, the numbering saves use: Chapter c's Level i is FIRST[c] + i. */
+export const FIRST: readonly number[] = CHAPTERS.map((_, c) =>
+  CHAPTERS.slice(0, c).reduce((n, chapter) => n + chapter.levels.length, 0),
+);

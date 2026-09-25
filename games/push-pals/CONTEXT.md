@@ -11,7 +11,7 @@ One puzzle: a board of walls and floor, some boxes, the same number of goals, an
 _Avoid_: Stage, puzzle, map
 
 **Chapter**:
-A group of levels sharing one difficulty band (box count, push range, whether each level needs a trick).
+Eight levels sharing one difficulty band (box count, push range, whether each level needs a trick), each Chapter in its own colour with its boxes on its badge. Easiest first. A Group (site term).
 _Avoid_: World, pack, set
 
 **Box**:
@@ -41,9 +41,6 @@ _Avoid_: Deadlock (fine inside the solver, not as a player-facing idea), lost, f
 
 **Forgiving**:
 A level in which no sequence of steps can make it stuck.
-
-**Unlocked**:
-A level the player may open. Solving a level unlocks the next one.
 
 **Trick**:
 A push that looks like undoing progress but is needed to solve the level: pushing a box off a goal, or pushing a box back the way it came.

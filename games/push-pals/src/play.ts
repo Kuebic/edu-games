@@ -2,6 +2,7 @@ import type { Direction, Level, Position } from './game/level';
 import { hasCorneredBox, isSolved, step } from './game/rules';
 import { ICONS } from './icons';
 import { LEVELS } from './levels';
+import { levelAfter } from './progress';
 import { play, unlockAudio } from './sound';
 
 const STEP_MS = 130;
@@ -25,7 +26,8 @@ export interface PlayHooks {
   /** Called once, the moment the level is solved. */
   solved(): void;
   next(): void;
-  home(): void;
+  /** Back to this Level's Chapter. */
+  levels(): void;
 }
 
 function button(className: string, icon: string, onPress: () => void): HTMLButtonElement {
@@ -70,7 +72,7 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
 
   const toolbar = document.createElement('nav');
   toolbar.className = 'site-bar';
-  const backButton = button('site-tool', ICONS.back, () => hooks.home());
+  const backButton = button('site-tool', ICONS.back, () => hooks.levels());
   const undoButton = button('site-tool', ICONS.undo, undo);
   const resetButton = button('site-tool', ICONS.reset, reset);
   const muteButton = button('site-tool', '', () => {
@@ -107,9 +109,9 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   const win = document.createElement('div');
   win.className = 'win';
   win.hidden = true;
-  const last = index === LEVELS.length - 1;
+  const last = levelAfter(index) === undefined;
   win.innerHTML = `<div class="win-stars"><i>${ICONS.star}</i><i>${ICONS.star}</i><i>${ICONS.star}</i></div>`;
-  // After the last level, Next goes back to the level list.
+  // After the very last Level, Next goes back to its Chapter.
   const nextButton = button(last ? 'site-next all-levels' : 'site-next', last ? ICONS.levels : ICONS.next, () => hooks.next());
   win.append(nextButton);
 
@@ -213,7 +215,7 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
         event.preventDefault();
         hooks.next();
       } else if (event.key === 'Escape') {
-        hooks.home();
+        hooks.levels();
       }
       return;
     }
@@ -227,7 +229,7 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
     } else if (event.key === 'r' || event.key === 'R') {
       reset();
     } else if (event.key === 'Escape') {
-      hooks.home();
+      hooks.levels();
     }
   };
 

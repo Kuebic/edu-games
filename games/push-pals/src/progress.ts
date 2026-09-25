@@ -1,13 +1,15 @@
 // Saved on the device only. One profile.
 
 import type { GameStorage } from '@shared/storage';
+import { nextLevel } from '@shared/unlock';
+import { CHAPTERS, FIRST } from './levels';
 
 // Saved as "push-pals:v2": the shell puts the Slug in front.
 // v2: the level set was remade, so v1 progress points at different levels.
 const KEY = 'v2';
 
 export interface Progress {
-  /** Indices of solved levels. */
+  /** Indices of solved levels, numbered across Chapters (FIRST). */
   readonly solved: readonly number[];
   readonly muted: boolean;
 }
@@ -24,20 +26,28 @@ export function saveProgress(progress: Progress, storage: GameStorage): void {
   storage.write(KEY, progress);
 }
 
-/** Level 0 is always unlocked; solving a level unlocks the one after it. */
-export function isUnlocked(progress: Progress, level: number): boolean {
-  return level === 0 || progress.solved.includes(level - 1) || progress.solved.includes(level);
-}
-
-/** The level to offer next: the first unlocked one not yet solved, else the last. */
-export function nextLevel(progress: Progress, total: number): number {
-  for (let i = 0; i < total; i++) {
-    if (isUnlocked(progress, i) && !progress.solved.includes(i)) return i;
-  }
-  return total - 1;
-}
-
 export function withSolved(progress: Progress, level: number): Progress {
   if (progress.solved.includes(level)) return progress;
   return { ...progress, solved: [...progress.solved, level].sort((a, b) => a - b) };
+}
+
+/** Which of a Chapter's Levels are solved, in play order. Chapters count from 0. Which are open is the site's rule (ADR 0009). */
+export function solvedIn(progress: Progress, chapter: number): boolean[] {
+  return CHAPTERS[chapter]!.levels.map((_, i) => progress.solved.includes(FIRST[chapter]! + i));
+}
+
+/** The Chapter a Level is in, from its index across Chapters. */
+export function chapterOf(level: number): number {
+  return FIRST.filter((first) => first <= level).length - 1;
+}
+
+/** Where Next goes from a Level: the next one, on into the next Chapter, or undefined after the very last. */
+export function levelAfter(level: number): number | undefined {
+  const chapter = chapterOf(level);
+  const to = nextLevel(
+    CHAPTERS.map((c) => c.levels.length),
+    chapter,
+    level - FIRST[chapter]!,
+  );
+  return to && FIRST[to.group]! + to.level;
 }

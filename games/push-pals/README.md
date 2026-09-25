@@ -4,8 +4,9 @@ Sokoban for a five-year-old. 80 levels in 10 chapters, from two boxes and a few 
 to four boxes and a dozen or more. Every level can get stuck, and some chapters need a trick:
 pushing a box off a goal, or back the way it came.
 
-- Play: swipe (one swipe = one step) or arrow keys / WASD. `Z` or Backspace undoes, `R` resets, Esc goes to the level list.
-- The House button at the top of the level list goes back to the Hub.
+- Play: swipe (one swipe = one step) or arrow keys / WASD. `Z` or Backspace undoes, `R` resets, Esc goes back to the Chapter's levels.
+- The level select: a Chapter's first level is open, and solving a level opens the next. Arrow keys walk the levels,
+  Esc goes back to the Chapter list, and the House button at its top goes back to the Hub.
 
 ## Develop
 

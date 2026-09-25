@@ -1,6 +1,7 @@
 import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
-import { isUnlocked, loadProgress, nextLevel, saveProgress, withSolved } from './progress';
+import { FIRST, LEVELS } from './levels';
+import { chapterOf, levelAfter, loadProgress, saveProgress, solvedIn, withSolved } from './progress';
 
 describe('saved progress', () => {
   it('starts empty and survives a save', () => {
@@ -22,21 +23,24 @@ describe('saved progress', () => {
 describe('progress', () => {
   const fresh = { solved: [], muted: false };
 
-  it('starts with only the first level unlocked', () => {
-    expect(isUnlocked(fresh, 0)).toBe(true);
-    expect(isUnlocked(fresh, 1)).toBe(false);
-    expect(nextLevel(fresh, 40)).toBe(0);
+  it('solves a Level once', () => {
+    const p = withSolved(fresh, 3);
+    expect(withSolved(p, 0).solved).toEqual([0, 3]);
+    expect(withSolved(p, 3)).toBe(p);
   });
 
-  it('solving a level unlocks the next one', () => {
-    const p = withSolved(withSolved(fresh, 0), 1);
-    expect(isUnlocked(p, 2)).toBe(true);
-    expect(isUnlocked(p, 3)).toBe(false);
-    expect(nextLevel(p, 40)).toBe(2);
+  it('reads a Chapter’s solved Levels from the numbering across Chapters', () => {
+    const p = { solved: [0, 7, 8, 12], muted: false };
+    expect(solvedIn(p, 0)).toEqual([true, false, false, false, false, false, false, true]);
+    expect(solvedIn(p, 1)).toEqual([true, false, false, false, true, false, false, false]);
+    expect(FIRST[1]).toBe(8);
+    expect([chapterOf(0), chapterOf(7), chapterOf(8), chapterOf(LEVELS.length - 1)]).toEqual([0, 0, 1, 9]);
   });
 
-  it('offers the last level once everything is solved', () => {
-    const p = { solved: [0, 1, 2], muted: false };
-    expect(nextLevel(p, 3)).toBe(2);
+  it('goes on to the next Level, into the next Chapter, and stops after the last', () => {
+    expect(levelAfter(0)).toBe(1);
+    expect(levelAfter(7)).toBe(8);
+    expect(levelAfter(LEVELS.length - 2)).toBe(LEVELS.length - 1);
+    expect(levelAfter(LEVELS.length - 1)).toBeUndefined();
   });
 });

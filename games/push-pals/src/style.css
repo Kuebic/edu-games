@@ -32,116 +32,55 @@ button svg {
   height: 60%;
 }
 
-/* ---- level picker ------------------------------------------------------ */
+/* ---- level select ------------------------------------------------------ */
 
-.picker {
-  display: flex;
-  flex-direction: column;
-}
-
-/* White on the sky, with the same dark lip as the buttons. */
-.picker h1 {
+/* The title sits on the sky: white, with the same dark lip as the buttons. */
+.site-bar h1 {
   color: white;
   text-shadow: 0 3px 0 var(--sky-dark);
 }
 
-.bar-balance {
-  flex: none;
-  width: var(--site-tool);
-}
-
-.chapters {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 8px 16px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  align-items: center;
-}
-
-.chapter {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  max-width: 820px;
-}
-
-.chapter-badge {
-  flex: 0 0 56px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 3px;
-}
-
-.mini-box {
-  width: 24px;
-  height: 24px;
-  background: url('./assets/sprites/box.png') center / contain no-repeat;
-}
-
-.chapter-levels {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 10px;
-}
-
-@media (max-width: 640px) {
-  .chapter-levels {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.level-button {
+/* A Chapter's badge: its crates, side by side (2), stacked (3) or in a square (4). */
+.pp-crates {
   position: relative;
-  aspect-ratio: 1;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 5px 0 var(--sky-dark);
-  font-size: clamp(20px, 5vw, 32px);
-  font-weight: 800;
-  display: grid;
-  place-items: center;
+  width: 80%;
+  height: 80%;
 }
 
-.level-button:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 var(--sky-dark);
-}
-
-.level-button.current {
-  background: var(--sun);
-  box-shadow: 0 5px 0 var(--sun-dark);
-  animation: bob 1.2s ease-in-out infinite;
-}
-
-.level-button.locked {
-  background: rgb(255 255 255 / 0.35);
-  box-shadow: none;
-  color: rgb(255 255 255 / 0.8);
-  cursor: default;
-}
-
-.level-button.locked svg {
-  width: 35%;
-  height: 35%;
-}
-
-.level-star {
+.pp-crates i {
   position: absolute;
-  right: -6px;
-  top: -8px;
-  width: 42%;
-  color: var(--sun);
+  left: 4%;
+  top: 4%;
+  width: 44%;
+  height: 44%;
+  background: url('./assets/sprites/box.png') center / contain no-repeat;
+  filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.25));
 }
 
-.level-star svg {
-  width: 100%;
-  height: 100%;
+.pp-crates i:nth-child(even) {
+  left: 52%;
+}
+
+.pp-crates i:nth-child(n + 3) {
+  top: 52%;
+}
+
+.pp-crates-2 i:nth-child(n) {
+  top: 28%;
+}
+
+/* Three crates: two on the floor, one on top. */
+.pp-crates-3 i:nth-child(1) {
+  left: 28%;
+}
+
+.pp-crates-3 i:nth-child(2) {
+  left: 4%;
+  top: 52%;
+}
+
+.pp-crates-3 i:nth-child(3) {
+  left: 52%;
 }
 
 /* ---- play screen ------------------------------------------------------- */
@@ -285,12 +224,6 @@ button svg {
 }
 
 /* ---- motion ------------------------------------------------------------ */
-
-@keyframes bob {
-  50% {
-    transform: translateY(-5px);
-  }
-}
 
 @keyframes wiggle {
   0%,
