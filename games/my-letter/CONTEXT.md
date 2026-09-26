@@ -39,7 +39,7 @@ The Name drawn big above the Choices during a Name letters Level, with a blank w
 _Avoid_: Title, header, word
 
 **Letter sound**:
-The one sound a letter says: short vowels, hard C and G, X as /ks/, Q as /kw/. A stop like /b/ is said twice, "b … b", so it can be heard. A recorded clip, never the browser's speech. A find ends with the letter saying it: "S says /s/".
+The one sound a letter says: short vowels, hard C and G, X as /ks/, Q as /kw/. A clip too short to hear, a stop like /b/, is said twice, "b … b". A recorded clip, never the browser's speech. A find ends with the letter saying it: "S says /s/".
 _Avoid_: Phoneme (in UI copy), Sound (the site's word for every noise), phonics
 
 **Fade**:

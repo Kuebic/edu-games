@@ -1,42 +1,77 @@
 # Letter sound credits
 
-Every Letter sound clip in `src/assets/sounds/` is cut from a recording on Wikimedia Commons (ADR 0001). The Game task `npm run game my-letter sounds` makes them. It cuts the sound out of the raw file, slows some short sounds, trims the silence, levels the loudness, fades each end and saves an MP3. The exact cuts are in `scripts/sounds.ts`.
+Every Letter sound clip in `src/assets/sounds/` comes from the US English letter sounds of **Feed The Monster** by [Curious Learning](https://www.curiouslearning.org/). One native US English voice says all of them. They are pinned to commit `b0f50ba` of the language packs:
 
-The clips are adaptations, so each one is under its source's licence: CC BY-SA 3.0, CC BY-SA 4.0, or public domain for J. A file that's "CC BY-SA 3.0 / GFDL" on Commons is used here under CC BY-SA 3.0. Peter Isotalo's pages say "Recorded by Peter Isotalo" (user Karmosin); Denelson83's say "Recorded by Denelson83".
+<https://github.com/curiouslearning/ftm-languagepacks/tree/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters>
 
-| Letter | File | Source | Author | Licence | Notes |
+The Game task `npm run game my-letter sounds` downloads the raw files to `scripts/raw/` and makes the clips (ADR 0001). It trims silence, levels loudness, fades both ends, adds 150 ms of silence in front and saves a mono 96 kbps MP3. The cuts are in `scripts/sounds.ts`.
+
+## Licences
+
+The language pack repository's `LICENSE` is BSD 2-Clause. Its notice has to go with any binary redistribution:
+
+> BSD 2-Clause License
+>
+> Copyright (c) 2020, Curious Learning
+> All rights reserved.
+>
+> Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+>
+> 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+>
+> 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+>
+> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Curious Learning also puts the audio under CC BY. The [Feed The Monster JS README](https://github.com/curiouslearning/FeedTheMonsterJS#contributing) says:
+
+> The Feed The Monster codebase is open source and we freely encourage others to extend, remix, or localize the content herein, including the audio and graphical content which is licensed under CC-BY.
+
+and, of these language packs:
+
+> All existing [language-specific images and audio](https://github.com/curiouslearning/ftm-languagepacks) can be downloaded and used as Creative Commons.
+
+The [Feed The Monster core `LICENSE`](https://github.com/curiouslearning/FeedTheMonster/blob/master/LICENSE) says:
+
+> All digital content included in this repository is released under a [Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/legalcode) (CC-BY).
+>
+> Copyright (c) 2016 Originally developed by a consortium led by [Apps Factory](http://www.appsfactory.ro/), subsequent translations Copyright (c) 2017-2022 by [Curious Learning](https://www.curiouslearning.org/).
+
+The language pack repository itself states only the BSD licence. The CC BY statements are in the two sister repositories quoted above.
+
+**Attribution:** Letter sounds from Feed The Monster (US English) by Curious Learning, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and BSD 2-Clause, Copyright (c) 2020, Curious Learning. Trimmed, levelled and re-encoded; some are cut shorter (see below).
+
+## Clips
+
+"As is" means the whole recording: only silence trimmed, loudness levelled and ends faded. A clip that's still under 0.25 s is said twice with a 0.25 s gap, "b … b", so it's heard on a phone after the Voice. Durations include the 150 ms lead-in.
+
+| Letter | File | Source file | Change | Said twice | Duration |
 | --- | --- | --- | --- | --- | --- |
-| A /æ/ | a.mp3 | [Near-open front unrounded vowel.ogg](https://commons.wikimedia.org/wiki/File:Near-open_front_unrounded_vowel.ogg) | Denelson83 | CC BY-SA 3.0 | The vowel on its own, Canadian English speaker |
-| B /b/ | b.mp3 | [Voiced bilabial plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiced_bilabial_plosive.ogg) | Peter Isotalo | CC BY-SA 3.0 | From [ba]: the release plus ~100 ms of the vowel, faded out |
-| C /k/ | c.mp3 | [Voiceless velar plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_velar_plosive.ogg) | Peter Isotalo | CC BY-SA 3.0 | Same cut as K |
-| D /d/ | d.mp3 | [Voiced alveolar plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiced_alveolar_plosive.ogg) | Peter Isotalo | CC BY-SA 3.0 | From [da]: the release plus a little vowel, faded out |
-| E /ɛ/ | e.mp3 | [Open-mid front unrounded vowel(ɛ).ogg](https://commons.wikimedia.org/wiki/File:Open-mid_front_unrounded_vowel%28%C9%9B%29.ogg) | Denelson83 | CC BY-SA 3.0 | The vowel on its own |
-| F /f/ | f.mp3 | [PR-voiceless labiodental fricative.ogg](https://commons.wikimedia.org/wiki/File:PR-voiceless_labiodental_fricative.ogg) | Peter Roach (RoachPeter) | CC BY-SA 4.0 | The [f] of [fa], slowed to 0.6× speed. British English speaker |
-| G /g/ | g.mp3 | [Voiced velar plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiced_velar_plosive.ogg) | Peter Isotalo | CC BY-SA 3.0 | From [ga]: the release plus a little vowel, faded out |
-| H /h/ | h.mp3 | [Voiceless glottal fricative.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_glottal_fricative.ogg) | Peter Isotalo | CC BY-SA 3.0 | The breath before the first vowel |
-| I /ɪ/ | i.mp3 | [Near-close near-front unrounded vowel.ogg](https://commons.wikimedia.org/wiki/File:Near-close_near-front_unrounded_vowel.ogg) | Denelson83 | CC BY-SA 3.0 | The vowel on its own |
-| J /dʒ/ | j.mp3 | [Voiced palato-alveolar affricate.ogg](https://commons.wikimedia.org/wiki/File:Voiced_palato-alveolar_affricate.ogg) | Octane (English Wikipedia) | Public domain | The first [dʒa], with a little vowel, faded out |
-| K /k/ | k.mp3 | [Voiceless velar plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_velar_plosive.ogg) | Peter Isotalo | CC BY-SA 3.0 | From [ka]: the release plus a little vowel, faded out |
-| L /l/ | l.mp3 | [Alveolar lateral approximant.ogg](https://commons.wikimedia.org/wiki/File:Alveolar_lateral_approximant.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [l] of [la], slowed to 0.8× speed |
-| M /m/ | m.mp3 | [Bilabial nasal.ogg](https://commons.wikimedia.org/wiki/File:Bilabial_nasal.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [m] of [ma], slowed to 0.55× speed |
-| N /n/ | n.mp3 | [Alveolar nasal.ogg](https://commons.wikimedia.org/wiki/File:Alveolar_nasal.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [n] of [na], slowed to 0.8× speed |
-| O /ɒ/ | o.mp3 | [Open back rounded vowel.ogg](https://commons.wikimedia.org/wiki/File:Open_back_rounded_vowel.ogg) | Denelson83 | CC BY-SA 3.0 | The vowel on its own; the British "octopus" vowel, not the American /ɑ/ |
-| P /p/ | p.mp3 | [Voiceless bilabial plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_bilabial_plosive.ogg) | Peter Isotalo | CC BY-SA 3.0 | From the second [pa]: the release plus a little vowel, faded out |
-| Q /kw/ | q.mp3 | [Voiceless velar plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_velar_plosive.ogg) + [Voiced labio-velar approximant.ogg](https://commons.wikimedia.org/wiki/File:Voiced_labio-velar_approximant.ogg) | Peter Isotalo | CC BY-SA 3.0 | Joined: the release of [ka] with no vowel, then the [w] of [wa] |
-| R /ɹ/ | r.mp3 | [Alveolar approximant.ogg](https://commons.wikimedia.org/wiki/File:Alveolar_approximant.ogg) | Erutuon | CC BY-SA 3.0 | The [ɹ] of [ɹa], slowed to 0.7× speed. American English speaker |
-| S /s/ | s.mp3 | [Voiceless alveolar sibilant.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_alveolar_sibilant.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [s] of [sa], slowed to 0.6× speed |
-| T /t/ | t.mp3 | [Voiceless alveolar plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_alveolar_plosive.ogg) | Peter Isotalo | CC BY-SA 3.0 | From [ta]: the release plus a little vowel, faded out |
-| U /ʌ/ | u.mp3 | [Open-mid back unrounded vowel.ogg](https://commons.wikimedia.org/wiki/File:Open-mid_back_unrounded_vowel.ogg) | Denelson83 | CC BY-SA 3.0 | The vowel on its own |
-| V /v/ | v.mp3 | [Voiced labiodental fricative.ogg](https://commons.wikimedia.org/wiki/File:Voiced_labiodental_fricative.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [v] of [ava], slowed to 0.8× speed |
-| W /w/ | w.mp3 | [Voiced labio-velar approximant.ogg](https://commons.wikimedia.org/wiki/File:Voiced_labio-velar_approximant.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [w] of [wa] into the start of the vowel |
-| X /ks/ | x.mp3 | [Voiceless velar plosive.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_velar_plosive.ogg) + [Voiceless alveolar sibilant.ogg](https://commons.wikimedia.org/wiki/File:Voiceless_alveolar_sibilant.ogg) | Peter Isotalo | CC BY-SA 3.0 | Joined: the release of [ka] with no vowel, then the [s] of [sa] at 0.75× speed |
-| Y /j/ | y.mp3 | [Palatal approximant.ogg](https://commons.wikimedia.org/wiki/File:Palatal_approximant.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [j] of [ja] into the start of the vowel |
-| Z /z/ | z.mp3 | [Voiced alveolar sibilant.ogg](https://commons.wikimedia.org/wiki/File:Voiced_alveolar_sibilant.ogg) | Peter Isotalo | CC BY-SA 3.0 | The [z] of [za], slowed to 0.7× speed |
+| A /æ/ | a.mp3 | [a.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/a.WAV) | as is | | 0.65 s |
+| B /b/ | b.mp3 | [b.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/b.WAV) | vowel cut from ~240 ms to ~100 ms, faded | yes | 0.57 s |
+| C /k/ | c.mp3 | [c.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/c.WAV) | as is (burst and breath, no vowel) | yes | 0.70 s |
+| D /d/ | d.mp3 | [d.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/d.WAV) | vowel cut from ~230 ms to ~95 ms, faded | yes | 0.62 s |
+| E /ɛ/ | e.mp3 | [e.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/e.WAV) | as is | | 0.52 s |
+| F /f/ | f.mp3 | [f.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/f.WAV) | as is | | 0.47 s |
+| G /g/ | g.mp3 | [g.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/g.WAV) | vowel cut from ~275 ms to ~95 ms, faded | yes | 0.63 s |
+| H /h/ | h.mp3 | [h.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/h.WAV) | as is | | 0.49 s |
+| I /ɪ/ | i.mp3 | [i.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/i.WAV) | as is | | 0.49 s |
+| J /dʒ/ | j.mp3 | [j.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/j.WAV) | as is (keeps its ~170 ms vowel) | | 0.45 s |
+| K /k/ | k.mp3 | [k.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/k.WAV) | vowel cut from ~195 ms to ~95 ms, faded | yes | 0.73 s |
+| L /l/ | l.mp3 | [l.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/l.WAV) | as is | | 0.58 s |
+| M /m/ | m.mp3 | [m.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/m.WAV) | as is | | 0.74 s |
+| N /n/ | n.mp3 | [n.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/n.WAV) | as is | | 0.73 s |
+| O /ɑ/ | o.mp3 | [o.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/o.WAV) | as is; the US "octopus" vowel | | 0.65 s |
+| P /p/ | p.mp3 | [p.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/p.WAV) | burst and breath only; ~125 ms of vowel cut | yes | 0.49 s |
+| Q /kw/ | q.mp3 | [qu.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/qu.WAV) | as is; the pack has no q.WAV | | 0.44 s |
+| R /ɹ/ | r.mp3 | [r.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/r.WAV) | as is | | 0.67 s |
+| S /s/ | s.mp3 | [s.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/s.WAV) | as is | | 0.72 s |
+| T /t/ | t.mp3 | [t.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/t.WAV) | burst and breath only; ~75 ms of vowel cut | yes | 0.54 s |
+| U /ʌ/ | u.mp3 | [u.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/u.WAV) | as is | | 0.52 s |
+| V /v/ | v.mp3 | [v.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/v.WAV) | as is | | 0.54 s |
+| W /w/ | w.mp3 | [w.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/w.WAV) | as is | | 0.46 s |
+| X /ks/ | x.mp3 | [x.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/x.WAV) | as is | | 0.73 s |
+| Y /j/ | y.mp3 | [y.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/y.WAV) | as is; the glide into a short vowel, "yeh" | | 0.46 s |
+| Z /z/ | z.mp3 | [z.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/z.WAV) | as is | | 0.89 s |
 
-## Caveats
-
-- The clips are not in one voice. The vowels are Denelson83's, most consonants are Peter Isotalo's (a Swedish and Russian speaker, recorded for the IPA articles), F is Peter Roach's, R is Erutuon's and J is Octane's.
-- No free set of English phonics recordings turned up. Sound City Reading, SoundDino and Yellow Door don't allow redistribution, and a Freesound phonics set was CC BY-NC.
-- The stops (B C D G K P T) and J keep about 100 ms of the [a] they were said with, faded out, so they sound like a very short "ba", not a bare "b".
-- The cuts were chosen from signal analysis, not by listening. Listen to each one before shipping.
-- To use a better recording: put the file in `scripts/raw/`, change its entry in `scripts/sounds.ts` and this table, then run `npm run game my-letter sounds <letter>`.
+The vowels, Q, X and Y were checked by their spectra (formants and voicing), not by ear. The cuts were placed the same way. Listen to each clip before shipping.

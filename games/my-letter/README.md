@@ -28,4 +28,4 @@ A new name with different letters starts My name again; New letters stays done. 
 
 ## Letter sounds
 
-One clip per letter, freely licensed recordings from the web (ADR 0001), trimmed and levelled by a Game task, `npm run game my-letter sounds`. Where each one comes from, its author and its licence are in [docs/sound-credits.md](./docs/sound-credits.md).
+One clip per letter, from Curious Learning's [Feed The Monster](https://github.com/curiouslearning/ftm-languagepacks) US English letter sounds (CC BY 4.0 and BSD 2-Clause, Copyright (c) 2020, Curious Learning), trimmed and levelled by a Game task, `npm run game my-letter sounds` (ADR 0001). The source files, licences, copyright notice and what was cut are in [docs/sound-credits.md](./docs/sound-credits.md).

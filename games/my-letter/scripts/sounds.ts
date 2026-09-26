@@ -1,7 +1,9 @@
-// Builds the Letter sound clips (ADR 0001): src/assets/sounds/<letter>.mp3 from recordings on
-// Wikimedia Commons. Each clip is cut out of a raw file (most say the sound in a syllable, "[sa asa]"),
-// sometimes slowed so a short /s/ or /m/ lasts, then trimmed of silence, levelled and faded.
-// Usage: npm run game my-letter sounds [letters...]    e.g. `npm run game my-letter sounds s m`
+// Builds the Letter sound clips (ADR 0001): src/assets/sounds/<letter>.mp3 from Curious Learning's
+// Feed The Monster US English letter sounds, one native US English voice (credits: docs/sound-credits.md).
+// Each is trimmed of silence, levelled and faded, and starts with LEAD_MS of silence. A stop that carries
+// a long vowel ("buh") is cut down to its release and a breath of the vowel. A clip still shorter than
+// TWICE_UNDER is said twice with a GAP, "b … b", so it can be heard.
+// Usage: npm run game my-letter sounds [letters...]    e.g. `npm run game my-letter sounds b d`
 // Needs ffmpeg. Raw files go in scripts/raw/ (gitignored, not shipped); a missing one is downloaded.
 // Change a source here and in docs/sound-credits.md together.
 //
@@ -13,71 +15,33 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-/** Seconds [from, to] of one raw file; `slow` < 1 stretches it (ffmpeg atempo, 0.5 at most). */
-type Part = { file: string; from: number; to: number; slow?: number };
-/**
- * A clip is one or more parts played back to back; fades in seconds (a stop's burst needs a short fade in).
- * `twice` says it again after a short gap: a stop alone lasts about a tenth of a second, too short to hear.
- */
-type Clip = { parts: Part[]; fadeIn?: number; fadeOut?: number; twice?: boolean };
+// Pinned to the commit the files were last changed in, so a rebuild gets the same recordings.
+const SOURCE = 'https://raw.githubusercontent.com/curiouslearning/ftm-languagepacks/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/';
 
-const ISOTALO = {
-  b: 'Voiced bilabial plosive.ogg',
-  d: 'Voiced alveolar plosive.ogg',
-  g: 'Voiced velar plosive.ogg',
-  p: 'Voiceless bilabial plosive.ogg',
-  t: 'Voiceless alveolar plosive.ogg',
-  k: 'Voiceless velar plosive.ogg',
-  h: 'Voiceless glottal fricative.ogg',
-  l: 'Alveolar lateral approximant.ogg',
-  m: 'Bilabial nasal.ogg',
-  n: 'Alveolar nasal.ogg',
-  s: 'Voiceless alveolar sibilant.ogg',
-  v: 'Voiced labiodental fricative.ogg',
-  w: 'Voiced labio-velar approximant.ogg',
-  y: 'Palatal approximant.ogg',
-  z: 'Voiced alveolar sibilant.ogg',
-};
+/** A raw file, optionally cut to seconds [from, to]; fades in seconds (a stop's burst needs a short fade in). */
+type Clip = { file: string; from?: number; to?: number; fadeIn?: number; fadeOut?: number };
 
-// A stop: from just before the release to ~130 ms after it, fading out over the start of the vowel
-// it was said with, so it's "b" with only a breath of "buh". Said twice, "b … b", as phonics teachers do.
-const stop = (file: string, from: number, to: number): Clip => ({ parts: [{ file, from, to }], fadeIn: 0.005, fadeOut: 0.07, twice: true });
-const vowel = (file: string, from: number, to: number): Clip => ({ parts: [{ file, from, to }], fadeOut: 0.06 });
-const kBurst: Part = { file: ISOTALO.k, from: 0.185, to: 0.222 }; // release and aspiration of [ka], no vowel
+// Seconds measured on the raw files (voicing and silence), not by ear. Stops end ~90 ms into the vowel
+// with a fade over it, so "b" keeps a breath of vowel instead of "buh"; P and T end as their voicing starts.
+const stop = (letter: string, from: number, to: number, fadeOut = 0.05): Clip => ({ file: `${letter}.WAV`, from, to, fadeIn: 0.005, fadeOut });
 
+// Every letter's file as it is, except the stops, cut, and Q.
 const CLIPS: Record<string, Clip> = {
-  a: vowel('Near-open front unrounded vowel.ogg', 0, 0.53),
-  b: stop(ISOTALO.b, 0.185, 0.32),
-  c: stop(ISOTALO.k, 0.185, 0.315),
-  d: stop(ISOTALO.d, 0.19, 0.325),
-  e: vowel('Open-mid front unrounded vowel(ɛ).ogg', 0, 0.56),
-  f: { parts: [{ file: 'PR-voiceless labiodental fricative.ogg', from: 0.1, to: 0.252, slow: 0.6 }] },
-  g: stop(ISOTALO.g, 0.19, 0.325),
-  h: { parts: [{ file: ISOTALO.h, from: 0.19, to: 0.465 }] },
-  i: vowel('Near-close near-front unrounded vowel.ogg', 0.02, 0.52),
-  j: { parts: [{ file: 'Voiced palato-alveolar affricate.ogg', from: 0.04, to: 0.17 }], fadeIn: 0.005, fadeOut: 0.05, twice: true },
-  k: stop(ISOTALO.k, 0.185, 0.315),
-  l: { parts: [{ file: ISOTALO.l, from: 0.2, to: 0.47, slow: 0.8 }] },
-  m: { parts: [{ file: ISOTALO.m, from: 0.19, to: 0.375, slow: 0.55 }] },
-  n: { parts: [{ file: ISOTALO.n, from: 0.225, to: 0.49, slow: 0.8 }] },
-  o: vowel('Open back rounded vowel.ogg', 0.02, 0.55),
-  p: stop(ISOTALO.p, 0.575, 0.705),
-  q: { parts: [kBurst, { file: ISOTALO.w, from: 0, to: 0.22 }], fadeIn: 0.005, fadeOut: 0.04 },
-  r: { parts: [{ file: 'Alveolar approximant.ogg', from: 0.28, to: 0.47, slow: 0.7 }] },
-  s: { parts: [{ file: ISOTALO.s, from: 0.225, to: 0.435, slow: 0.6 }] },
-  t: stop(ISOTALO.t, 0.2, 0.33),
-  u: vowel('Open-mid back unrounded vowel.ogg', 0.02, 0.46),
-  v: { parts: [{ file: ISOTALO.v, from: 0.235, to: 0.46, slow: 0.8 }] },
-  w: { parts: [{ file: ISOTALO.w, from: 0, to: 0.22 }], fadeOut: 0.04 },
-  x: { parts: [kBurst, { file: ISOTALO.s, from: 0.225, to: 0.435, slow: 0.75 }], fadeIn: 0.005 },
-  y: { parts: [{ file: ISOTALO.y, from: 0.245, to: 0.43 }], fadeOut: 0.04 },
-  z: { parts: [{ file: ISOTALO.z, from: 0.18, to: 0.405, slow: 0.7 }] },
+  ...Object.fromEntries([...'abcdefghijklmnopqrstuvwxyz'].map((letter) => [letter, { file: `${letter}.WAV` }])),
+  b: stop('b', 0.01, 0.115), // release 0.015, vowel to 0.26
+  d: stop('d', 0.035, 0.165), // release 0.04, vowel 0.07 to 0.30
+  g: stop('g', 0.05, 0.18), // release 0.055, vowel 0.085 to 0.36
+  k: stop('k', 0, 0.18), // aspiration to 0.085, vowel to 0.28
+  p: stop('p', 0, 0.06, 0.02), // burst and aspiration to 0.045, then vowel to 0.17
+  t: stop('t', 0, 0.085, 0.02), // burst and aspiration to 0.075, then vowel to 0.15
+  q: { file: 'qu.WAV' }, // /kw/ and a short vowel; there's no q.WAV
 };
 
 const LOUDNESS = -18; // mean dBFS of every clip; the site's cheer is about -15
 const PEAK = 0.89; // limiter ceiling, about -1 dBFS
 const FADE = 0.03;
 const GAP = 0.25; // between the two of a clip said twice
+const TWICE_UNDER = 0.25; // seconds: a clip shorter than this, lead-in aside, is said twice
 // Silence in front of every clip. iOS switches its audio over from the Voice when a clip starts and
 // drops the first moments of it, which was a whole stop.
 const LEAD_MS = 150;
@@ -101,29 +65,23 @@ function levels(file: string): { mean: number; max: number } {
 }
 
 async function download(file: string): Promise<void> {
-  const url = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}`;
-  for (let attempt = 1; ; attempt++) {
-    const response = await fetch(url, { headers: { 'User-Agent': 'edu-games my-letter sounds task (https://github.com/kuebic/edu-games)' } });
-    if (response.ok) {
-      writeFileSync(join(rawDir, file), Buffer.from(await response.arrayBuffer()));
-      console.log(`downloaded ${file}`);
-      return;
-    }
-    // Commons rate-limits scripts: wait and try again.
-    if (response.status !== 429 || attempt === 5) throw new Error(`${response.status} for ${url}`);
-    await new Promise((resolve) => setTimeout(resolve, 5000 * attempt));
-  }
+  const response = await fetch(SOURCE + file);
+  if (!response.ok) throw new Error(`${response.status} for ${SOURCE + file}`);
+  writeFileSync(join(rawDir, file), Buffer.from(await response.arrayBuffer()));
+  console.log(`downloaded ${file}`);
 }
 
-function build(letter: string, clip: Clip, work: string): void {
-  const inputs = clip.parts.flatMap((part) => ['-i', join(rawDir, part.file)]);
-  const cuts = clip.parts.map((part, i) => {
-    const slow = part.slow ? `,atempo=${part.slow}` : '';
-    return `[${i}:a]aformat=channel_layouts=mono,aresample=44100,atrim=${part.from}:${part.to},asetpts=PTS-STARTPTS${slow}[p${i}]`;
-  });
-  const joined = clip.parts.map((_, i) => `[p${i}]`).join('') + `concat=n=${clip.parts.length}:v=0:a=1`;
+/** Length in seconds. */
+function duration(file: string): number {
+  const run = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file], { encoding: 'utf8' });
+  return Number(run.stdout.trim());
+}
+
+/** Builds one clip and says whether it's said twice. */
+function build(letter: string, clip: Clip, work: string): boolean {
+  const cutTo = clip.from !== undefined || clip.to !== undefined ? `,atrim=${clip.from ?? 0}${clip.to ? `:${clip.to}` : ''},asetpts=PTS-STARTPTS` : '';
   const cut = join(work, `${letter}-cut.wav`);
-  ffmpeg([...inputs, '-filter_complex', `${cuts.join(';')};${joined},highpass=f=70[out]`, '-map', '[out]', cut]);
+  ffmpeg(['-i', join(rawDir, clip.file), '-af', `aformat=channel_layouts=mono,aresample=44100${cutTo},highpass=f=70`, cut]);
 
   // Trim what's left of the silence at both ends, relative to the clip's own peak, then fade.
   const { max } = levels(cut);
@@ -134,12 +92,14 @@ function build(letter: string, clip: Clip, work: string): void {
     `volume=${-max}dB`, trim, 'areverse', trim, `afade=t=in:d=${fadeOut}`, 'areverse', `afade=t=in:d=${fadeIn}`,
   ].join(','), shaped]);
 
+  const twice = duration(shaped) < TWICE_UNDER;
   const { mean } = levels(shaped);
   const out = join(outDir, `${letter}.mp3`);
   const level = `volume=${LOUDNESS - mean}dB,alimiter=limit=${PEAK}:level=false`;
-  const said = clip.twice ? `${level},asplit[a][b];[a]apad=pad_dur=${GAP}[a2];[a2][b]concat=n=2:v=0:a=1` : level;
+  const said = twice ? `${level},asplit[a][b];[a]apad=pad_dur=${GAP}[a2];[a2][b]concat=n=2:v=0:a=1` : level;
   ffmpeg(['-i', shaped, '-filter_complex', `[0:a]${said},adelay=${LEAD_MS}[out]`, '-map', '[out]',
     '-ac', '1', '-ar', '44100', '-c:a', 'libmp3lame', '-b:a', '96k', '-map_metadata', '-1', '-id3v2_version', '0', out]);
+  return twice;
 }
 
 const wanted = process.argv.slice(2).filter((a) => a !== '--').map((a) => a.toLowerCase());
@@ -152,15 +112,16 @@ if (unknown.length) {
 
 mkdirSync(rawDir, { recursive: true });
 mkdirSync(outDir, { recursive: true });
-const files = new Set(letters.flatMap((l) => CLIPS[l]!.parts.map((p) => p.file)));
+const files = new Set(letters.map((l) => CLIPS[l]!.file));
 for (const file of files) if (!existsSync(join(rawDir, file))) await download(file);
 
 const work = mkdtempSync(join(tmpdir(), 'my-letter-sounds-'));
 try {
   for (const letter of letters) {
-    build(letter, CLIPS[letter]!, work);
-    const { mean, max } = levels(join(outDir, `${letter}.mp3`));
-    console.log(`${letter}.mp3  mean ${mean} dB  peak ${max} dB`);
+    const twice = build(letter, CLIPS[letter]!, work);
+    const out = join(outDir, `${letter}.mp3`);
+    const { mean, max } = levels(out);
+    console.log(`${letter}.mp3  ${duration(out).toFixed(3)} s${twice ? ' (said twice)' : ''}  mean ${mean} dB  peak ${max} dB`);
   }
 } finally {
   rmSync(work, { recursive: true, force: true });
