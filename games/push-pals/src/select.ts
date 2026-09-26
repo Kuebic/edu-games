@@ -7,10 +7,13 @@ import type { Progress } from './progress';
 import { play } from './sound';
 
 /**
- * One colour per Chapter, easiest first: round the colour wheel from the grass green to the red of the
- * Pal's shirt, missing out the sky blue of the page and the crates' orange, then darker for the last two.
+ * One colour per Chapter, easiest first: round the colour wheel from sunny gold through the greens to the
+ * red of the Pal's shirt, missing out the sky blue of the page and the crates' orange, then darker for the last two.
  */
 export const CHAPTER_COLOURS = [
+  '#e0a800',
+  '#9cb01c',
+  '#5aa832',
   '#27ae60',
   '#0d9488',
   '#3a5bd0',
@@ -30,7 +33,7 @@ export interface SelectHooks {
   corner: GrownUpCorner;
 }
 
-/** A Chapter's badge: its 2, 3 or 4 crates, side by side, stacked, or in a square. */
+/** A Chapter's badge: its 1, 2, 3 or 4 crates: alone, side by side, stacked, or in a square. */
 function crates(boxes: number): string {
   return `<span class="pp-crates pp-crates-${boxes}">${'<i></i>'.repeat(boxes)}</span>`;
 }
@@ -41,11 +44,12 @@ export function pushPalsSelect(hooks: SelectHooks): LevelSelectGame {
     title: 'Push Pals',
     groups: () =>
       CHAPTERS.map((chapter, c) => ({
-        name: `Chapter ${c + 1}, ${chapter.boxes} boxes`,
+        name: `Chapter ${c + 1}, ${chapter.boxes} ${chapter.boxes === 1 ? 'box' : 'boxes'}`,
         colour: CHAPTER_COLOURS[c % CHAPTER_COLOURS.length]!,
         badge: () => crates(chapter.boxes),
         levels: hooks.progress.marks(c),
       })),
+    everyLevelOpen: () => hooks.progress.settings.everyLevelOpen,
     tools: () => [hooks.corner.gear()],
     play(c, i) {
       play('tap');

@@ -44,7 +44,7 @@ export interface LegacySave {
 }
 
 export interface ProgressSpec<G> {
-  /** Saved as "<slug>:<key>" by the shell. Never changes once the Game has been On. */
+  /** Saved as "<slug>:<key>" by the shell. Never changes once the Game has been On, except to move Groups (`formerKey`). */
   key: string;
   /** Each Group's Level count, easiest first; a function when it can change (Way Out's bonus Pack). */
   sizes: readonly number[] | (() => readonly number[]);
@@ -53,6 +53,11 @@ export interface ProgressSpec<G> {
   game?: GameSlot<G>;
   /** Reads a save made before this module. Without one, such a save starts fresh. */
   legacy?(saved: Record<string, unknown>): LegacySave;
+  /**
+   * The key the Game saved under before its Groups moved (Push Pals added Chapters in front). While `key`
+   * holds nothing, the save there is read through `legacy`, whatever its shape, and saved under `key`.
+   */
+  formerKey?: string;
 }
 
 export interface Progress<G> {
@@ -130,8 +135,15 @@ const browser: Applies = { sound: setSoundEnabled, voice: setVoiceEnabled };
 export function openProgress<G = Record<string, never>>(storage: GameStorage, spec: ProgressSpec<G>, applies: Applies = browser): Progress<G> {
   const slot: GameSlot<G> = spec.game ?? { read: () => ({}) as G };
   const raw = storage.read(spec.key);
+  const former = raw === undefined && spec.formerKey !== undefined ? storage.read(spec.formerKey) : undefined;
   const parts: Partial<Saved<unknown>> | LegacySave =
-    isRecord(raw) && raw.format === 1 ? raw : isRecord(raw) && spec.legacy ? spec.legacy(raw) : {};
+    isRecord(raw) && raw.format === 1
+      ? raw
+      : isRecord(raw) && spec.legacy
+        ? spec.legacy(raw)
+        : isRecord(former) && spec.legacy
+          ? spec.legacy(former)
+          : {};
   const saved: Saved<G> = {
     format: 1,
     done: readMarks(parts.done),

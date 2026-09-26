@@ -1,6 +1,6 @@
 # Push Pals
 
-A Sokoban game for a five-year-old. Levels are real puzzles from the start: two to four boxes, and every level can get stuck. Later chapters need tricks.
+A Sokoban game for three- to six-year-olds. The first three Chapters are for a three-year-old: one box, then two, and no Level can get stuck. After that Levels are real puzzles: two to four boxes, and every Level can get stuck. Later Chapters need tricks.
 
 ## Language
 
@@ -11,7 +11,7 @@ One puzzle: a board of walls and floor, some boxes, the same number of goals, an
 _Avoid_: Stage, puzzle, map
 
 **Chapter**:
-Eight levels sharing one difficulty band (box count, push range, whether each level needs a trick), each Chapter in its own colour with its boxes on its badge. Easiest first. A Group (site term).
+Eight levels sharing one difficulty band (box count, push range, whether each level is forgiving, pushes one way only, or needs a trick), each Chapter in its own colour with its boxes on its badge. Easiest first. A Group (site term).
 _Avoid_: World, pack, set
 
 **Box**:

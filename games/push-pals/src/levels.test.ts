@@ -16,16 +16,19 @@ describe.each(CHAPTERS.map((chapter, i) => [i + 1, chapter] as const))('chapter 
     expect(analysis.solvable).toBe(true);
     expect(analysis.minPushes).toBeGreaterThanOrEqual(chapter.minPushes);
     expect(analysis.minPushes).toBeLessThanOrEqual(chapter.maxPushes);
-    expect(analysis.forgiving).toBe(false);
+    expect(analysis.forgiving).toBe(chapter.forgiving === true);
     if (chapter.trick) expect(needsTrick(level)).toBe(true);
 
     let position = level.start;
+    const pushes = new Set<string>();
     for (const dir of analysis.solution) {
       const result = step(level, position, dir);
       if (result.kind === 'blocked') throw new Error(`solution blocked at ${dir}`);
+      if (result.kind === 'push') pushes.add(dir);
       position = result.position;
     }
     expect(isSolved(level, position)).toBe(true);
+    if (chapter.straight) expect(pushes.size).toBe(1);
   });
 });
 

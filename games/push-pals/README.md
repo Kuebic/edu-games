@@ -1,8 +1,10 @@
 # Push Pals
 
-Sokoban for a five-year-old. 80 levels in 10 chapters, from two boxes and a few pushes up
-to four boxes and a dozen or more. Every level can get stuck, and some chapters need a trick:
-pushing a box off a goal, or back the way it came.
+Sokoban for three- to six-year-olds. 104 levels in 13 chapters. The first three are for a
+three-year-old and can't get stuck: one box pushed one way, one box pushed two ways, then two
+boxes. From Chapter 4, every level can get stuck, from two boxes and a few pushes up to four
+boxes and a dozen or more, and some chapters need a trick: pushing a box off a goal, or back
+the way it came.
 
 - Play: swipe (one swipe = one step) or arrow keys / WASD. `Z` or Backspace undoes, `R` resets, Esc goes back to the Chapter's levels.
 - The level select: a Chapter's first level is open, and solving a level opens the next. Arrow keys walk the Chapters
@@ -22,7 +24,7 @@ npm run build                       # whole site, into dist/
 ```
 
 Levels live in `src/levels.ts`. Each chapter sets its box count and push range, and says whether
-every level must need a trick; `levels.test.ts` fails if a level breaks its chapter's limits.
+every level must be forgiving (can't get stuck), push one way only, or need a trick; `levels.test.ts` fails if a level breaks its chapter's limits.
 The level scripts are in `scripts/`. Sprites and sounds are in `src/assets/`.
 Vocabulary is in `CONTEXT.md`.
 

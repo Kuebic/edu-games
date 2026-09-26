@@ -23,13 +23,23 @@ describe('saved progress', () => {
     expect(again.settings.sound).toBe(false);
   });
 
-  it('loads a save written before the shell, from its old key', () => {
+  it('loads a save written before the shell, from its old key, three easy Chapters on', () => {
     const backing = memoryStorage({ 'push-pals:v2': '{"solved":[0,1,2,12],"muted":true}' });
     const progress = loadProgress(gameStorage('push-pals', backing));
-    expect(solved(progress)).toEqual([0, 1, 2, 12]);
+    expect(solved(progress)).toEqual([24, 25, 26, 36]);
     expect(progress.settings.sound).toBe(false);
     progress.save();
-    expect(Object.keys(backing.dump())).toEqual(['push-pals:v2']);
+    expect(Object.keys(backing.dump())).toEqual(['push-pals:v2', 'push-pals:v3']);
+  });
+
+  it('loads a v2 save on the site’s shape with its Chapters three on, and keeps the new save after', () => {
+    const v2 = { format: 1, done: { 0: [0, 1], 9: [7] }, sparkle: {}, settings: { sound: false, voice: true, everyLevelOpen: true } };
+    const storage = device({ 'push-pals:v2': JSON.stringify(v2) });
+    const progress = loadProgress(storage);
+    expect(solved(progress)).toEqual([24, 25, 103]);
+    expect(progress.settings).toEqual({ sound: false, voice: true, everyLevelOpen: true });
+    progress.finish(0, 0);
+    expect(solved(loadProgress(storage))).toEqual([0, 24, 25, 103]);
   });
 });
 
@@ -44,10 +54,10 @@ describe('progress', () => {
 
   it('reads a Chapter’s solved Levels from the numbering across Chapters', () => {
     const progress = loadProgress(device({ 'push-pals:v2': '{"solved":[0,7,8,12]}' }));
-    expect(progress.marks(0).map((m) => m.done)).toEqual([true, false, false, false, false, false, false, true]);
-    expect(progress.marks(1).map((m) => m.done)).toEqual([true, false, false, false, true, false, false, false]);
+    expect(progress.marks(3).map((m) => m.done)).toEqual([true, false, false, false, false, false, false, true]);
+    expect(progress.marks(4).map((m) => m.done)).toEqual([true, false, false, false, true, false, false, false]);
     expect(FIRST[1]).toBe(8);
-    expect([chapterOf(0), chapterOf(7), chapterOf(8), chapterOf(LEVELS.length - 1)]).toEqual([0, 0, 1, 9]);
+    expect([chapterOf(0), chapterOf(7), chapterOf(8), chapterOf(LEVELS.length - 1)]).toEqual([0, 0, 1, 12]);
   });
 
   it('goes on to the next Level, into the next Chapter, and stops after the last', () => {

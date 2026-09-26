@@ -78,6 +78,25 @@ describe('Saved progress', () => {
     expect(Object.keys(d.backing.dump())).toEqual(['g:v1']);
   });
 
+  it('reads the save under a former key through the legacy reader, whatever its shape, until the new key has one', () => {
+    // Groups moved: a new Group went in front, so every old one is one further on.
+    const moved: ProgressSpec<Slot> = {
+      ...spec,
+      key: 'v2',
+      formerKey: 'v1',
+      legacy: (saved) => ({ done: { 1: (saved.done as Record<string, number[]>)[0]! }, settings: { sound: false } }),
+    };
+    const d = device({ 'g:v1': JSON.stringify({ format: 1, done: { 0: [0, 2] }, sparkle: {}, settings: { sound: true }, game: {} }) });
+    const progress = openProgress(d.storage, moved, quiet);
+    expect(progress.marks(1).map((m) => m.done)).toEqual([true, false, true]);
+    expect(progress.settings.sound).toBe(false);
+    progress.finish(0, 0);
+    const again = openProgress(d.storage, moved, quiet);
+    expect(again.marks(0).map((m) => m.done)).toEqual([true, false, false]);
+    expect(again.marks(1).map((m) => m.done)).toEqual([true, false, true]);
+    expect(JSON.parse(d.backing.dump()['g:v1']!)).toMatchObject({ done: { 0: [0, 2] } });
+  });
+
   it('starts fresh from an old save when the Game has no legacy reader', () => {
     const d = device({ 'g:v1': JSON.stringify({ solved: [0] }) });
     const { legacy: _, ...noLegacy } = spec;
