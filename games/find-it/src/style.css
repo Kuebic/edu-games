@@ -325,18 +325,39 @@ body::before {
     --bean: 5vh;
   }
 
+  /* Bars beside the prompt, not under it: three across would leave each bean a few pixels wide. */
+  .play:has(.choices-rows) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    column-gap: 12px;
+  }
+
+  .play:has(.choices-rows) .play-top {
+    grid-column: 1 / -1;
+  }
+
+  .play:has(.choices-rows) .stage {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
   .choices-rows {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: clamp(10px, 4vw, 24px);
+    grid-row: 2;
+    grid-column: 2;
+    justify-content: center;
+    align-items: stretch;
+    gap: 8px;
+    padding: 0;
   }
 
   .choices-rows .choice {
     padding: 6px 10px;
   }
 
+  /* Half the 532px column, less the card's padding, holds 13.4 beans of 17px. */
   .choices-rows .tray-row {
-    --bean: min(1.2vw, 2.5vh);
+    --bean: min(2.2vw, 17px);
   }
 }
 
