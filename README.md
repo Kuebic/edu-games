@@ -2,7 +2,7 @@
 
 One phone-first site of gentle learning games for little kids, grouped on Shelves by Category: Math, Reading & Writing, Logic, Strategy. It's one Vite build deployed as one static-assets Cloudflare Worker. Install it once with "Add to Home Screen" and every Game works offline.
 
-Each Game is one folder in [`games/`](./games), which the build finds on its own, with its own README, CONTEXT.md and, where it has them, ADRs. Site vocabulary is in [CONTEXT.md](./CONTEXT.md), site decisions in [docs/adr](./docs/adr).
+Each Game is one folder in [`games/`](./games), which the build finds on its own, with its own README, CONTEXT.md and, where it has them, ADRs. Site vocabulary is in [CONTEXT.md](./CONTEXT.md), site decisions in [docs/adr](./docs/adr), and the specs the larger changes were built from in [docs/specs](./docs/specs).
 
 ## Run
 
@@ -26,6 +26,7 @@ npm run game       # list each Game's tasks; run one with npm run game <slug> <t
    - Skins go through its `skins` seam: chips on the Group list, with `paintPage()` for the page colours. A Game without Skins leaves it out.
    - Back and "all levels" in play go to that Group's screen, `showLevelSelect(root, game, group)`, and Next goes where `nextLevel()` says: the next Level, then the next Group.
    - Use `site-screen` for screens, `site-bar` for headers, `site-tool` for header buttons and `site-next` for the Next button, and set colours with `--site-*` tokens in your CSS. Never restyle the level select's own classes. The house picture means only the Hub, so going back inside your Game is a back chevron, and a button to all levels shows a levels grid.
+   - A Game that speaks uses the Voice, `@shared/voice`: `say()`, `hush()`, `setVoiceEnabled()` for the Grown-up Corner's Voice switch, and `canSpeak` to hide that switch and any speaker button where the browser can't speak. Call `unlockVoice()` from a touch, in the `unlock` you pass `startGame` or in the tap that starts play, or iOS never speaks. Never touch `speechSynthesis` yourself (ADR 0010).
    - A Grown-up Corner opens from a gear held for 3 seconds (`holdToActivate()` from `@shared/hold`) and uses `site-grownup`. Give it `role="dialog"`, so the level select's keys and cards leave it alone, and `aria-modal="true"`, and move focus into it when it opens.
 6. Put sprites and sounds in `src/assets/`, and import them in TS (`import cheerUrl from './assets/sounds/cheer.ogg'`) or use a relative `url()` in CSS. The build hashes them into `assets/`. `public/` is only for the Tile picture and the icons `index.html` links, served at `/<slug>/<file>` (ADR 0005). A new file type, say mp3 or webp, also goes in the precache `globPatterns` in `vite.config.ts`, or it won't work offline.
 7. Run `npm test` and `npm run build`. The Catalog, page and Shared look tests name anything the copy still gets wrong. When the Game is ready, turn it On.

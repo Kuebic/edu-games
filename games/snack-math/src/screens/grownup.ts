@@ -1,8 +1,8 @@
+import { canSpeak, setVoiceEnabled } from '@shared/voice';
 import type { App } from '../app';
 import { h } from '../dom';
 import { defaultSave } from '../progress';
 import { setSoundEnabled } from '../sfx';
-import { setVoiceEnabled } from '../speech';
 
 /** The Grown-up Corner, opened from the Stage list or from `stage`'s Rounds, where Done goes back to. */
 export function grownupScreen(app: App, stage?: number): void {
@@ -79,7 +79,7 @@ export function grownupScreen(app: App, stage?: number): void {
           'Every stage is open on the stage list: + is adding, − is taking away and ± is both, up to 5 (one row of dots) or 10 (two rows). A stage’s four rounds open in order, and Next goes on to the next stage.',
         ),
         h('h2', { text: 'Sound' }),
-        h('div', { class: 'toggle-row' }, voice, sound),
+        h('div', { class: 'toggle-row' }, canSpeak && voice, sound),
         h('h2', { text: 'Progress' }),
         stickerCount,
         reset,

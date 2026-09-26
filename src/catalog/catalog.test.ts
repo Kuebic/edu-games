@@ -65,6 +65,7 @@ describe('Catalog', () => {
     // ADR 0006: every page starts through the shell, and a Game saves only through it.
     const main = readFileSync(join(dir, 'src/main.ts'), 'utf8');
     const scripts = code.filter((f) => f.endsWith('.ts'));
+    const source = (f: string) => readFileSync(f, 'utf8');
 
     it('starts through the shell under its own Slug', () => {
       expect(main).toMatch(new RegExp(`startGame\\('${game.slug}'[,)]`));
@@ -76,13 +77,30 @@ describe('Catalog', () => {
 
     it('saves and registers offline only through the shell', () => {
       for (const f of scripts) {
-        expect(readFileSync(f, 'utf8'), relative(dir, f)).not.toMatch(/\blocalStorage\b|@shared\/pwa|virtual:pwa-register/);
+        expect(source(f), relative(dir, f)).not.toMatch(/\blocalStorage\b|@shared\/pwa|virtual:pwa-register/);
       }
+    });
+
+    // ADR 0010: a Game speaks only through the Voice, and unlocks it in a touch, or iOS never speaks.
+    it('speaks only through the Voice', () => {
+      for (const f of scripts) {
+        expect(relative(dir, f)).not.toMatch(/(^|\/)speech\.ts$/);
+        expect(source(f), relative(dir, f)).not.toMatch(/\bspeechSynthesis\b|\bSpeechSynthesisUtterance\b/);
+      }
+    });
+
+    it('unlocks the Voice it imports', () => {
+      const speaks = scripts.some((f) => /@shared\/voice/.test(source(f)));
+      // Called, or passed as the `unlock` to `startGame`: any mention past the import lines. Whether
+      // that's inside a touch, only a phone can tell.
+      const pastImports = (f: string) => source(f).replace(/^import\b[^;]*;/gm, '');
+      const unlocks = scripts.some((f) => /\bunlockVoice\b/.test(pastImports(f)));
+      expect(unlocks, 'a Game that imports @shared/voice must call unlockVoice from a touch').toBe(speaks);
     });
 
     // Every Game opens on the level select, which draws the House button (ADR 0008); look.test.ts checks the rest.
     it('has a House button back to the Hub', () => {
-      expect(scripts.some((f) => /\bshowLevelSelect\(/.test(readFileSync(f, 'utf8')))).toBe(true);
+      expect(scripts.some((f) => /\bshowLevelSelect\(/.test(source(f)))).toBe(true);
     });
 
     it('keeps in public/ only the Tile picture and the files its page links', () => {

@@ -2,13 +2,13 @@
 
 import { holdToActivate } from '@shared/hold';
 import { paintPage, showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
+import { canSpeak, say } from '@shared/voice';
 import { packColor, packIcon, type App } from './app';
 import { ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
 import { PACKS } from './packs';
 import { packLevels, packSparkles, shownPacks } from './progress';
 import { heroPicture, SKINS, skinById, type SkinId } from './skins';
-import { canSpeak, say } from './speech';
 
 /** Colours the page for a Skin: the sky behind every screen, and the browser bar. */
 export function paintSkin(id: SkinId): void {

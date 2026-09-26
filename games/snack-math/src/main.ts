@@ -1,4 +1,5 @@
 import { startGame } from '@shared/shell';
+import { setVoiceEnabled } from '@shared/voice';
 import './style.css';
 import type { App } from './app';
 import { loadSave, writeSave } from './progress';
@@ -7,7 +8,6 @@ import { playScreen } from './screens/play';
 import { showSelect } from './screens/select';
 import { stickersScreen } from './screens/stickers';
 import { setSoundEnabled } from './sfx';
-import { hush, setVoiceEnabled } from './speech';
 
 const { root, storage } = startGame('snack-math');
 let cleanup: (() => void) | void;
@@ -32,9 +32,5 @@ const app: App = {
 
 setVoiceEnabled(app.save.voice);
 setSoundEnabled(app.save.sound);
-
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) hush();
-});
 
 app.stages();

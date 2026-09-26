@@ -1,15 +1,21 @@
 import { startGame } from '@shared/shell';
+import { hush, setVoiceEnabled, unlockVoice } from '@shared/voice';
 import type { App } from './app';
 import { showParent } from './parent';
 import { showPlay, type Puzzle } from './play';
 import { loadProgress, saveProgress, takePoolPuzzle } from './progress';
 import { paintSkin, showSelect } from './select';
 import { setSoundEnabled, unlockAudio } from './sound';
-import { hush, setVoiceEnabled } from './speech';
 import { skinById } from './skins';
 import './style.css';
 
-const { root, storage } = startGame('way-out', { unlock: unlockAudio });
+// Browsers only start audio and the Voice after a touch.
+const { root, storage } = startGame('way-out', {
+  unlock() {
+    unlockAudio();
+    unlockVoice();
+  },
+});
 const progress = loadProgress(storage);
 setSoundEnabled(progress.settings.sound);
 setVoiceEnabled(progress.settings.voice);

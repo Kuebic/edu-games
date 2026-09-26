@@ -1,8 +1,8 @@
 // The parent menu, behind a 3-second hold on the gear. Words are fine here: it's for grown-ups.
 
+import { canSpeak } from '@shared/voice';
 import { ICONS, iconButton } from './icons';
 import { freshProgress, SPEEDS, type Progress, type Speed } from './progress';
-import { canSpeak } from './speech';
 
 export interface ParentHooks {
   progress(): Progress;

@@ -7,9 +7,9 @@ import { loadSave } from '../progress';
 import { snackMathSelect, STAGE_COLOURS, stageBadge } from './select';
 
 vi.mock('../sfx', () => ({ unlockAudio: vi.fn() }));
-vi.mock('../speech', () => ({ unlockSpeech: vi.fn() }));
+vi.mock('@shared/voice', () => ({ unlockVoice: vi.fn() }));
 const { unlockAudio } = await import('../sfx');
-const { unlockSpeech } = await import('../speech');
+const { unlockVoice } = await import('@shared/voice');
 
 /** An App on a save as the Game wrote it, under its real key. */
 function app(save: object): App {
@@ -57,6 +57,6 @@ describe("Snack Math's level select", () => {
     snackMathSelect(a).play(2, 1);
     expect(a.play).toHaveBeenCalledWith(2, 1);
     expect(unlockAudio).toHaveBeenCalled();
-    expect(unlockSpeech).toHaveBeenCalled();
+    expect(unlockVoice).toHaveBeenCalled();
   });
 });

@@ -5,16 +5,14 @@ import { showPlay } from './play';
 import { loadProgress, saveProgress, type Progress } from './progress';
 import { paintSkin, showSelect, type SelectHooks } from './select';
 import { setMuted, setSkinSound, unlockAudio } from './sound';
-import { setVoiceEnabled, unlockSpeech } from './speech';
+import { setVoiceEnabled, unlockVoice } from '@shared/voice';
 import './style.css';
 
-// Browsers only start audio and speech after a touch.
-let spoke = false;
+// Browsers only start audio and the Voice after a touch.
 const { root, storage } = startGame('robot-path', {
   unlock() {
     unlockAudio();
-    if (!spoke) unlockSpeech();
-    spoke = true;
+    unlockVoice();
   },
 });
 let progress = loadProgress(storage);

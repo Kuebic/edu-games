@@ -1,6 +1,7 @@
 // One Level: build a Program with taps, press Go, watch the robot run it.
 // Nothing is ever cleared for him: after a bonk or an unfinished Run his Program is still there to fix.
 
+import { canSpeak, hush, say } from '@shared/voice';
 import { Board, type GhostMark } from './board';
 import { add, canAdd, clear, cycleTimes, editorFor, moveCursor, remove, select, type Editor } from './game/editor';
 import { initialState, run, type Address, type RunState, type Trace } from './game/engine';
@@ -11,7 +12,7 @@ import { levelAt, WORLDS } from './levels';
 import { ProgramBar, type RunMarks } from './program-bar';
 import { levelAfter, SPEEDS, withDraft, withWin, type Progress, type Speed } from './progress';
 import * as sfx from './sound';
-import { canSpeak, hush, say, spellOut } from './speech';
+import { spellOut } from './spell';
 
 export interface PlayHooks {
   progress(): Progress;

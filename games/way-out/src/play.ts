@@ -2,6 +2,7 @@
 // No timer, no move limit, no way to lose; Undo goes all the way back and Reset can be undone.
 
 import { holdToActivate } from '@shared/hold';
+import { canSpeak, say } from '@shared/voice';
 import { packColor, packIcon, type App } from './app';
 import { createBoardView } from './board-view';
 import { apply, isSolved, parse, solve, type Board, type Move } from './game/board';
@@ -11,7 +12,6 @@ import { LEVELS } from './levels';
 import type { Level, PoolPuzzle } from './packs';
 import { levelAfter, levelProgress, recordPoolSolve, recordSolve, type Snapshot } from './progress';
 import { cheer, engine, twinkle } from './sound';
-import { canSpeak, say } from './speech';
 import { colorOf, COLORS, kindName, RED } from './skins';
 
 export type Puzzle = { kind: 'level'; level: Level } | { kind: 'pool'; pack: number; puzzle: PoolPuzzle };

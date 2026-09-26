@@ -2,12 +2,12 @@
 
 import { holdToActivate } from '@shared/hold';
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
+import { unlockVoice } from '@shared/voice';
 import type { App } from '../app';
 import { h } from '../dom';
 import { STAGES, type Stage } from '../problems';
 import { roundsDone } from '../progress';
 import { unlockAudio } from '../sfx';
-import { unlockSpeech } from '../speech';
 import { gearIcon } from './icons';
 
 /**
@@ -37,10 +37,10 @@ export function stageBadge(stage: Stage, colour: string): string {
   );
 }
 
-/** Sound and speech start inside a tap, on phones. */
+/** Sound and the Voice start inside a tap, on phones. */
 function start(): void {
   unlockAudio();
-  unlockSpeech();
+  unlockVoice();
 }
 
 /** Snack Math as the level select sees it: Stages and Rounds count from 0 there, as here. */
