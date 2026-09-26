@@ -85,7 +85,8 @@ export function choiceRow<T extends string>(
   return row;
 }
 
-let texts = 0;
+/** Counts text rows, so each box has an id of its own for its label. */
+let textRowIds = 0;
 
 /**
  * A row with a text box: its name, and the box showing what `get` says. Saves with `set` when the box
@@ -98,7 +99,7 @@ export function textRow(label: string, get: () => string, set: (text: string) =>
   name.textContent = label;
   const box = document.createElement('input');
   box.type = 'text';
-  box.id = name.htmlFor = `site-text-${++texts}`;
+  box.id = name.htmlFor = `site-text-${++textRowIds}`;
   box.autocomplete = 'off';
   box.spellcheck = false;
   box.value = get();

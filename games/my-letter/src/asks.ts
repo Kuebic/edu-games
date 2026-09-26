@@ -11,8 +11,8 @@ export function ask(letter: string, name?: string): string {
   return `Find ${theLetter(letter)} ${nameLetters(name)[0] === letter ? 'for' : 'in'} ${name}!`;
 }
 
-/** A Fade: the wrong pick's name. */
-export const wrongLine = (letter: string) => `That's ${theLetter(letter)}.`;
+/** A Fade: the name of the letter that fades. */
+export const fadeLine = (letter: string) => `That's ${theLetter(letter)}.`;
 
 /** Before the Letter sound clip plays. */
 export const saysLine = (letter: string) => `The letter ${letter} says`;

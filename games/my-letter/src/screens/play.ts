@@ -1,22 +1,22 @@
 import { buzz, cheer } from '@shared/sound';
 import { hush, say } from '@shared/voice';
 import type { App } from '../app';
-import { ask, foundLine, saysLine, wrongLine } from '../asks';
+import { ask, fadeLine, foundLine, saysLine } from '../asks';
 import { FINDS, makeFinds, type Find } from '../choices';
 import { h, replay, sparkle, wait } from '../dom';
-import { levelLetters, metLetters, nameLine } from '../letters';
+import { MY_NAME, levelLetters, metLetters, nameCapitals } from '../letters';
 import { letterSound, play } from '../sounds';
 import { backIcon, nextIcon, speakerIcon } from './icons';
 
-/** How long a find lasts at least, so a missing or silent Letter sound still leaves a breath before the next Find. */
+/** How long a find lasts at least, so a letter with no Letter sound still leaves a breath before the next Find. */
 const FOUND_MS = 800;
 
 /**
  * The Name line: the Name's capitals, with a blank wherever `letter` goes (SAM asking S is _AM).
  * `fill()` puts the letter in the blanks; `clear()` empties them again for the next Find.
  */
-function nameLineOf(name: string, letter: string): { el: HTMLElement; fill(): void; clear(): void } {
-  const capitals = [...nameLine(name)];
+function drawNameLine(name: string, letter: string): { el: HTMLElement; fill(): void; clear(): void } {
+  const capitals = [...nameCapitals(name)];
   const blanks: HTMLElement[] = [];
   const el = h('span', { class: 'name-line', label: name });
   el.style.setProperty('--n', String(capitals.length));
@@ -39,16 +39,16 @@ export function playScreen(app: App, group: number, level: number): () => void {
   const letter = levelLetters(name, group)[level];
   if (letter === undefined) throw new Error(`My Letter: no Level ${level} in Group ${group}`);
   const finds = makeFinds(letter, metLetters(name, group, level));
-  const line = group === 0 ? ask(letter, name) : ask(letter);
+  const line = group === MY_NAME ? ask(letter, name) : ask(letter);
 
   // ---- Layout ------------------------------------------------------------
   const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
   const dots = Array.from({ length: FINDS }, () => h('span', { class: 'dot' }));
-  const nameLineView = group === 0 ? nameLineOf(name, letter) : undefined;
+  const nameLine = group === MY_NAME ? drawNameLine(name, letter) : undefined;
   const promptBtn = h(
     'button',
     { class: 'prompt', label: 'Hear it again' },
-    nameLineView?.el ?? h('span', { class: 'speaker', html: speakerIcon }),
+    nameLine?.el ?? h('span', { class: 'speaker', html: speakerIcon }),
   );
   const choicesEl = h('div', { class: 'choices' });
   const fx = h('div', { class: 'fx-layer' });
@@ -56,7 +56,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
     'div',
     { class: 'site-screen screen play' },
     h('header', { class: 'play-top' }, backBtn, h('div', { class: 'dots' }, ...dots), app.corner.gear()),
-    h('main', { class: 'stage' }, promptBtn),
+    h('main', { class: 'play-area' }, promptBtn),
     choicesEl,
     fx,
   );
@@ -77,7 +77,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
 
   // ---- One Find -----------------------------------------------------------
   async function runFind(find: Find, index: number): Promise<void> {
-    nameLineView?.clear();
+    nameLine?.clear();
     const buttons = find.choices.map((c, i) => {
       const b = h('button', { class: `choice c${i}`, label: c }, h('span', { class: 'glyph', text: c }));
       b.style.animationDelay = `${i * 80}ms`;
@@ -105,7 +105,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
       const b = buttons[i]!;
       replay(b, 'wobble');
       play('boop');
-      await say(wrongLine(chosen));
+      await say(fadeLine(chosen));
       b.classList.add('gone');
       if (!alive) return;
       await say(line);
@@ -114,16 +114,17 @@ export function playScreen(app: App, group: number, level: number): () => void {
     // Found: the letter dances, fills the Name line, and says its sound.
     const right = buttons[find.choices.indexOf(letter)]!;
     right.classList.add('right');
-    nameLineView?.fill();
+    nameLine?.fill();
     play('pop');
     buzz(40);
     sparkle(right, fx);
     dots[index]!.classList.add('filled');
-    const sound = app.progress.settings.sound ? letterSound(letter) : undefined;
-    if (sound) {
+    // Only a clip that will be heard gets "S says"; else the letter's name alone (ADR 0001).
+    const letterClip = letterSound(letter);
+    if (letterClip?.ready()) {
       await say(saysLine(letter));
       if (!alive) return;
-      await Promise.all([sound(), wait(FOUND_MS / 2)]);
+      await Promise.all([letterClip(), wait(FOUND_MS / 2)]);
       await wait(FOUND_MS / 2);
     } else {
       await Promise.all([say(foundLine(letter)), wait(FOUND_MS)]);

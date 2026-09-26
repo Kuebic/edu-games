@@ -30,13 +30,21 @@ export interface Sound {
   /**
    * A clip to play. Fetched and decoded once the context exists, so register clips at load and play
    * them any time: a play before the clip is ready, or with sound off, is silent. A failed fetch is too.
-   * Playing resolves when the clip ends, or at once when it's silent.
+   * Playing resolves when the clip ends, or at once when it's silent; `ready()` says which it will be.
    */
-  clip(url: string): () => Promise<void>;
+  clip(url: string): Clip;
   /** The site's cheer jingle (Kenney's CC0), for a Level done. */
   cheer(): void;
   /** A little vibration, where the device can, and only while sound is on. */
   buzz(ms: number): void;
+}
+
+/** A registered clip: play it, or ask first whether it would be heard. */
+export interface Clip {
+  /** Plays it. Resolves when it ends, or at once when it's silent. */
+  (): Promise<void>;
+  /** True when a play now would be heard: decoded, with sound on and the context running. */
+  ready(): boolean;
 }
 
 /** What the Sound uses of the browser. Tests pass fakes; missing pieces mean silence. */
@@ -72,9 +80,12 @@ export function createSound(env: SoundEnv): Sound {
     source.buffer = buffer;
     source.connect(live.destination);
     return new Promise((resolve) => {
-      source.onended = () => resolve();
       // A context suspended mid-clip never ends it; don't let a Game hang waiting.
-      if (Number.isFinite(buffer.duration)) setTimeout(resolve, buffer.duration * 1000 + 500);
+      const guard = Number.isFinite(buffer.duration) ? setTimeout(resolve, buffer.duration * 1000 + 500) : undefined;
+      source.onended = () => {
+        clearTimeout(guard);
+        resolve();
+      };
       source.start();
     });
   };
@@ -122,7 +133,7 @@ export function createSound(env: SoundEnv): Sound {
         clips.set(url, undefined);
         if (context) decode(url);
       }
-      return () => play(url);
+      return Object.assign(() => play(url), { ready: () => clips.get(url) !== undefined && audio() !== undefined });
     },
 
     cheer() {

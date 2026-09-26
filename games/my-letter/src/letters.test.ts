@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GROUPS, NEW_LETTERS, levelLetters, looksAlike, metLetters, nameLetters, nameLine } from './letters';
+import { GROUP_NAMES, MY_NAME, NEW_LETTERS, NEW_LETTER_ORDER, levelLetters, looksAlike, metLetters, nameCapitals, nameLetters } from './letters';
 
 describe('Name letters', () => {
   it('are the different letters of the Name, in the order they first appear', () => {
@@ -15,7 +15,7 @@ describe('Name letters', () => {
   });
 
   it('come from the first ten letters of the Name', () => {
-    expect(nameLine('Maximilianus')).toBe('MAXIMILIAN');
+    expect(nameCapitals('Maximilianus')).toBe('MAXIMILIAN');
     expect(nameLetters('Maximilianus')).toEqual(['M', 'A', 'X', 'I', 'L', 'N']);
     expect(nameLetters('Abcdefghijklm')).toHaveLength(10);
   });
@@ -24,43 +24,43 @@ describe('Name letters', () => {
     expect(nameLetters('')).toEqual([]);
     expect(nameLetters('   ')).toEqual([]);
     expect(nameLetters('42 ☺')).toEqual([]);
-    expect(nameLine('李')).toBe('');
+    expect(nameCapitals('李')).toBe('');
   });
 });
 
 describe('the Name line', () => {
   it('is the Name in capitals, accents gone, up to ten', () => {
-    expect(nameLine('Anna')).toBe('ANNA');
-    expect(nameLine('Zoë')).toBe('ZOE');
-    expect(nameLine('Mary Jane')).toBe('MARYJANE');
+    expect(nameCapitals('Anna')).toBe('ANNA');
+    expect(nameCapitals('Zoë')).toBe('ZOE');
+    expect(nameCapitals('Mary Jane')).toBe('MARYJANE');
   });
 });
 
 describe('the Groups', () => {
   it('are My name, then New letters', () => {
-    expect(GROUPS).toEqual(['My name', 'New letters']);
-    expect(NEW_LETTERS).toEqual(['B', 'D', 'K', 'P', 'T', 'V', 'Z', 'J']);
+    expect([GROUP_NAMES[MY_NAME], GROUP_NAMES[NEW_LETTERS]]).toEqual(['My name', 'New letters']);
+    expect(NEW_LETTER_ORDER).toEqual(['B', 'D', 'K', 'P', 'T', 'V', 'Z', 'J']);
   });
 
   it('have a Level per Name letter, then always all eight New letters', () => {
-    expect(levelLetters('Ben', 0)).toEqual(['B', 'E', 'N']);
-    expect(levelLetters('Ben', 1)).toEqual(NEW_LETTERS);
-    expect(levelLetters('', 0)).toEqual([]);
-    expect(levelLetters('', 1)).toEqual(NEW_LETTERS);
+    expect(levelLetters('Ben', MY_NAME)).toEqual(['B', 'E', 'N']);
+    expect(levelLetters('Ben', NEW_LETTERS)).toEqual(NEW_LETTER_ORDER);
+    expect(levelLetters('', MY_NAME)).toEqual([]);
+    expect(levelLetters('', NEW_LETTERS)).toEqual(NEW_LETTER_ORDER);
   });
 });
 
 describe('Met letters', () => {
   it('are the letters of every earlier Level: My name first, then New letters', () => {
-    expect(metLetters('Sam', 0, 0)).toEqual([]);
-    expect(metLetters('Sam', 0, 2)).toEqual(['S', 'A']);
-    expect(metLetters('Sam', 1, 0)).toEqual(['S', 'A', 'M']);
-    expect(metLetters('Sam', 1, 2)).toEqual(['S', 'A', 'M', 'B', 'D']);
-    expect(metLetters('', 1, 1)).toEqual(['B']);
+    expect(metLetters('Sam', MY_NAME, 0)).toEqual([]);
+    expect(metLetters('Sam', MY_NAME, 2)).toEqual(['S', 'A']);
+    expect(metLetters('Sam', NEW_LETTERS, 0)).toEqual(['S', 'A', 'M']);
+    expect(metLetters('Sam', NEW_LETTERS, 2)).toEqual(['S', 'A', 'M', 'B', 'D']);
+    expect(metLetters('', NEW_LETTERS, 1)).toEqual(['B']);
   });
 
   it('are each letter once, even one met in both Groups', () => {
-    expect(metLetters('Ben', 1, 3)).toEqual(['B', 'E', 'N', 'D', 'K']);
+    expect(metLetters('Ben', NEW_LETTERS, 3)).toEqual(['B', 'E', 'N', 'D', 'K']);
   });
 });
 

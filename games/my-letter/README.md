@@ -22,7 +22,7 @@ The first time it opens, the Grown-up Corner opens too, so you can type the chil
 
 There are two groups. My name has a level for each different letter of the name, in the order they come: Sam gets S, A and M. It shows once there's a name. New letters has B, D, K, P, T, V, Z and J, letters whose names start with their sound, the same eight for every child. Levels open in order, and Next goes on to the next one, from My name into New letters.
 
-A level asks for its letter four times. There are always two letters to pick from, and the other one never looks like it (never B beside D, or M beside W), so it's often a letter met in an earlier level. In My name, the name is shown big with a box where the letter goes. A right pick dances, fills the boxes, and says its sound ("S says /s/"). A wrong pick is named ("That's M."), fades away, and the question is asked again. There are no scores or timers, and no level can be failed. Tapping the name or the speaker asks again.
+A level asks for its letter four times. There are always two letters to pick from, and the other one never looks like it (never B beside D, or M beside W), so it's often a letter met in an earlier level. In My name, the name is shown big with a box where the letter goes. The letter asked for dances when it's found, fills the boxes, and says its sound ("S says /s/"). The other one, picked by mistake, is named ("That's M."), fades away, and the question is asked again. There are no scores or timers, and no level can be failed. Tapping the name or the speaker asks again.
 
 A new name with different letters starts My name again; New letters stays done. Reset progress keeps the name.
 

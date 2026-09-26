@@ -90,7 +90,7 @@ The two screens a Game opens on, drawn the same in every Game: the Group list an
 _Avoid_: level picker, map, menu
 
 **Group list**:
-A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group with its badge, done dots and Sparkles if it has them.
+A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group that has Levels, with its badge, done dots and Sparkles if it has them.
 
 **Group screen**:
 One Group's Levels as numbered cards (My Letter's show their letters): done ones filled and ticked, the next one open, later ones locked.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ask, foundLine, saysLine, wrongLine } from './asks';
+import { ask, foundLine, saysLine, fadeLine } from './asks';
 
 describe('the ask', () => {
   it('in My name, for the Name’s first letter, is for the Name', () => {
@@ -22,7 +22,7 @@ describe('the ask', () => {
 
 describe('the lines', () => {
   it('name a letter so the Voice reads it as the letter, not a word', () => {
-    expect(wrongLine('M')).toBe("That's the letter M.");
+    expect(fadeLine('M')).toBe("That's the letter M.");
     expect(saysLine('A')).toBe('The letter A says');
     expect(foundLine('S')).toBe("That's the letter S!");
   });

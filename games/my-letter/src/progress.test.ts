@@ -1,5 +1,6 @@
 import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
+import { MY_NAME, NEW_LETTERS } from './letters';
 import { hasName, loadProgress, setName } from './progress';
 
 /** A device holding this raw save under its real key, or nothing. */
@@ -14,27 +15,27 @@ const done = (marks: { done: boolean }[]) => marks.map((m) => m.done);
 describe('Levels', () => {
   it('are none in My name without a Name, and always eight in New letters, none done to start with', () => {
     const progress = loadProgress(device());
-    expect(progress.marks(0)).toEqual([]);
-    expect(done(progress.marks(1))).toEqual(Array(8).fill(false));
+    expect(progress.marks(MY_NAME)).toEqual([]);
+    expect(done(progress.marks(NEW_LETTERS))).toEqual(Array(8).fill(false));
     expect(hasName(progress)).toBe(false);
   });
 
   it('are one per Name letter in My name, and New letters stays Group 1 whatever the Name', () => {
     const progress = loadProgress(device());
-    progress.finish(1, 0);
+    progress.finish(NEW_LETTERS, 0);
     setName(progress, 'Anna');
-    expect(progress.marks(0)).toHaveLength(2);
-    expect(done(progress.marks(1))[0]).toBe(true);
+    expect(progress.marks(MY_NAME)).toHaveLength(2);
+    expect(done(progress.marks(NEW_LETTERS))[0]).toBe(true);
     setName(progress, '');
-    expect(progress.marks(0)).toEqual([]);
-    expect(done(progress.marks(1))[0]).toBe(true);
+    expect(progress.marks(MY_NAME)).toEqual([]);
+    expect(done(progress.marks(NEW_LETTERS))[0]).toBe(true);
   });
 
   it('go on from My name into New letters, and stop after J', () => {
     const progress = loadProgress(device({ format: 1, game: { name: 'Sam' } }));
-    expect(progress.after(0, 1)).toEqual({ group: 0, level: 2 });
-    expect(progress.after(0, 2)).toEqual({ group: 1, level: 0 });
-    expect(progress.after(1, 7)).toBeUndefined();
+    expect(progress.after(MY_NAME, 1)).toEqual({ group: MY_NAME, level: 2 });
+    expect(progress.after(MY_NAME, 2)).toEqual({ group: NEW_LETTERS, level: 0 });
+    expect(progress.after(NEW_LETTERS, 7)).toBeUndefined();
   });
 });
 
@@ -51,26 +52,26 @@ describe('the Name', () => {
     const progress = loadProgress(device());
     setName(progress, '42');
     expect(hasName(progress)).toBe(false);
-    expect(progress.marks(0)).toEqual([]);
+    expect(progress.marks(MY_NAME)).toEqual([]);
   });
 
   it('when it changes to different letters, clears My name’s Done marks, and only those', () => {
     const progress = loadProgress(device());
     setName(progress, 'Sam');
-    progress.finish(0, 0);
-    progress.finish(0, 1);
-    progress.finish(1, 3);
-    setName(progress, 'Sara');
-    expect(done(progress.marks(0))).toEqual([false, false, false]);
-    expect(done(progress.marks(1))[3]).toBe(true);
+    progress.finish(MY_NAME, 0);
+    progress.finish(MY_NAME, 1);
+    progress.finish(NEW_LETTERS, 3);
+    expect(setName(progress, 'Sara')).toBe(true);
+    expect(done(progress.marks(MY_NAME))).toEqual([false, false, false]);
+    expect(done(progress.marks(NEW_LETTERS))[3]).toBe(true);
   });
 
   it('keeps My name’s Done marks when only case, spaces or accents change', () => {
     const progress = loadProgress(device());
     setName(progress, 'Zoe');
-    progress.finish(0, 0);
-    setName(progress, ' zoë');
-    expect(done(progress.marks(0))).toEqual([true, false, false]);
+    progress.finish(MY_NAME, 0);
+    expect(setName(progress, ' zoë')).toBe(false);
+    expect(done(progress.marks(MY_NAME))).toEqual([true, false, false]);
   });
 
   it('outlasts a reset, as does a skip', () => {
@@ -79,12 +80,12 @@ describe('the Name', () => {
     setName(first, 'Sam');
     first.game.skipped = true;
     first.save();
-    first.finish(0, 0);
-    first.finish(1, 0);
+    first.finish(MY_NAME, 0);
+    first.finish(NEW_LETTERS, 0);
     first.reset();
     const again = loadProgress(storage);
     expect(again.game).toEqual({ name: 'Sam', skipped: true });
-    expect(done(again.marks(0))).toEqual([false, false, false]);
+    expect(done(again.marks(MY_NAME))).toEqual([false, false, false]);
   });
 
   it('starts empty and not skipped, and from a damaged slot', () => {

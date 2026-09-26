@@ -45,7 +45,7 @@ class FakeContext {
     return this.make('source');
   }
   decodeAudioData(data: unknown) {
-    return Promise.resolve({ decoded: data });
+    return Promise.resolve({ decoded: data, duration: 0.5 });
   }
   private make(kind: string) {
     const node = fakeNode();
@@ -148,7 +148,7 @@ describe('the Sound', () => {
       await settle();
       tap();
       expect(nodes('source')).toHaveLength(1);
-      expect(nodes('source')[0]!.buffer).toEqual({ decoded: 'tap.ogg' });
+      expect(nodes('source')[0]!.buffer).toEqual({ decoded: 'tap.ogg', duration: 0.5 });
       expect(nodes('source')[0]!.start).toHaveBeenCalledOnce();
     });
 
@@ -169,6 +169,40 @@ describe('the Sound', () => {
       nodes('source')[0]!.onended!();
       await settle();
       expect(ended).toBe(true);
+    });
+
+    it('says whether it can play now: decoded, with sound on and the context running', async () => {
+      const { sound, context } = soundOver();
+      const s = sound.clip('s.ogg');
+      const bad = sound.clip('gone.ogg!');
+      expect(s.ready()).toBe(false);
+      sound.unlockAudio();
+      // Still loading.
+      expect(s.ready()).toBe(false);
+      await settle();
+      expect(s.ready()).toBe(true);
+      expect(bad.ready()).toBe(false);
+      sound.setSoundEnabled(false);
+      expect(s.ready()).toBe(false);
+      sound.setSoundEnabled(true);
+      context().state = 'suspended';
+      expect(s.ready()).toBe(false);
+    });
+
+    it('stops its guard timer when it ends', async () => {
+      vi.useFakeTimers();
+      try {
+        const { sound, nodes } = soundOver();
+        const s = sound.clip('s.ogg');
+        sound.unlockAudio();
+        await vi.advanceTimersByTimeAsync(0);
+        void s();
+        expect(vi.getTimerCount()).toBe(1);
+        nodes('source')[0]!.onended!();
+        expect(vi.getTimerCount()).toBe(0);
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('registered after the first touch is fetched at once, and only once', () => {
