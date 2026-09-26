@@ -7,6 +7,7 @@ pushing a box off a goal, or back the way it came.
 - Play: swipe (one swipe = one step) or arrow keys / WASD. `Z` or Backspace undoes, `R` resets, Esc goes back to the Chapter's levels.
 - The level select: a Chapter's first level is open, and solving a level opens the next. Arrow keys walk the Chapters
   and levels, Esc goes back to the Chapter list, and the House button at its top goes back to the Hub.
+- Grown-ups: press and hold the gear for 3 seconds for sound, "Every level open", and reset progress.
 
 ## Develop
 

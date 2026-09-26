@@ -50,9 +50,7 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
   }
   const speaker = iconButton('site-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${skin.hero} get out.`));
   speaker.hidden = !canSpeak;
-  const gear = iconButton('site-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
-  holdToActivate(gear, 3000, () => app.parent());
-  bar.append(iconButton('site-tool', ICONS.back, 'Back', () => app.pack(pack)), badge, speaker, gear);
+  bar.append(iconButton('site-tool', ICONS.back, 'Back', () => app.pack(pack)), badge, speaker, app.corner.gear());
 
   // Status: the Move counter, and the Sparkle if it's already earned.
   const status = document.createElement('div');

@@ -17,7 +17,7 @@ function fakeApp(progress: Progress) {
     pack() {},
     level: vi.fn<App['level']>(),
     pool() {},
-    parent() {},
+    corner: { gear: vi.fn(), open: vi.fn() },
   } satisfies App;
 }
 

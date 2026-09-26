@@ -32,9 +32,9 @@ const HOUSES = ['M8 23 24 9l16 14', 'M3.5 11.2 12 4l8.5 7.2'];
 const LOCKS = ['M16 22v-6a8 8', 'M8 11V7a4 4'];
 /** The unlock rules Games have had, by name. The one rule is src/shared/unlock.ts; a rule under a new name isn't caught. */
 const OWN_RULES = /\b(?:isUnlocked|isPackOpen|isWorldUnlocked|isLevelUnlocked|OPENS_NEXT|WORLD_UNLOCK_AT)\b/;
-/** The level select's own classes, which no Game restyles. */
+/** The level select's and the Grown-up Corner's own classes, which no Game restyles. */
 const baseClasses = classesIn(base);
-const SELECT_CLASSES = [...classesIn(read('src/shared/level-select.css'))].filter((c) => !baseClasses.has(c));
+const SELECT_CLASSES = [...classesIn(read('src/shared/level-select.css')), ...classesIn(read('src/shared/grownup.css'))].filter((c) => !baseClasses.has(c));
 
 /** Where a Game has drifted from the Shared look; empty when it hasn't. */
 function drift(slug: string): string[] {
@@ -45,7 +45,7 @@ function drift(slug: string): string[] {
     if (f.endsWith('.css')) {
       const stack = /font-family:(?!\s*(?:var\(|inherit))[^;]+|--[\w-]+:\s*[^;]*\b(?:ui-rounded|system-ui)\b/.exec(text);
       if (stack) found.push(`${f}: a font stack of its own (${stack[0]}); use --site-font or site-grownup`);
-      for (const c of SELECT_CLASSES) if (new RegExp(`\\.${c}(?![\\w-])`).test(text)) found.push(`${f}: restyles the level select's .${c}`);
+      for (const c of SELECT_CLASSES) if (new RegExp(`\\.${c}(?![\\w-])`).test(text)) found.push(`${f}: restyles the site's .${c}`);
     }
   }
   if (!files.some(({ text }) => text.includes('site-screen'))) found.push("its screens aren't site-screens");

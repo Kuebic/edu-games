@@ -9,7 +9,7 @@ import { robotPathSelect, type SelectHooks } from './select';
 const oldSave = (save: object) => loadProgress(gameStorage('robot-path', memoryStorage({ 'robot-path:v1': JSON.stringify(save) })));
 
 function hooks(progress: Progress) {
-  return { progress, skin: vi.fn<SelectHooks['skin']>(), open: vi.fn<SelectHooks['open']>(), parent() {} };
+  return { progress, skin: vi.fn<SelectHooks['skin']>(), open: vi.fn<SelectHooks['open']>(), corner: { gear: vi.fn(), open: vi.fn() } };
 }
 
 /** The ids of every Level the level select shows as done. */

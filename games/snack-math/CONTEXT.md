@@ -71,5 +71,5 @@ Where the child sees every Sticker earned.
 _Avoid_: Collection, trophy room
 
 **Grown-up Corner**:
-Snack Math's Grown-up Corner (a site term): where a grown-up turns the voice or sounds off, or resets progress.
+The site's Grown-up Corner (a site term), with a row for how many Stickers the child has earned.
 _Avoid_: Parent mode, admin, settings screen

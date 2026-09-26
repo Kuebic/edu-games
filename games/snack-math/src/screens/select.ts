@@ -1,11 +1,9 @@
 // The level select: the Stage list, with the Stages as Groups of four Rounds, the gear, and the Sticker Book under the list.
 
-import { holdToActivate } from '@shared/hold';
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
 import type { App } from '../app';
 import { h } from '../dom';
 import { STAGES, type Stage } from '../problems';
-import { gearIcon } from './icons';
 
 /**
  * One colour per Stage, from the Game's own palette: adding is mint, taking away is coral, and mixed
@@ -46,11 +44,7 @@ export function snackMathSelect(app: App): LevelSelectGame {
         badge: () => stageBadge(stage, STAGE_COLOURS[s]!),
         levels: app.progress.marks(s),
       })),
-    tools(stage) {
-      const gear = h('button', { class: 'site-tool', label: 'Grown-Up Corner (press and hold)', html: gearIcon });
-      holdToActivate(gear, 3000, () => app.grownup(stage));
-      return [gear];
-    },
+    tools: () => [app.corner.gear()],
     underList() {
       const count = app.progress.game.stickers.length;
       const book = h(

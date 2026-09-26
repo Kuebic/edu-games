@@ -11,9 +11,6 @@ export const ICONS = {
   speaker: icon(
     '<path d="M8 19h8l10-8v26l-10-8H8Z" fill="currentColor" stroke-width="3"/><path d="M33 17c3 4 3 10 0 14M38 12c6 7 6 17 0 24"/>',
   ),
-  gear: icon(
-    '<circle cx="24" cy="24" r="6"/><path d="M24 5v6M24 37v6M5 24h6M37 24h6M10.6 10.6l4.2 4.2M33.2 33.2l4.2 4.2M10.6 37.4l4.2-4.2M33.2 14.8l4.2-4.2"/><circle cx="24" cy="24" r="13"/>',
-  ),
   undo: icon('<path d="M17 12 8 21l9 9"/><path d="M9 21h19a11 11 0 0 1 0 22h-6"/>'),
   reset: icon('<path d="M38 20a15 15 0 1 0 1 9"/><path d="M40 8v12H28"/>'),
   hint: icon(

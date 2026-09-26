@@ -63,7 +63,7 @@ The big round green arrow that appears when a child finishes a Level, and goes o
 _Avoid_: continue, play button
 
 **Grown-up Corner**:
-A Game's settings for grown-ups, opened by holding the gear for 3 seconds. Words are fine there.
+A Game's settings for grown-ups, opened by holding the gear for 3 seconds: the same dialog in every Game (`@shared/grownup`), with the Sound, Voice and Every level open switches, the Game's own rows, and reset. Words are fine there.
 _Avoid_: parent menu, grown-up menu, settings
 
 **Level**:

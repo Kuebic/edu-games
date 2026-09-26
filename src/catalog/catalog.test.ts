@@ -105,6 +105,13 @@ describe('Catalog', () => {
       for (const f of scripts) expect(source(f), relative(dir, f)).not.toMatch(/\bstorage\.(read|write)\(/);
     });
 
+    // ADR 0013: one Grown-up Corner, the site's; a Game draws no dialog of its own.
+    it('has the one Grown-up Corner', () => {
+      const corners = scripts.flatMap((f) => source(f).match(/\bgrownUpCorner\(/g) ?? []).length;
+      expect(corners, 'one grownUpCorner()').toBe(1);
+      for (const f of scripts) expect(source(f), relative(dir, f)).not.toMatch(/['"]dialog['"]|\bholdToActivate\([^,]+,\s*3000\b/);
+    });
+
     // ADR 0011: a Game makes sound only through the Sound, which the shell unlocks.
     it('plays sound only through the Sound', () => {
       for (const f of scripts) {

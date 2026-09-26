@@ -1,5 +1,6 @@
 // One Level: tap a Vehicle, it drives off or bumps and backs up. Clear the board to finish.
 
+import type { GrownUpCorner } from '@shared/grownup';
 import { CHAPTERS, LEVELS_PER_CHAPTER } from './chapters';
 import { LENGTH, type Vehicle } from './game/level';
 import { tap } from './game/rules';
@@ -10,8 +11,7 @@ import { celebrate, honk, vroom } from './sound';
 import { chapterIcon, drawBoard, drawVehicle, place, VEHICLE_COLORS } from './view';
 
 export interface PlayHooks {
-  muted(): boolean;
-  toggleMute(): void;
+  corner: GrownUpCorner;
   cleared(): void;
   next(): void;
   levels(): void;
@@ -67,11 +67,7 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   const number = document.createElement('span');
   number.textContent = String((index % LEVELS_PER_CHAPTER) + 1);
   badge.append(chapterIcon(chapter), number);
-  const mute = iconButton('site-tool', hooks.muted() ? ICONS.soundOff : ICONS.soundOn, 'Sound', () => {
-    hooks.toggleMute();
-    mute.innerHTML = hooks.muted() ? ICONS.soundOff : ICONS.soundOn;
-  });
-  bar.append(iconButton('site-tool', ICONS.levels, 'All levels', hooks.levels), badge, mute);
+  bar.append(iconButton('site-tool', ICONS.levels, 'All levels', hooks.levels), badge, hooks.corner.gear());
 
   const stage = document.createElement('div');
   stage.className = 'tj-stage';

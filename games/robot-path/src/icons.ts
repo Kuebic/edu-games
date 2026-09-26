@@ -39,9 +39,6 @@ export const ICONS = {
   trash: icon('<path d="M9 13h30M19 13V8h10v5M13 13l2 27h18l2-27"/><path d="M21 20v14M27 20v14" stroke-width="4"/>'),
   speaker: icon('<path d="M8 19h8l10-8v26l-10-8H8Z" fill="currentColor" stroke-width="3"/><path d="M33 17c3 4 3 10 0 14M38 12c6 7 6 17 0 24"/>'),
   soundOff: icon('<path d="M8 19h8l10-8v26l-10-8H8Z" fill="currentColor" stroke-width="3"/><path d="m33 19 10 10m0-10L33 29"/>'),
-  gear: icon(
-    '<circle cx="24" cy="24" r="6"/><path d="M24 5v6M24 37v6M5 24h6M37 24h6M10.6 10.6l4.2 4.2M33.2 33.2l4.2 4.2M10.6 37.4l4.2-4.2M33.2 14.8l4.2-4.2"/><circle cx="24" cy="24" r="13"/>',
-  ),
   back: icon('<path d="M30 9 15 24l15 15"/>'),
   next: icon('<path d="M16 9 38 24 16 39Z" fill="currentColor"/>'),
   levels: icon(
@@ -88,7 +85,7 @@ export function iconButton(className: string, svg: string, label: string, onClic
 
 /**
  * A button that only works when held down for `ms`, with a ring that fills while held.
- * For things a small child mustn't do by accident: clearing a Program, opening the Grown-up Corner.
+ * For things a small child mustn't do by accident, like clearing a Program.
  */
 export function holdButton(className: string, svg: string, label: string, ms: number, onDone: () => void): HTMLButtonElement {
   const button = iconButton(className, svg, label, () => {});

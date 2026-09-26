@@ -1,3 +1,4 @@
+import type { GrownUpCorner } from '@shared/grownup';
 import type { Progress } from './progress';
 
 /** What every screen gets: the page, the Saved progress, and the ways to the other screens. */
@@ -9,8 +10,8 @@ export interface App {
   /** Play one Round of a Stage. Both count from 0. */
   play(stage: number, round: number): void;
   stickers(): void;
-  /** The Grown-up Corner. Done goes back to `stage`'s Rounds, or without it to the Stage list. */
-  grownup(stage?: number): void;
+  /** The Grown-up Corner, over whatever screen is showing. */
+  corner: GrownUpCorner;
 }
 
 /** Renders into `app.root`; may return a cleanup to run when leaving the screen. */

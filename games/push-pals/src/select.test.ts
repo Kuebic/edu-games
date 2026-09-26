@@ -11,7 +11,7 @@ const sound = await import('./sound');
 /** A save as the Game wrote it before the level select, under its real key. */
 const oldSave = (save: object) => loadProgress(gameStorage('push-pals', memoryStorage({ 'push-pals:v2': JSON.stringify(save) })));
 
-const hooks = (progress: Progress) => ({ progress, open: vi.fn<SelectHooks['open']>() });
+const hooks = (progress: Progress) => ({ progress, open: vi.fn<SelectHooks['open']>(), corner: { gear: vi.fn(), open: vi.fn() } });
 
 describe("Push Pals' level select", () => {
   it('shows the ten Chapters of eight Levels, each in its own colour', () => {

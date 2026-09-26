@@ -1,5 +1,6 @@
 // What every screen can reach: the Saved progress, the Skin, and the way to other screens.
 
+import type { GrownUpCorner } from '@shared/grownup';
 import { GROWN_UP_PACK, type Level } from './packs';
 import type { Progress } from './progress';
 import type { Skin } from './skins';
@@ -13,8 +14,8 @@ export interface App {
   level(level: Level): void;
   /** "More like this": a random Pool puzzle from the Pack. */
   pool(pack: number): void;
-  /** The grown-up menu, over whatever screen is showing. */
-  parent(): void;
+  /** The Grown-up Corner, over whatever screen is showing. */
+  corner: GrownUpCorner;
 }
 
 const PACK_COLORS = ['#2fa36b', '#2f9be0', '#ff8a3d', '#9b5cf6', '#e0457b', '#475569'];

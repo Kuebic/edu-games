@@ -14,7 +14,7 @@ function app(save: object): App {
     stages: vi.fn(),
     play: vi.fn(),
     stickers: vi.fn(),
-    grownup: vi.fn(),
+    corner: { gear: vi.fn(), open: vi.fn() },
   };
 }
 

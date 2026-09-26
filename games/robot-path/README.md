@@ -4,7 +4,7 @@ A programming puzzle for 4-5-year-olds. He taps arrows into a Program, presses G
 
 - Levels: every World is open, and inside one, winning a level opens the next. Next goes on into the next World.
 - Three Skins, picked on the World list: garden, planet and sea. They change the art and the sounds only.
-- Grown-ups: press and hold the gear for 3 seconds for sound, voice, speed, "Every level open", and reset progress.
+- Grown-ups: press and hold the gear for 3 seconds for sound, voice, speed, "Every level open", and reset progress. The Corner is the site's; Speed is this Game's row.
 
 ## Develop
 
@@ -22,7 +22,7 @@ npm run game robot-path levels          # the validator: checks every level, pri
 - `src/game/editor.ts`: tap-only Program editing (add, replace, delete, Repeat Block bodies)
 - `src/levels/world-N.json`: the hand-made levels, one file per World
 - `src/board.ts`: draws the grid as SVG and plays a Trace back as animation
-- `src/select.ts`, `src/play.ts`, `src/parent.ts`: the screens (the Worlds on the shared level select, a Level, the Grown-up Corner)
+- `src/select.ts`, `src/play.ts`: the screens (the Worlds on the shared level select, a Level); the Grown-up Corner is the site's, with a Speed row
 - `src/skins.ts`: the three Skins' art, drawn in code
 
 A new level goes in its World's JSON file. `npm run game robot-path levels` shows what's wrong with it, and for worlds 1-5 the solver tells you the Par.

@@ -8,7 +8,7 @@ import { trafficJamSelect, type SelectHooks } from './select';
 /** A save as the Game wrote it before the level select, under its real key. */
 const oldSave = (save: object) => loadProgress(gameStorage('traffic-jam', memoryStorage({ 'traffic-jam:v1': JSON.stringify(save) })));
 
-const hooks = (progress: Progress) => ({ progress, toggleMute() {}, open: vi.fn<SelectHooks['open']>() });
+const hooks = (progress: Progress) => ({ progress, open: vi.fn<SelectHooks['open']>(), corner: { gear: vi.fn(), open: vi.fn() } });
 
 describe("Traffic Jam's level select", () => {
   it('shows the eight Chapters of eight Levels, by name', () => {

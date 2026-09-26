@@ -1,3 +1,4 @@
+import type { GrownUpCorner } from '@shared/grownup';
 import type { Direction, Level, Position } from './game/level';
 import { hasCorneredBox, isSolved, step } from './game/rules';
 import { ICONS } from './icons';
@@ -22,7 +23,7 @@ const KEYS: Record<string, Direction> = {
 
 export interface PlayHooks {
   progress: Progress;
-  toggleMute(): void;
+  corner: GrownUpCorner;
   /** Called once, the moment the level is solved. */
   solved(): void;
   next(): void;
@@ -72,13 +73,9 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   const backButton = button('site-tool', ICONS.back, () => hooks.levels());
   const undoButton = button('site-tool', ICONS.undo, undo);
   const resetButton = button('site-tool', ICONS.reset, reset);
-  const muteButton = button('site-tool', '', () => {
-    hooks.toggleMute();
-    renderMute();
-  });
   const spacer = document.createElement('div');
   spacer.className = 'spacer';
-  toolbar.append(backButton, spacer, undoButton, resetButton, muteButton);
+  toolbar.append(backButton, spacer, undoButton, resetButton, hooks.corner.gear());
 
   const stage = document.createElement('div');
   stage.className = 'stage';
@@ -125,10 +122,6 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
     place(player, level, position.player);
     player.dataset.facing = facing;
     undoButton.classList.toggle('nudge', !solved && hasCorneredBox(level, position));
-  }
-
-  function renderMute(): void {
-    muteButton.innerHTML = hooks.progress.settings.sound ? ICONS.soundOn : ICONS.soundOff;
   }
 
   function fit(): void {
@@ -258,7 +251,6 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
 
   fit();
   render();
-  renderMute();
   // Let the first frame paint without sliding sprites in from the corner.
   requestAnimationFrame(() => board.classList.add('animated'));
 

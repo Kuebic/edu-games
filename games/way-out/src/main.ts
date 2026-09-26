@@ -1,7 +1,7 @@
 import { startGame } from '@shared/shell';
+import { grownUpCorner, switchRow } from '@shared/grownup';
 import { hush, unlockVoice } from '@shared/voice';
 import type { App } from './app';
-import { showParent } from './parent';
 import { showPlay, type Puzzle } from './play';
 import { loadProgress, takePoolPuzzle } from './progress';
 import { paintSkin, showSelect } from './select';
@@ -11,6 +11,19 @@ import './style.css';
 // Browsers only start the Voice after a touch.
 const { root, storage } = startGame('way-out', { unlock: unlockVoice });
 const progress = loadProgress(storage);
+
+const corner = grownUpCorner(root, progress, {
+  voice: true,
+  rows: () => [
+    switchRow('Grown-up pack (26 to 60 moves)', () => progress.game.grownUp, (on) => {
+      progress.game.grownUp = on;
+      progress.save();
+    }),
+  ],
+  note: 'Every pack is open; solving a level opens the next. A sparkle means solved in the fewest moves possible.',
+  // What's open, and the bonus Pack, show on whichever screen is up straight away.
+  closed: () => again(),
+});
 
 let leave: () => void = () => {};
 /** Shows the current screen again, e.g. after the grown-up menu changes what's open. */
@@ -53,7 +66,7 @@ const app: App = {
       play({ kind: 'pool', pack, puzzle: takePoolPuzzle(progress, pack, POOLS[pack - 1]!) });
     });
   },
-  parent: () => showParent(app, () => again()),
+  corner,
 };
 
 app.home();

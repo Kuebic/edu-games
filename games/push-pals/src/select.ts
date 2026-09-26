@@ -1,5 +1,6 @@
 // Push Pals' level select: its Chapters as Groups, each with its own colour and its boxes as the badge.
 
+import type { GrownUpCorner } from '@shared/grownup';
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
 import { CHAPTERS, FIRST } from './levels';
 import type { Progress } from './progress';
@@ -26,6 +27,7 @@ export interface SelectHooks {
   progress: Progress;
   /** Play a Level, numbered across all Chapters from 0. */
   open(index: number): void;
+  corner: GrownUpCorner;
 }
 
 /** A Chapter's badge: its 2, 3 or 4 crates, side by side, stacked, or in a square. */
@@ -44,6 +46,7 @@ export function pushPalsSelect(hooks: SelectHooks): LevelSelectGame {
         badge: () => crates(chapter.boxes),
         levels: hooks.progress.marks(c),
       })),
+    tools: () => [hooks.corner.gear()],
     play(c, i) {
       play('tap');
       hooks.open(FIRST[c]! + i);

@@ -1,7 +1,8 @@
 // Robot Path's level select: its Worlds as Groups, the Skin chips, and the gear for grown-ups.
 
+import type { GrownUpCorner } from '@shared/grownup';
 import { paintPage, showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
-import { holdButton, ICONS, WORLD_ICONS } from './icons';
+import { WORLD_ICONS } from './icons';
 import { WORLDS } from './levels';
 import { SKINS, type Progress, type SkinId } from './progress';
 import { SKIN_ART, skinPicture } from './skins';
@@ -13,7 +14,7 @@ export interface SelectHooks {
   skin(skin: SkinId): void;
   /** Play a Level. Worlds and Levels count from 0. */
   open(world: number, index: number): void;
-  parent(): void;
+  corner: GrownUpCorner;
 }
 
 /** Colours the page for a Skin: the sky behind every screen, the board's frame, the title, and the browser bar. */
@@ -34,7 +35,7 @@ export function robotPathSelect(hooks: SelectHooks): LevelSelectGame {
         levels: hooks.progress.marks(w),
       })),
     everyLevelOpen: () => hooks.progress.settings.everyLevelOpen,
-    tools: () => [holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent)],
+    tools: () => [hooks.corner.gear()],
     skins: {
       chips: SKINS.map((id) => ({ id, label: SKIN_ART[id].name, picture: skinPicture(id), colour: SKIN_ART[id].floor[0] })),
       current: () => hooks.progress.game.skin,

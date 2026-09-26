@@ -1,6 +1,7 @@
 // One Level: build a Program with taps, press Go, watch the robot run it.
 // Nothing is ever cleared for him: after a bonk or an unfinished Run his Program is still there to fix.
 
+import type { GrownUpCorner } from '@shared/grownup';
 import { canSpeak, hush, say } from '@shared/voice';
 import { Board, type GhostMark } from './board';
 import { add, canAdd, clear, cycleTimes, editorFor, moveCursor, remove, select, type Editor } from './game/editor';
@@ -19,7 +20,7 @@ export interface PlayHooks {
   /** Back to this World's Levels. */
   levels(): void;
   open(world: number, index: number): void;
-  parent(): void;
+  corner: GrownUpCorner;
 }
 
 /** How long each Command animates. */
@@ -81,7 +82,7 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   const tools = document.createElement('div');
   tools.className = 'rp-tools';
   if (canSpeak) tools.append(iconButton('site-tool', ICONS.speaker, 'Say it again', () => say(level.voice)));
-  tools.append(holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent));
+  tools.append(hooks.corner.gear());
   bar.append(iconButton('site-tool', ICONS.back, 'All levels', hooks.levels), badge, tools);
 
   const goals = new GoalStrip(level, skin);

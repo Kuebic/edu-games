@@ -1,6 +1,5 @@
 // Way Out's level select: its Packs as Groups, the Skin chips, and "more like this" under each Pack.
 
-import { holdToActivate } from '@shared/hold';
 import { paintPage, showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
 import { canSpeak, say } from '@shared/voice';
 import { packColor, packIcon, type App } from './app';
@@ -33,9 +32,7 @@ export function wayOutSelect(app: App): LevelSelectGame {
     tools() {
       const speaker = iconButton('site-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${app.skin().hero} get out.`));
       speaker.hidden = !canSpeak;
-      const gear = iconButton('site-tool wo-gear', ICONS.gear, 'Grown-ups: press and hold');
-      holdToActivate(gear, 3000, () => app.parent());
-      return [speaker, gear];
+      return [speaker, app.corner.gear()];
     },
     skins: {
       chips: SKINS.map((s) => ({ id: s.id, label: s.label, picture: heroPicture(s), colour: s.sky })),

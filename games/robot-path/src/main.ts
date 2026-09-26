@@ -1,9 +1,9 @@
 import { startGame } from '@shared/shell';
+import { choiceRow, grownUpCorner } from '@shared/grownup';
 import type { LevelSelectView } from '@shared/level-select';
 import { unlockVoice } from '@shared/voice';
-import { showParent } from './parent';
 import { showPlay } from './play';
-import { loadProgress } from './progress';
+import { loadProgress, SPEEDS, type Speed } from './progress';
 import { paintSkin, showSelect, type SelectHooks } from './select';
 import { setSkinSound } from './sound';
 import './style.css';
@@ -14,6 +14,20 @@ const progress = loadProgress(storage);
 let leave: () => void = () => {};
 /** The level select while it's up, so the Grown-up Corner can redraw it. */
 let select: LevelSelectView | undefined;
+
+const SPEED_NAMES: Record<Speed, string> = { slow: 'Slow', normal: 'Normal', fast: 'Fast' };
+
+const corner = grownUpCorner(root, progress, {
+  voice: true,
+  rows: () => [
+    choiceRow('Speed', SPEEDS.map((id) => ({ id, label: SPEED_NAMES[id] })), () => progress.game.speed, (speed) => {
+      progress.game.speed = speed;
+      progress.save();
+    }),
+  ],
+  // "Every level open" and a reset show on the level select straight away.
+  closed: () => select?.redraw(),
+});
 
 /** The Skin's colours and sounds. */
 function paint(): void {
@@ -29,7 +43,7 @@ const hooks: SelectHooks = {
     paint();
   },
   open: openLevel,
-  parent: openParent,
+  corner,
 };
 
 /** The World list, or with `world` that World's Levels. */
@@ -43,15 +57,7 @@ function openLevels(world?: number): void {
 function openLevel(world: number, index: number): void {
   leave();
   select = undefined;
-  leave = showPlay(root, world, index, { progress, levels: () => openLevels(world), open: openLevel, parent: openParent });
-}
-
-function openParent(): void {
-  showParent(root.firstElementChild as HTMLElement, {
-    progress,
-    // "Every level open" and a reset show on the level select straight away.
-    close: () => select?.redraw(),
-  });
+  leave = showPlay(root, world, index, { progress, levels: () => openLevels(world), open: openLevel, corner });
 }
 
 paint();
