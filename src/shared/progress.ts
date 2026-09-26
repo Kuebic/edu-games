@@ -79,6 +79,8 @@ export interface Progress<G> {
   set(setting: keyof Settings, on: boolean): void;
   /** Erases done Levels, Sparkles and the slot's play data. Settings and the Skin stay. Saves. */
   reset(): void;
+  /** Erases one Group's done Levels and Sparkles, when its Levels changed (My Letter's new Name). Saves. */
+  forget(group: number): void;
   save(): void;
 }
 
@@ -181,6 +183,11 @@ export function openProgress<G = Record<string, never>>(storage: GameStorage, sp
       saved.done = {};
       saved.sparkle = {};
       slot.reset?.(saved.game);
+      save();
+    },
+    forget(group) {
+      delete saved.done[group];
+      delete saved.sparkle[group];
       save();
     },
     save,

@@ -3,3 +3,4 @@ dist
 dev-dist
 .wrangler
 *.log
+games/my-letter/scripts/raw/

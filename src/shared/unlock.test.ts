@@ -54,4 +54,9 @@ describe('nextLevel', () => {
   it('stops after the very last Level', () => {
     expect(nextLevel(sizes, 2, 3)).toBeUndefined();
   });
+
+  it('skips a Group with no Levels', () => {
+    expect(nextLevel([4, 0, 3], 0, 3)).toEqual({ group: 2, level: 0 });
+    expect(nextLevel([4, 0], 0, 3)).toBeUndefined();
+  });
 });

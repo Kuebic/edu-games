@@ -1,13 +1,13 @@
 // @vitest-environment happy-dom
 // The level select as a child and a screen reader meet it: found by role and aria-label, tapped with click().
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { showLevelSelect, type LevelMark, type LevelSelectGame } from './level-select';
+import { showLevelSelect, type GroupView, type LevelMark, type LevelSelectGame } from './level-select';
 
 /** Levels from a picture: x done, * done with a Sparkle, . not done. */
 const marks = (row: string): LevelMark[] => [...row].map((c) => ({ done: c !== '.', sparkle: c === '*' }));
 
 function testGame(extra: Partial<LevelSelectGame> = {}) {
-  const groups = [
+  const groups: GroupView[] = [
     { name: 'Easy', colour: '#2fa36b', badge: () => '<svg></svg>', levels: marks('*x..') },
     { name: 'Hard', colour: '#2f9be0', badge: () => document.createElement('b'), levels: marks('........'), bonusSparkles: 0 },
   ];
@@ -87,11 +87,28 @@ describe('the Group list', () => {
     expect(root.querySelector('main')!.lastElementChild).toBe(book);
   });
 
-  it('throws on a Game with no Groups, or a Group with no Levels', () => {
+  it('throws on a Game with no Groups, or none with Levels', () => {
     expect(() => showLevelSelect(root, { title: 'Empty', groups: () => [], play() {} })).toThrow(/no Groups/);
     const { game, groups } = testGame();
+    groups[0]!.levels = [];
     groups[1]!.levels = [];
-    expect(() => showLevelSelect(root, game)).toThrow(/Hard has no Levels/);
+    expect(() => showLevelSelect(root, game)).toThrow(/no Groups/);
+  });
+
+  it('leaves out a Group with no Levels, and the others keep their numbers', () => {
+    const { game, groups, play } = testGame();
+    groups[0]!.levels = [];
+    showLevelSelect(root, game);
+    expect(labels('.site-group')).toEqual(['Hard: 0 of 8 done']);
+    byLabel('Hard: 0 of 8 done')!.click();
+    byLabel('Level 1')!.click();
+    expect(play).toHaveBeenCalledWith(1, 0);
+    // Opened straight away, the empty one lands on the list; back from Hard, focus is on Hard's card.
+    showLevelSelect(root, game, 0);
+    expect(byLabel('All games')).not.toBeNull();
+    showLevelSelect(root, game, 1);
+    byLabel('Back')!.click();
+    expect(document.activeElement).toBe(byLabel('Hard: 0 of 8 done'));
   });
 
   it('starts the arrow keys from the Group last opened when no card has focus, else the first', () => {
@@ -141,6 +158,14 @@ describe('a Group screen', () => {
     expect(labels('.site-level')).toEqual(['Level 1, done, sparkle', 'Level 2, done', 'Level 3', 'Level 4, locked']);
     expect([...root.querySelectorAll<HTMLButtonElement>('.site-level')].map((b) => b.disabled)).toEqual([false, false, false, true]);
     expect(byLabel('Level 3')!.textContent).toBe('3');
+  });
+
+  it('shows a Group’s own card labels in place of numbers', () => {
+    const { game, groups } = testGame();
+    groups[0]!.labels = ['S', 'A', 'M', 'Y'];
+    showLevelSelect(root, game, 0);
+    expect(labels('.site-level')).toEqual(['Level S, done, sparkle', 'Level A, done', 'Level M', 'Level Y, locked']);
+    expect(byLabel('Level M')!.textContent).toBe('M');
   });
 
   it('names the Levels with the Game’s own word', () => {

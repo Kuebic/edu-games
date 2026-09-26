@@ -30,8 +30,9 @@ export interface Sound {
   /**
    * A clip to play. Fetched and decoded once the context exists, so register clips at load and play
    * them any time: a play before the clip is ready, or with sound off, is silent. A failed fetch is too.
+   * Playing resolves when the clip ends, or at once when it's silent.
    */
-  clip(url: string): () => void;
+  clip(url: string): () => Promise<void>;
   /** The site's cheer jingle (Kenney's CC0), for a Level done. */
   cheer(): void;
   /** A little vibration, where the device can, and only while sound is on. */
@@ -63,14 +64,19 @@ export function createSound(env: SoundEnv): Sound {
 
   const audio = (): AudioContext | undefined => (enabled && context?.state === 'running' ? context : undefined);
 
-  const play = (url: string): void => {
+  const play = (url: string): Promise<void> => {
     const buffer = clips.get(url);
     const live = audio();
-    if (!buffer || !live) return;
+    if (!buffer || !live) return Promise.resolve();
     const source = live.createBufferSource();
     source.buffer = buffer;
     source.connect(live.destination);
-    source.start();
+    return new Promise((resolve) => {
+      source.onended = () => resolve();
+      // A context suspended mid-clip never ends it; don't let a Game hang waiting.
+      if (Number.isFinite(buffer.duration)) setTimeout(resolve, buffer.duration * 1000 + 500);
+      source.start();
+    });
   };
 
   return {
@@ -120,7 +126,7 @@ export function createSound(env: SoundEnv): Sound {
     },
 
     cheer() {
-      play(cheerUrl);
+      void play(cheerUrl);
     },
 
     buzz(ms) {

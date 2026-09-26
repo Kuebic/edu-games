@@ -9,7 +9,7 @@ import { canSpeak } from './voice';
 export interface CornerSpec {
   /** The Game speaks, so the Voice switch shows (where the browser can speak). */
   voice?: boolean;
-  /** The Game's own rows, under the site's: switchRow(), choiceRow() or any element. Made fresh each time it opens. */
+  /** The Game's own rows, under the site's: switchRow(), choiceRow(), textRow() or any element. Made fresh each time it opens. */
   rows?(): HTMLElement[];
   /** A note for grown-ups, in words, under the rows. */
   note?: string;
@@ -85,6 +85,39 @@ export function choiceRow<T extends string>(
   return row;
 }
 
+let texts = 0;
+
+/**
+ * A row with a text box: its name, and the box showing what `get` says. Saves with `set` when the box
+ * changes or loses focus, and only if the text changed, not on every key.
+ */
+export function textRow(label: string, get: () => string, set: (text: string) => void): HTMLElement {
+  const row = document.createElement('div');
+  row.className = 'site-text';
+  const name = document.createElement('label');
+  name.textContent = label;
+  const box = document.createElement('input');
+  box.type = 'text';
+  box.id = name.htmlFor = `site-text-${++texts}`;
+  box.autocomplete = 'off';
+  box.spellcheck = false;
+  box.value = get();
+  let saved = box.value;
+  const commit = () => {
+    if (box.value === saved) return;
+    saved = box.value;
+    set(box.value);
+  };
+  box.addEventListener('change', commit);
+  box.addEventListener('blur', commit);
+  // Enter is done typing: the keyboard goes away, and blur saves.
+  box.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') box.blur();
+  });
+  row.append(name, box);
+  return row;
+}
+
 /**
  * A Game's Grown-up Corner over `root` (the page's #app). Sound, Voice (if the Game speaks and the browser
  * can), Every level open, the Game's rows, its note, and reset. One at a time: opening while open does nothing.
@@ -104,6 +137,8 @@ export function grownUpCorner(root: HTMLElement, progress: Progress<unknown>, sp
     panel.setAttribute('aria-label', 'Grown-ups');
 
     const close = () => {
+      // A text box still focused saves on its blur, before the Game's `closed` reads it.
+      if (document.activeElement instanceof HTMLElement && panel.contains(document.activeElement)) document.activeElement.blur();
       veil?.remove();
       veil = undefined;
       spec.closed?.();

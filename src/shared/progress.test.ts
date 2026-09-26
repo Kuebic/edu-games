@@ -165,6 +165,18 @@ describe('Saved progress', () => {
     expect(d.saved()).toMatchObject({ done: {}, sparkle: {}, game: { skin: 'moon', drafts: {} } });
   });
 
+  it('forgets one Group, its done Levels and Sparkles, and leaves the rest', () => {
+    const d = device();
+    const progress = openProgress(d.storage, spec, quiet);
+    progress.finish(0, 0, true);
+    progress.finish(0, 1);
+    progress.finish(1, 2, true);
+    progress.forget(0);
+    expect(progress.marks(0).some((m) => m.done || m.sparkle)).toBe(false);
+    expect(progress.mark(1, 2)).toEqual({ done: true, sparkle: true });
+    expect(d.saved()).toMatchObject({ done: { 1: [2] }, sparkle: { 1: [2] } });
+  });
+
   it('keeps playing when storage is blocked', () => {
     const blocked = gameStorage('g', {
       getItem: () => {

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#fff4ea"/>
+  <path d="M206 40h100v44h-100z" fill="#159a9c"/>
+  <rect x="62" y="96" width="388" height="348" rx="56" fill="#c9432f"/>
+  <rect x="62" y="84" width="388" height="348" rx="56" fill="#f0604d"/>
+  <rect x="226" y="62" width="60" height="44" rx="14" fill="#fff4ea"/>
+  <rect x="98" y="150" width="316" height="248" rx="36" fill="#ffffff"/>
+  <text x="256" y="360" font-family="Nunito, 'Varela Round', 'DejaVu Sans', sans-serif" font-size="236" font-weight="900" text-anchor="middle" fill="#159a9c">S</text>
+</svg>

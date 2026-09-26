@@ -98,6 +98,33 @@
   color: #fff;
 }
 
+/* A text box: its name over a box a grown-up types in. 17px keeps iOS from zooming in on focus. */
+.site-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  background: #f1f5f9;
+}
+
+.site-text > input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.site-text > input:focus-visible {
+  outline: 4px solid var(--site-focus);
+  outline-offset: 1px;
+}
+
 .site-corner-rows {
   display: contents;
 }

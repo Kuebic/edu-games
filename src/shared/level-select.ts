@@ -18,8 +18,10 @@ export interface GroupView {
   colour: string;
   /** Its badge picture, drawn white on the colour: SVG markup or a fresh node. Called once per badge drawn. */
   badge(): string | Node;
-  /** Its Levels in play order, at least one; card i shows the number i + 1. */
+  /** Its Levels in play order; card i shows the number i + 1. A Group with none is left out (My Letter's My name before there's a Name). */
   levels: readonly LevelMark[];
+  /** What each Level's card shows in place of its number, and screen readers say (My Letter's letters). */
+  labels?: readonly string[];
   /** Sparkles earned outside its Levels (Way Out's Pool), added to its count. */
   bonusSparkles?: number;
 }
@@ -45,7 +47,10 @@ export interface SkinPicker {
 export interface LevelSelectGame {
   /** The Game's name: the Group list's heading. */
   title: string;
-  /** Every Group the child can see, easiest first. A hidden bonus Group is left off the end, so indices never shift. Must not be empty. */
+  /**
+   * Every Group, easiest first. A hidden bonus Group is left off the end, and a Group with no Levels is
+   * left out of the list but keeps its place, so indices never shift. At least one must have Levels.
+   */
   groups(): readonly GroupView[];
   /** The Game's word for a Level, which screen readers say on each card ("Round 3"). "Level" if left out. */
   levelWord?: string;
@@ -87,8 +92,8 @@ let lastOpened: number | undefined;
 
 /**
  * Shows the Group list, or with `group` that Group's Levels (where "all levels" and back from play go).
- * A `group` that isn't shown any more (the bonus Group was switched off) lands on the list.
- * Throws if the Game has no Groups, or a Group has no Levels.
+ * A `group` that isn't shown any more (the bonus Group was switched off, or it has no Levels) lands on the list.
+ * Throws if the Game has no Group with Levels.
  */
 export function showLevelSelect(root: HTMLElement, game: LevelSelectGame, group?: number): LevelSelectView {
   let at = group;
@@ -97,14 +102,12 @@ export function showLevelSelect(root: HTMLElement, game: LevelSelectGame, group?
   const render = (chose = false) => {
     stop();
     const groups = game.groups();
-    if (groups.length === 0) throw new Error(`Game Shelf: ${game.title} has no Groups for its level select`);
-    const empty = groups.find((g) => g.levels.length === 0);
-    if (empty) throw new Error(`Game Shelf: ${game.title}'s Group ${empty.name} has no Levels`);
-    if (at !== undefined && !groups[at]) at = undefined;
+    if (!groups.some((g) => g.levels.length > 0)) throw new Error(`Game Shelf: ${game.title} has no Groups with Levels for its level select`);
+    if (at !== undefined && !groups[at]?.levels.length) at = undefined;
     if (at === undefined) {
       const scrolled = root.querySelector('.site-groups')?.scrollTop ?? 0;
       const screen = groupList(game, groups, open, () => render(true));
-      const card = lastOpened === undefined ? undefined : screen.querySelectorAll<HTMLButtonElement>('.site-group')[lastOpened];
+      const card = lastOpened === undefined ? undefined : (screen.querySelector<HTMLButtonElement>(`.site-group[data-group="${lastOpened}"]`) ?? undefined);
       const chip = chose ? screen.querySelector<HTMLElement>('.site-skin[aria-checked="true"]') : null;
       stop = put(root, screen, chip ?? card, card);
       if (chip) screen.querySelector('.site-groups')!.scrollTop = scrolled;
@@ -209,9 +212,11 @@ function groupList(game: LevelSelectGame, groups: readonly GroupView[], open: (g
   cards.className = 'site-groups';
   groups.forEach((group, g) => {
     const total = group.levels.length;
+    if (total === 0) return;
     const done = group.levels.filter((l) => l.done).length;
     const sparkles = group.levels.filter((l) => l.sparkle).length + (group.bonusSparkles ?? 0);
     const card = button('site-group', `${group.name}: ${done} of ${total} done`, '', () => open(g));
+    card.dataset.group = String(g);
     card.style.setProperty('--site-group', group.colour);
     const dots = document.createElement('span');
     dots.className = 'site-dots';
@@ -264,12 +269,14 @@ function groupScreen(
   group.levels.forEach((mark, i) => {
     const open = isLevelOpen(done, i, everyOpen);
     const sparkle = open && mark.sparkle === true;
+    const label = group.labels?.[i] ?? String(i + 1);
     const card = button(
       'site-level',
-      `${game.levelWord ?? 'Level'} ${i + 1}${mark.done ? ', done' : ''}${sparkle ? ', sparkle' : ''}${open ? '' : ', locked'}`,
-      open ? String(i + 1) : LOCK,
+      `${game.levelWord ?? 'Level'} ${label}${mark.done ? ', done' : ''}${sparkle ? ', sparkle' : ''}${open ? '' : ', locked'}`,
+      open ? '' : LOCK,
     );
     if (open) {
+      card.textContent = label;
       if (mark.done) {
         card.classList.add('site-done');
         card.insertAdjacentHTML('beforeend', `<span class="site-tick">${TICK}</span>`);

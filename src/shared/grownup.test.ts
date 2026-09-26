@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 // The Grown-up Corner as a grown-up and a screen reader meet it: found by role and name, tapped with click().
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { choiceRow, grownUpCorner, switchRow, type CornerSpec } from './grownup';
+import { choiceRow, grownUpCorner, switchRow, textRow, type CornerSpec } from './grownup';
 import { openProgress, type Progress } from './progress';
 import { gameStorage, memoryStorage } from './storage';
 
@@ -137,6 +137,53 @@ describe('the Grown-up Corner', () => {
     expect(dialog()).toBeNull();
     vi.advanceTimersByTime(1);
     expect(dialog()).not.toBeNull();
+  });
+});
+
+describe('a text row', () => {
+  /** Types into the box, as keys do: `input` on each, nothing else. */
+  const type = (box: HTMLInputElement, text: string) => {
+    box.value = text;
+    box.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  it('is a labelled text box showing what `get` says', () => {
+    const row = textRow('Child’s first name', () => 'Sam', () => {});
+    root.append(row);
+    const box = row.querySelector('input')!;
+    expect(box.type).toBe('text');
+    expect(box.value).toBe('Sam');
+    const label = row.querySelector('label')!;
+    expect(label.textContent).toBe('Child’s first name');
+    expect(label.htmlFor).toBe(box.id);
+  });
+
+  it('saves on change and on blur, not on every key, and only what changed', () => {
+    const set = vi.fn();
+    const row = textRow('Name', () => '', set);
+    root.append(row);
+    const box = row.querySelector('input')!;
+    type(box, 'S');
+    type(box, 'Sa');
+    expect(set).not.toHaveBeenCalled();
+    box.dispatchEvent(new Event('change'));
+    expect(set).toHaveBeenLastCalledWith('Sa');
+    box.dispatchEvent(new Event('blur'));
+    expect(set).toHaveBeenCalledOnce();
+    type(box, 'Sam');
+    box.dispatchEvent(new Event('blur'));
+    expect(set).toHaveBeenLastCalledWith('Sam');
+  });
+
+  it('saves what was typed when the Corner closes with the box still focused', () => {
+    let name = '';
+    const c = corner(testProgress(), { rows: () => [textRow('Name', () => name, (next) => (name = next))] });
+    c.open();
+    const box = root.querySelector<HTMLInputElement>('[role="dialog"] input')!;
+    box.focus();
+    type(box, 'Ann');
+    dialog()!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(name).toBe('Ann');
   });
 });
 

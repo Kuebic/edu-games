@@ -7,6 +7,7 @@ function fakeNode() {
   const node = {
     type: 'sine',
     buffer: undefined as unknown,
+    onended: null as null | (() => void),
     gain: param(),
     frequency: param(),
     connect: vi.fn(),
@@ -149,6 +150,25 @@ describe('the Sound', () => {
       expect(nodes('source')).toHaveLength(1);
       expect(nodes('source')[0]!.buffer).toEqual({ decoded: 'tap.ogg' });
       expect(nodes('source')[0]!.start).toHaveBeenCalledOnce();
+    });
+
+    it('says when it has played: when it ends, or at once when it is silent', async () => {
+      const { sound, nodes } = soundOver();
+      const s = sound.clip('s.ogg');
+      let ended = false;
+      void s().then(() => (ended = true));
+      await settle();
+      // Silent before the first touch.
+      expect(ended).toBe(true);
+      sound.unlockAudio();
+      await settle();
+      ended = false;
+      void s().then(() => (ended = true));
+      await settle();
+      expect(ended).toBe(false);
+      nodes('source')[0]!.onended!();
+      await settle();
+      expect(ended).toBe(true);
     });
 
     it('registered after the first touch is fetched at once, and only once', () => {
