@@ -15,8 +15,11 @@ import { fileURLToPath } from 'node:url';
 
 /** Seconds [from, to] of one raw file; `slow` < 1 stretches it (ffmpeg atempo, 0.5 at most). */
 type Part = { file: string; from: number; to: number; slow?: number };
-/** A clip is one or more parts played back to back; fades in seconds (a stop's burst needs a short fade in). */
-type Clip = { parts: Part[]; fadeIn?: number; fadeOut?: number };
+/**
+ * A clip is one or more parts played back to back; fades in seconds (a stop's burst needs a short fade in).
+ * `twice` says it again after a short gap: a stop alone lasts about a tenth of a second, too short to hear.
+ */
+type Clip = { parts: Part[]; fadeIn?: number; fadeOut?: number; twice?: boolean };
 
 const ISOTALO = {
   b: 'Voiced bilabial plosive.ogg',
@@ -37,8 +40,8 @@ const ISOTALO = {
 };
 
 // A stop: from just before the release to ~130 ms after it, fading out over the start of the vowel
-// it was said with, so it's "b" with only a breath of "buh".
-const stop = (file: string, from: number, to: number): Clip => ({ parts: [{ file, from, to }], fadeIn: 0.005, fadeOut: 0.07 });
+// it was said with, so it's "b" with only a breath of "buh". Said twice, "b … b", as phonics teachers do.
+const stop = (file: string, from: number, to: number): Clip => ({ parts: [{ file, from, to }], fadeIn: 0.005, fadeOut: 0.07, twice: true });
 const vowel = (file: string, from: number, to: number): Clip => ({ parts: [{ file, from, to }], fadeOut: 0.06 });
 const kBurst: Part = { file: ISOTALO.k, from: 0.185, to: 0.222 }; // release and aspiration of [ka], no vowel
 
@@ -52,7 +55,7 @@ const CLIPS: Record<string, Clip> = {
   g: stop(ISOTALO.g, 0.19, 0.325),
   h: { parts: [{ file: ISOTALO.h, from: 0.19, to: 0.465 }] },
   i: vowel('Near-close near-front unrounded vowel.ogg', 0.02, 0.52),
-  j: { parts: [{ file: 'Voiced palato-alveolar affricate.ogg', from: 0.04, to: 0.17 }], fadeIn: 0.005, fadeOut: 0.05 },
+  j: { parts: [{ file: 'Voiced palato-alveolar affricate.ogg', from: 0.04, to: 0.17 }], fadeIn: 0.005, fadeOut: 0.05, twice: true },
   k: stop(ISOTALO.k, 0.185, 0.315),
   l: { parts: [{ file: ISOTALO.l, from: 0.2, to: 0.47, slow: 0.8 }] },
   m: { parts: [{ file: ISOTALO.m, from: 0.19, to: 0.375, slow: 0.55 }] },
@@ -74,6 +77,10 @@ const CLIPS: Record<string, Clip> = {
 const LOUDNESS = -18; // mean dBFS of every clip; the site's cheer is about -15
 const PEAK = 0.89; // limiter ceiling, about -1 dBFS
 const FADE = 0.03;
+const GAP = 0.25; // between the two of a clip said twice
+// Silence in front of every clip. iOS switches its audio over from the Voice when a clip starts and
+// drops the first moments of it, which was a whole stop.
+const LEAD_MS = 150;
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 const rawDir = here('./raw/');
@@ -129,7 +136,9 @@ function build(letter: string, clip: Clip, work: string): void {
 
   const { mean } = levels(shaped);
   const out = join(outDir, `${letter}.mp3`);
-  ffmpeg(['-i', shaped, '-af', `volume=${LOUDNESS - mean}dB,alimiter=limit=${PEAK}:level=false`,
+  const level = `volume=${LOUDNESS - mean}dB,alimiter=limit=${PEAK}:level=false`;
+  const said = clip.twice ? `${level},asplit[a][b];[a]apad=pad_dur=${GAP}[a2];[a2][b]concat=n=2:v=0:a=1` : level;
+  ffmpeg(['-i', shaped, '-filter_complex', `[0:a]${said},adelay=${LEAD_MS}[out]`, '-map', '[out]',
     '-ac', '1', '-ar', '44100', '-c:a', 'libmp3lame', '-b:a', '96k', '-map_metadata', '-1', '-id3v2_version', '0', out]);
 }
 

@@ -71,7 +71,7 @@ const settle = () => new Promise((r) => setTimeout(r, 0));
 
 describe('the Sound', () => {
   describe('unlocks', () => {
-    it('with one context, made on the first touch and resumed while suspended', () => {
+    it('with one context, made on the first touch and resumed while not running', () => {
       const { sound, context } = soundOver();
       expect(sound.audio()).toBeUndefined();
       sound.unlockAudio();
@@ -84,6 +84,10 @@ describe('the Sound', () => {
       expect(sound.audio()).toBeUndefined();
       sound.unlockAudio();
       expect(context().resumes).toBe(2);
+      // iOS Safari's own state, after speech or a call: resumed the same way.
+      context().state = 'interrupted' as AudioContextState;
+      sound.unlockAudio();
+      expect(context().resumes).toBe(3);
     });
 
     it('quietly, where making a context throws', () => {

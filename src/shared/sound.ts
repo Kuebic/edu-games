@@ -20,7 +20,7 @@ export interface Sound {
   setSoundEnabled(on: boolean): void;
   /**
    * Call from inside a touch or key press. Browsers only start audio after one, and may suspend it
-   * again later, so this runs every time: it makes the context once, then resumes it while suspended.
+   * again later, so this runs every time: it makes the context once, then resumes it while it isn't running (suspended, or iOS's interrupted).
    * The shell calls it for every Game; a Game never has to.
    */
   unlockAudio(): void;
@@ -105,7 +105,7 @@ export function createSound(env: SoundEnv): Sound {
         }
         for (const url of clips.keys()) decode(url);
       }
-      if (context.state === 'suspended') void context.resume();
+      if (context.state !== 'running' && context.state !== 'closed') void context.resume();
     },
 
     audio,
