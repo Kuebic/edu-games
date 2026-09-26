@@ -11,11 +11,9 @@ function seeded(seed: number) {
 }
 
 describe('the Boxes', () => {
-  it('are Numbers, ten Rounds by tens up to 100, then Letters, five Rounds up to Z', () => {
-    expect(BOXES.map((b) => [b.name, b.rounds])).toEqual([['Numbers', 10], ['Letters', 5]]);
-    expect(NUMBER_RANGES[0]).toEqual({ lo: 0, hi: 10 });
-    expect(NUMBER_RANGES[1]).toEqual({ lo: 11, hi: 20 });
-    expect(NUMBER_RANGES[9]).toEqual({ lo: 91, hi: 100 });
+  it('are Numbers, two Rounds up to 20, then Letters, five Rounds up to Z', () => {
+    expect(BOXES.map((b) => [b.name, b.rounds])).toEqual([['Numbers', 2], ['Letters', 5]]);
+    expect(NUMBER_RANGES).toEqual([{ lo: 0, hi: 10 }, { lo: 11, hi: 20 }]);
     expect(LETTER_RANGES.join('')).toBe('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
   });
 
@@ -44,9 +42,9 @@ describe('numberChoices', () => {
     }
   });
 
-  it('never go below 0 or above 100 when a range is too narrow', () => {
+  it('never go below 0 or above 20 when a range is too narrow', () => {
     expect(numberChoices(0, { lo: 0, hi: 0 }).sort()).toEqual([0, 1, 2]);
-    expect(numberChoices(100, { lo: 100, hi: 100 }).sort()).toEqual([100, 98, 99]);
+    expect(numberChoices(20, { lo: 20, hi: 20 }).sort()).toEqual([18, 19, 20]);
   });
 });
 
@@ -69,24 +67,33 @@ describe('letterChoices and pictureChoices', () => {
 });
 
 describe('makeRound', () => {
-  it('asks six Finds of different numbers from the Round, each way round in turn', () => {
-    const finds = makeRound(0, 3, seeded(3));
+  it('asks six Finds of different numbers from the Round, each way round in turn on Mix', () => {
+    const finds = makeRound(0, 1, 'mix', seeded(3));
     expect(finds).toHaveLength(ROUND_LENGTH);
     const targets = finds.map((f) => (f.kind === 'number' ? f.target : NaN));
     expect(new Set(targets).size).toBe(ROUND_LENGTH);
-    for (const t of targets) expect(t >= 31 && t <= 40).toBe(true);
+    for (const t of targets) expect(t >= 11 && t <= 20).toBe(true);
     expect(finds.map((f) => f.direction)).toEqual(['find-symbol', 'find-picture', 'find-symbol', 'find-picture', 'find-symbol', 'find-picture']);
+  });
+
+  it('asks every Find the one Way round a grown-up picked', () => {
+    for (const box of [0, 1]) {
+      for (const way of ['find-symbol', 'find-picture'] as const) {
+        const finds = makeRound(box, 0, way, seeded(11));
+        expect(finds.map((f) => f.direction)).toEqual(Array(ROUND_LENGTH).fill(way));
+      }
+    }
   });
 
   it('asks about zero in the first Round of Numbers, and nothing past 10', () => {
     const seen = new Set<number>();
-    for (let seed = 1; seed < 400; seed += 7) for (const f of makeRound(0, 0, seeded(seed))) if (f.kind === 'number') seen.add(f.target);
+    for (let seed = 1; seed < 400; seed += 7) for (const f of makeRound(0, 0, 'mix', seeded(seed))) if (f.kind === 'number') seen.add(f.target);
     expect(seen.has(0)).toBe(true);
     for (const n of seen) expect(n >= 0 && n <= 10, String(n)).toBe(true);
   });
 
   it('asks every letter of the Round at least once, with a matching picture', () => {
-    const finds = makeRound(1, 4, seeded(5));
+    const finds = makeRound(1, 4, 'mix', seeded(5));
     expect(finds).toHaveLength(ROUND_LENGTH);
     const letters = new Set(finds.map((f) => (f.kind === 'letter' ? f.letter : '')));
     expect(letters).toEqual(new Set('UVWXYZ'));
@@ -100,7 +107,7 @@ describe('makeRound', () => {
 
   it('refuses a Box or Round it has not got', () => {
     expect(() => makeRound(2, 0)).toThrow(/no Box 2/);
-    expect(() => makeRound(0, 10)).toThrow(/no Round 10/);
+    expect(() => makeRound(0, 2)).toThrow(/no Round 2/);
     expect(() => makeRound(1, 5)).toThrow(/no Round 5/);
   });
 });

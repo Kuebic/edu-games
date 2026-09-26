@@ -3,7 +3,7 @@
 export type Rng = () => number;
 
 export const ROUND_LENGTH = 6;
-export const NUMBER_MAX = 100;
+export const NUMBER_MAX = 20;
 
 /** One picture a child can name: its emoji, its word and the letter the word starts with. */
 export interface Picture {
@@ -47,8 +47,11 @@ export const PICTURES: readonly Picture[] = (
 /** The Letters Box's Rounds: five letters each, six in the last. */
 export const LETTER_RANGES = ['ABCDE', 'FGHIJ', 'KLMNO', 'PQRST', 'UVWXYZ'] as const;
 
-/** The Numbers Box's Rounds: 0 to 10, then 11 to 20, and so on up to 100. */
-export const NUMBER_RANGES = Array.from({ length: 10 }, (_, i) => (i === 0 ? { lo: 0, hi: 10 } : { lo: i * 10 + 1, hi: i * 10 + 10 }));
+/** The Numbers Box's Rounds: 0 to 10, then 11 to 20. */
+export const NUMBER_RANGES = [
+  { lo: 0, hi: 10 },
+  { lo: 11, hi: NUMBER_MAX },
+] as const;
 
 export type BoxKind = 'number' | 'letter';
 
@@ -70,6 +73,10 @@ export const BOXES: readonly Box[] = [
  */
 export type Direction = 'find-symbol' | 'find-picture';
 
+/** Which way round a Box's Finds go, as a grown-up sets it: always one way, or each way in turn. */
+export type Way = Direction | 'mix';
+export const WAYS: readonly Way[] = ['find-symbol', 'find-picture', 'mix'];
+
 export type Find =
   | { kind: 'number'; direction: Direction; target: number; choices: number[] }
   | { kind: 'letter'; direction: 'find-symbol'; letter: string; picture: Picture; choices: string[] }
@@ -88,7 +95,7 @@ const pick = <T>(items: readonly T[], rng: Rng): T => items[Math.floor(rng() * i
 
 /**
  * The target and two neighbours 1 or 2 away, in random order. Neighbours stay inside the Round's range
- * where it has two, so the Find is about the numbers being learnt; else anywhere from 0 to 100.
+ * where it has two, so the Find is about the numbers being learnt; else anywhere from 0 to 20.
  */
 export function numberChoices(target: number, range: { lo: number; hi: number }, rng: Rng = Math.random): number[] {
   const near = [target - 1, target + 1, target - 2, target + 2];
@@ -114,11 +121,11 @@ export function pictureFor(letter: string, rng: Rng = Math.random): Picture {
   return pick(PICTURES.filter((p) => p.letter === letter), rng);
 }
 
-/** Six Finds for a Round of a Box, both counting from 0: different targets, each way round in turn. */
-export function makeRound(box: number, round: number, rng: Rng = Math.random): Find[] {
+/** Six Finds for a Round of a Box, both counting from 0: different targets, the Way round, or each way in turn. */
+export function makeRound(box: number, round: number, way: Way = 'mix', rng: Rng = Math.random): Find[] {
   const kind = BOXES[box]?.kind;
   if (kind === undefined) throw new Error(`Find It: no Box ${box}`);
-  const direction = (i: number): Direction => (i % 2 === 0 ? 'find-symbol' : 'find-picture');
+  const direction = (i: number): Direction => (way !== 'mix' ? way : i % 2 === 0 ? 'find-symbol' : 'find-picture');
   if (kind === 'number') {
     const range = NUMBER_RANGES[round];
     if (!range) throw new Error(`Find It: no Round ${round} of Numbers`);

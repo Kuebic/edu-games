@@ -3,7 +3,7 @@ import { hush, say } from '@shared/voice';
 import type { App } from '../app';
 import { h, replay, sparkle, wait } from '../dom';
 import { roundAfter } from '../progress';
-import { ROUND_LENGTH, makeRound, type Find, type Picture } from '../rounds';
+import { BOXES, ROUND_LENGTH, makeRound, type Find, type Picture } from '../rounds';
 import { play } from '../sfx';
 import { backIcon, nextIcon } from './icons';
 
@@ -35,7 +35,7 @@ const list = (words: string[]) => `${words.slice(0, -1).join(', ')}, or ${words[
 
 /** A Tray of beans, in rows of ten, five and five. Empty when n is 0. */
 function tray(n: number): HTMLElement {
-  const t = h('div', { class: `tray${n <= 10 ? ' tray-row' : ''}${n === 0 ? ' tray-empty' : ''}`, label: beans(n) });
+  const t = h('div', { class: `tray${n === 0 ? ' tray-empty' : ''}`, label: beans(n) });
   for (let i = 0; i < n; i++) t.append(h('i', { class: 'bean' }));
   return t;
 }
@@ -92,7 +92,7 @@ function shown(find: Find): Shown {
 /** One Round of a Box, both counting from 0: six Finds, then Next. */
 export function playScreen(app: App, box: number, round: number): () => void {
   let alive = true;
-  const finds = makeRound(box, round);
+  const finds = makeRound(box, round, app.progress.game.ways[BOXES[box]!.kind]);
 
   // ---- Layout ------------------------------------------------------------
   const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
@@ -156,7 +156,7 @@ export function playScreen(app: App, box: number, round: number): () => void {
       return b;
     });
     choicesEl.replaceChildren(...buttons);
-    choicesEl.classList.toggle('choices-rows', nodes.every((node) => node.classList.contains('tray-row')));
+    choicesEl.classList.toggle('choices-rows', nodes.every((node) => node.classList.contains('tray')));
     return { buttons, pick: () => new Promise((r) => (resolvePick = r)) };
   }
 

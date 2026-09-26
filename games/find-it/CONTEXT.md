@@ -11,11 +11,15 @@ One question: something to look at, and three to choose from, one of which match
 _Avoid_: Question, problem, card
 
 **Both ways round**:
-A Find goes one of two ways. Find the symbol: the child sees beans or a picture and finds the numeral or the letter. Find the picture: the child sees the numeral or the letter and finds the tray of beans or the picture. A Round takes turns.
+A Find goes one of two ways. Find the symbol: the child sees beans or a picture and finds the numeral or the letter. Find the picture: the child sees the numeral or the letter and finds the tray of beans or the picture.
 _Avoid_: Mode, direction (in UI copy), forward/reverse
 
+**Way**:
+Which way round a Box's Finds go, set by a grown-up in the Grown-up Corner: always Find the symbol, always Find the picture, or Mix, which takes turns. Each Box has its own; Mix to start with.
+_Avoid_: Mode, setting
+
 **Tray**:
-Beans laid out in rows of ten, five and five, so an amount can be counted by tens and fives. An empty Tray is zero.
+Beans laid out in rows of ten, five and five, so an amount can be counted by tens and fives. As a Choice it's a bar as wide as a row of ten, one under the other. An empty Tray is zero.
 _Avoid_: Ten-frame (in UI copy), plate, grid
 
 **Bean**:
@@ -41,5 +45,5 @@ Six Finds over one range of numbers or letters, ending in confetti. Done once it
 _Avoid_: Level (the site word; say Round here), session, quiz
 
 **Box**:
-A Group of Rounds. Numbers has ten, by tens: 0 to 10, then 11 to 20, up to 91 to 100. Letters has five, by fives: A to E up to U to Z. Its badge is a 3 over beans, or an A.
+A Group of Rounds. Numbers has two: 0 to 10, then 11 to 20. Letters has five, by fives: A to E up to U to Z. Its badge is a 3 over beans, or an A.
 _Avoid_: Category, section, mode

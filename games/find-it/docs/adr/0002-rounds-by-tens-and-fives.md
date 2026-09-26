@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: superseded by 0004
 ---
 
 # Rounds go by tens for numbers and by fives for letters, and every Find takes a turn each way round

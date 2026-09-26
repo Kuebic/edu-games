@@ -133,12 +133,8 @@ body::before {
   font-size: clamp(110px, 36vw, 200px);
 }
 
-.prompt .tray {
-  --bean: min(6.2vw, 34px);
-}
-
 /* Ten beans, the five-gap and the padding come to 13.4 beans; the screen's column is 532px, so 38px is the most a bean can be. */
-.prompt .tray-row {
+.prompt .tray {
   --bean: min(6.6vw, 38px);
 }
 
@@ -223,12 +219,11 @@ body::before {
 }
 
 .choice .tray {
-  --bean: calc(var(--card) * 0.065);
   box-shadow: none;
   background: #ffffffb3;
 }
 
-/* Trays of ten or fewer: three bars, one under the other, each a full row of ten, so amounts sit side by side. */
+/* Trays: three bars, one under the other, each as wide as a row of ten, so amounts sit side by side. */
 .choices-rows {
   flex-direction: column;
   align-items: center;
@@ -243,7 +238,7 @@ body::before {
   border-radius: 22px;
 }
 
-.choices-rows .tray-row {
+.choices-rows .tray {
   --bean: min(5.4vw, 26px);
 }
 
@@ -318,10 +313,6 @@ body::before {
   }
 
   .prompt .tray {
-    --bean: 3.4vh;
-  }
-
-  .prompt .tray-row {
     --bean: 5vh;
   }
 
@@ -356,7 +347,7 @@ body::before {
   }
 
   /* Half the 532px column, less the card's padding, holds 13.4 beans of 17px. */
-  .choices-rows .tray-row {
+  .choices-rows .tray {
     --bean: min(2.2vw, 17px);
   }
 }

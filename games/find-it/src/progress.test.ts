@@ -6,9 +6,9 @@ import { loadProgress, roundAfter } from './progress';
 const device = (initial?: string) => gameStorage('find-it', memoryStorage(initial === undefined ? {} : { 'find-it:v1': initial }));
 
 describe('Rounds', () => {
-  it('are ten of Numbers and five of Letters, none done to start with', () => {
+  it('are two of Numbers and five of Letters, none done to start with', () => {
     const progress = loadProgress(device());
-    expect(progress.marks(0).map((m) => m.done)).toEqual(Array(10).fill(false));
+    expect(progress.marks(0).map((m) => m.done)).toEqual(Array(2).fill(false));
     expect(progress.marks(1).map((m) => m.done)).toEqual(Array(5).fill(false));
     expect(progress.marks(2)).toEqual([]);
   });
@@ -23,7 +23,7 @@ describe('Rounds', () => {
   it('go on to the next Round, from the last of Numbers into Letters, and stop after Z', () => {
     const progress = loadProgress(device());
     expect(roundAfter(progress, 0, 0)).toEqual({ box: 0, round: 1 });
-    expect(roundAfter(progress, 0, 9)).toEqual({ box: 1, round: 0 });
+    expect(roundAfter(progress, 0, 1)).toEqual({ box: 1, round: 0 });
     expect(roundAfter(progress, 1, 4)).toBeUndefined();
   });
 
@@ -34,12 +34,39 @@ describe('Rounds', () => {
     first.finish(0, 1);
     first.set('voice', false);
     const again = loadProgress(storage);
-    expect(again.marks(0).map((m) => m.done).slice(0, 3)).toEqual([true, true, false]);
+    expect(again.marks(0).map((m) => m.done)).toEqual([true, true]);
     expect(again.settings.voice).toBe(false);
+  });
+
+  it('keep only the two Rounds of Numbers from a save made when it went to 100', () => {
+    const progress = loadProgress(device(JSON.stringify({ format: 1, done: { 0: [0, 1, 2, 3] } })));
+    expect(progress.marks(0).map((m) => m.done)).toEqual([true, true]);
+    expect(roundAfter(progress, 0, 1)).toEqual({ box: 1, round: 0 });
   });
 
   it('start fresh from a damaged save', () => {
     const progress = loadProgress(device('{"done":"nonsense"'));
     expect(progress.marks(0).some((m) => m.done)).toBe(false);
+  });
+});
+
+describe('Ways', () => {
+  it('start on Mix for both Boxes', () => {
+    expect(loadProgress(device()).game.ways).toEqual({ number: 'mix', letter: 'mix' });
+  });
+
+  it('round-trip through the device, and outlast a reset', () => {
+    const storage = device();
+    const first = loadProgress(storage);
+    first.game.ways.number = 'find-symbol';
+    first.game.ways.letter = 'find-picture';
+    first.save();
+    first.reset();
+    expect(loadProgress(storage).game.ways).toEqual({ number: 'find-symbol', letter: 'find-picture' });
+  });
+
+  it('fall back to Mix for anything else saved', () => {
+    const progress = loadProgress(device(JSON.stringify({ format: 1, game: { ways: { number: 'sideways', letter: 3 } } })));
+    expect(progress.game.ways).toEqual({ number: 'mix', letter: 'mix' });
   });
 });

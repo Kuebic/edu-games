@@ -17,17 +17,17 @@ function app(save: object): App {
 }
 
 describe("Find It's level select", () => {
-  it('shows Numbers with ten Rounds and Letters with five, each in its own colour', () => {
+  it('shows Numbers with two Rounds and Letters with five, each in its own colour', () => {
     const groups = findItSelect(app({})).groups();
     expect(groups.map((g) => g.name)).toEqual(['Numbers', 'Letters']);
-    expect(groups.map((g) => g.levels.length)).toEqual([10, 5]);
+    expect(groups.map((g) => g.levels.length)).toEqual([2, 5]);
     expect(groups.map((g) => g.colour)).toEqual([BOX_COLOURS.number, BOX_COLOURS.letter]);
   });
 
   it('opens each Box on its first Round, and the Rounds in order', () => {
-    const groups = findItSelect(app({ format: 1, done: { 0: [0, 1] } })).groups();
+    const groups = findItSelect(app({ format: 1, done: { 0: [0] } })).groups();
     const numbers = groups[0]!.levels.map((l) => l.done);
-    expect(numbers.map((_, i) => isLevelOpen(numbers, i)).slice(0, 4)).toEqual([true, true, true, false]);
+    expect(numbers.map((_, i) => isLevelOpen(numbers, i))).toEqual([true, true]);
     const letters = groups[1]!.levels.map((l) => l.done);
     expect(letters.map((_, i) => isLevelOpen(letters, i))).toEqual([true, false, false, false, false]);
     // No Sparkles: every Round finishes, so there's nothing to score.
