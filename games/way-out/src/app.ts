@@ -1,4 +1,4 @@
-// What every screen can reach: the saved progress, the Skin, and the way to other screens.
+// What every screen can reach: the Saved progress, the Skin, and the way to other screens.
 
 import { GROWN_UP_PACK, type Level } from './packs';
 import type { Progress } from './progress';
@@ -7,7 +7,6 @@ import type { Skin } from './skins';
 export interface App {
   root: HTMLElement;
   progress: Progress;
-  save(): void;
   skin(): Skin;
   home(): void;
   pack(pack: number): void;

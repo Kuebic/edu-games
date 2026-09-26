@@ -26,10 +26,10 @@ export function wayOutSelect(app: App): LevelSelectGame {
         name: spec.name,
         colour: packColor(i + 1),
         badge: () => packIcon(i + 1),
-        levels: packLevels(LEVELS, i + 1).map((l) => progress.levels[l.id] ?? { done: false, sparkle: false }),
-        bonusSparkles: progress.poolSparkles[i + 1] ?? 0,
+        levels: progress.marks(i),
+        bonusSparkles: progress.game.poolSparkles[i + 1] ?? 0,
       })),
-    everyLevelOpen: () => progress.unlockAll,
+    everyLevelOpen: () => progress.settings.everyLevelOpen,
     tools() {
       const speaker = iconButton('site-tool', ICONS.speaker, 'Say it', () => say(`Help the red ${app.skin().hero} get out.`));
       speaker.hidden = !canSpeak;
@@ -39,17 +39,17 @@ export function wayOutSelect(app: App): LevelSelectGame {
     },
     skins: {
       chips: SKINS.map((s) => ({ id: s.id, label: s.label, picture: heroPicture(s), colour: s.sky })),
-      current: () => progress.skin,
+      current: () => progress.game.skin,
       choose(id) {
-        progress.skin = skinById(id).id;
-        app.save();
-        paintSkin(progress.skin);
+        progress.game.skin = skinById(id).id;
+        progress.save();
+        paintSkin(progress.game.skin);
       },
     },
     underGroup(g) {
       const more = iconButton('wo-more-like', ICONS.more, 'More like this', () => app.pool(g + 1));
       more.style.setProperty('--pack', packColor(g + 1));
-      const sparkles = packSparkles(progress, LEVELS, g + 1);
+      const sparkles = packSparkles(progress, g + 1);
       if (sparkles) more.insertAdjacentHTML('beforeend', `<span class="wo-pack-sparkles">${ICONS.sparkle}<b>${sparkles}</b></span>`);
       return more;
     },

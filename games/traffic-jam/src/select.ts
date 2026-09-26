@@ -4,11 +4,11 @@ import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@sh
 import { CHAPTERS, LEVELS_PER_CHAPTER } from './chapters';
 import { ICONS, iconButton } from './icons';
 import { chapterColor } from './play';
-import { clearedIn, type Progress } from './progress';
+import type { Progress } from './progress';
 import { chapterIcon } from './view';
 
 export interface SelectHooks {
-  progress(): Progress;
+  progress: Progress;
   toggleMute(): void;
   /** Play a Level, numbered across all Chapters from 0. */
   open(index: number): void;
@@ -23,10 +23,10 @@ export function trafficJamSelect(hooks: SelectHooks): LevelSelectGame {
         name: spec.name,
         colour: chapterColor(c),
         badge: () => chapterIcon(c),
-        levels: clearedIn(hooks.progress(), c).map((done) => ({ done })),
+        levels: hooks.progress.marks(c),
       })),
     tools() {
-      const picture = () => (hooks.progress().muted ? ICONS.soundOff : ICONS.soundOn);
+      const picture = () => (hooks.progress.settings.sound ? ICONS.soundOn : ICONS.soundOff);
       const mute = iconButton('site-tool', picture(), 'Sound', () => {
         hooks.toggleMute();
         mute.innerHTML = picture();

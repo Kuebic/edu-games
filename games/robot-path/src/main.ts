@@ -1,37 +1,33 @@
 import { startGame } from '@shared/shell';
 import type { LevelSelectView } from '@shared/level-select';
+import { unlockVoice } from '@shared/voice';
 import { showParent } from './parent';
 import { showPlay } from './play';
-import { loadProgress, saveProgress, type Progress } from './progress';
+import { loadProgress } from './progress';
 import { paintSkin, showSelect, type SelectHooks } from './select';
 import { setSkinSound } from './sound';
-import { setSoundEnabled } from '@shared/sound';
-import { setVoiceEnabled, unlockVoice } from '@shared/voice';
 import './style.css';
 
 // Browsers only start the Voice after a touch.
 const { root, storage } = startGame('robot-path', { unlock: unlockVoice });
-let progress = loadProgress(storage);
+const progress = loadProgress(storage);
 let leave: () => void = () => {};
 /** The level select while it's up, so the Grown-up Corner can redraw it. */
 let select: LevelSelectView | undefined;
 
-function apply(): void {
-  setSoundEnabled(progress.settings.sound);
-  setVoiceEnabled(progress.settings.voice);
-  setSkinSound(progress.skin);
-  paintSkin(progress.skin);
-}
-
-function update(next: Progress): void {
-  progress = next;
-  saveProgress(progress, storage);
-  apply();
+/** The Skin's colours and sounds. */
+function paint(): void {
+  setSkinSound(progress.game.skin);
+  paintSkin(progress.game.skin);
 }
 
 const hooks: SelectHooks = {
-  progress: () => progress,
-  skin: (skin) => update({ ...progress, skin }),
+  progress,
+  skin(skin) {
+    progress.game.skin = skin;
+    progress.save();
+    paint();
+  },
   open: openLevel,
   parent: openParent,
 };
@@ -47,17 +43,16 @@ function openLevels(world?: number): void {
 function openLevel(world: number, index: number): void {
   leave();
   select = undefined;
-  leave = showPlay(root, world, index, { progress: () => progress, update, levels: () => openLevels(world), open: openLevel, parent: openParent });
+  leave = showPlay(root, world, index, { progress, levels: () => openLevels(world), open: openLevel, parent: openParent });
 }
 
 function openParent(): void {
   showParent(root.firstElementChild as HTMLElement, {
-    progress: () => progress,
-    update,
+    progress,
     // "Every level open" and a reset show on the level select straight away.
     close: () => select?.redraw(),
   });
 }
 
-apply();
+paint();
 openLevels();

@@ -8,7 +8,7 @@ import { SKIN_ART, skinPicture } from './skins';
 import * as sfx from './sound';
 
 export interface SelectHooks {
-  progress(): Progress;
+  progress: Progress;
   /** Save the Skin the child picked. */
   skin(skin: SkinId): void;
   /** Play a Level. Worlds and Levels count from 0. */
@@ -31,16 +31,13 @@ export function robotPathSelect(hooks: SelectHooks): LevelSelectGame {
         name: world.name,
         colour: world.color,
         badge: () => WORLD_ICONS[w]!,
-        levels: world.levels.map((level) => {
-          const saved = hooks.progress().levels[level.id];
-          return { done: saved?.done === true, sparkle: saved?.sparkle === true };
-        }),
+        levels: hooks.progress.marks(w),
       })),
-    everyLevelOpen: () => hooks.progress().unlockAll,
+    everyLevelOpen: () => hooks.progress.settings.everyLevelOpen,
     tools: () => [holdButton('site-tool', ICONS.gear, 'Grown-ups: hold', 3000, hooks.parent)],
     skins: {
       chips: SKINS.map((id) => ({ id, label: SKIN_ART[id].name, picture: skinPicture(id), colour: SKIN_ART[id].floor[0] })),
-      current: () => hooks.progress().skin,
+      current: () => hooks.progress.game.skin,
       choose(id) {
         sfx.tap();
         hooks.skin(SKINS.find((s) => s === id) ?? 'garden');

@@ -1,40 +1,27 @@
-// What's saved on the device: Levels done, Sparkles, each Level's Draft, the Skin and settings.
-// Storage can be blocked (private browsing); then the game still plays, it just won't remember.
+// What's saved on the device, on the site's Saved progress (ADR 0012): Levels done and Sparkles are
+// the site's; the Skin, the Speed and each Level's Draft are Robot Path's own.
 
+import { openProgress, type Progress as SiteProgress } from '@shared/progress';
 import type { GameStorage } from '@shared/storage';
-import { nextLevel } from '@shared/unlock';
 import type { Program } from './game/level';
 import { WORLDS } from './levels';
-
-/** Saved as "robot-path:v1": the shell puts the Slug in front. */
-const KEY = 'v1';
-const VERSION = 2;
 
 export const SKINS = ['garden', 'planet', 'sea'] as const;
 export type SkinId = (typeof SKINS)[number];
 export const SPEEDS = ['slow', 'normal', 'fast'] as const;
 export type Speed = (typeof SPEEDS)[number];
 
-export interface LevelProgress {
-  done: boolean;
-  sparkle: boolean;
-  /** The Program in the bar when he last left, so his work is still there. */
-  draft?: Program;
-}
-
-export interface Progress {
-  version: typeof VERSION;
+/** What only Robot Path saves. */
+export interface Save {
   skin: SkinId;
-  levels: Record<string, LevelProgress>;
-  settings: { sound: boolean; voice: boolean; speed: Speed };
-  unlockAll: boolean;
+  speed: Speed;
+  /** The Program in the bar when he last left each Level, by Level id, so his work is still there. */
+  drafts: Record<string, Program>;
 }
 
-export function freshProgress(): Progress {
-  return { version: VERSION, skin: 'garden', levels: {}, settings: { sound: true, voice: true, speed: 'normal' }, unlockAll: false };
-}
+export type Progress = SiteProgress<Save>;
 
-const isObject = (value: unknown): value is Record<string, unknown> =>
+const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 /** Version 2 put three maze Worlds in as worlds 3-5, so version 1's worlds 3-5 are now 6-8. */
@@ -43,60 +30,71 @@ function levelIdNow(id: string, version: unknown): string {
   return version === 1 && old ? `w${Number(old[1]) + 3}-${old[2]}` : id;
 }
 
-/**
- * Turns whatever was saved into a current Progress, keeping everything that still makes sense.
- * A future version bump adds a step here that upgrades the old shape; it never wipes.
- */
-export function migrate(raw: unknown): Progress {
-  const progress = freshProgress();
-  if (!isObject(raw)) return progress;
-  if (SKINS.includes(raw.skin as SkinId)) progress.skin = raw.skin as SkinId;
-  if (isObject(raw.levels))
-    for (const [id, saved] of Object.entries(raw.levels)) {
-      if (!isObject(saved)) continue;
-      progress.levels[levelIdNow(id, raw.version)] = {
-        done: saved.done === true,
-        sparkle: saved.sparkle === true,
-        ...(Array.isArray(saved.draft) && { draft: saved.draft as Program }),
-      };
-    }
-  if (isObject(raw.settings)) {
-    const { sound, voice, speed } = raw.settings;
-    progress.settings = {
-      sound: sound !== false,
-      voice: voice !== false,
-      speed: SPEEDS.includes(speed as Speed) ? (speed as Speed) : 'normal',
-    };
-  }
-  progress.unlockAll = raw.unlockAll === true;
-  return progress;
+/** A Level's World and place from its id, "w1-01": both count from 1 in the files, from 0 here. */
+function placeOf(id: string): { group: number; level: number } | undefined {
+  const m = /^w(\d+)-(\d+)$/.exec(id);
+  return m ? { group: Number(m[1]) - 1, level: Number(m[2]) - 1 } : undefined;
 }
 
+/** Saved as "robot-path:v1": the shell puts the Slug in front. */
 export function loadProgress(storage: GameStorage): Progress {
-  return migrate(storage.read(KEY));
+  return openProgress(storage, {
+    key: 'v1',
+    sizes: WORLDS.map((w) => w.levels.length),
+    sparkles: true,
+    game: {
+      read(raw) {
+        const r = isRecord(raw) ? raw : {};
+        const drafts: Record<string, Program> = {};
+        if (isRecord(r.drafts)) for (const [id, draft] of Object.entries(r.drafts)) if (Array.isArray(draft)) drafts[id] = draft as Program;
+        return {
+          skin: SKINS.includes(r.skin as SkinId) ? (r.skin as SkinId) : 'garden',
+          speed: SPEEDS.includes(r.speed as Speed) ? (r.speed as Speed) : 'normal',
+          drafts,
+        };
+      },
+      reset(save) {
+        save.drafts = {};
+      },
+    },
+    // Before ADR 0012: { version, skin, levels: { 'w1-01': { done, sparkle, draft } }, settings: { sound, voice, speed }, unlockAll }.
+    legacy(saved) {
+      const done: Record<string, number[]> = {};
+      const sparkle: Record<string, number[]> = {};
+      const drafts: Record<string, unknown> = {};
+      if (isRecord(saved.levels)) {
+        for (const [id, level] of Object.entries(saved.levels)) {
+          if (!isRecord(level)) continue;
+          const now = levelIdNow(id, saved.version);
+          const at = placeOf(now);
+          if (!at) continue;
+          if (level.done === true) (done[at.group] ??= []).push(at.level);
+          if (level.sparkle === true) (sparkle[at.group] ??= []).push(at.level);
+          if (Array.isArray(level.draft)) drafts[now] = level.draft;
+        }
+      }
+      const settings = isRecord(saved.settings) ? saved.settings : {};
+      return {
+        done,
+        sparkle,
+        settings: { sound: settings.sound !== false, voice: settings.voice !== false, everyLevelOpen: saved.unlockAll === true },
+        game: { skin: saved.skin, speed: settings.speed, drafts },
+      };
+    },
+  });
 }
 
-export function saveProgress(progress: Progress, storage: GameStorage): void {
-  storage.write(KEY, progress);
-}
-
-const levelOf = (progress: Progress, id: string): LevelProgress => progress.levels[id] ?? { done: false, sparkle: false };
-
-export function withDraft(progress: Progress, id: string, draft: Program): Progress {
-  return { ...progress, levels: { ...progress.levels, [id]: { ...levelOf(progress, id), draft } } };
-}
-
-/** A Sparkle, once earned, stays. */
-export function withWin(progress: Progress, id: string, sparkle: boolean): Progress {
-  const before = levelOf(progress, id);
-  return { ...progress, levels: { ...progress.levels, [id]: { ...before, done: true, sparkle: before.sparkle || sparkle } } };
+/** A change to a Level's Program: kept as his Draft. */
+export function saveDraft(progress: Progress, id: string, draft: Program): void {
+  progress.game.drafts[id] = draft;
+  progress.save();
 }
 
 /**
  * Where Next goes after a win: the next Level in the World, else the next World's first (every World
  * is open, ADR 0009), else undefined after the very last. Worlds and Levels count from 0.
  */
-export function levelAfter(world: number, index: number): { world: number; index: number } | undefined {
-  const to = nextLevel(WORLDS.map((w) => w.levels.length), world, index);
+export function levelAfter(progress: Progress, world: number, index: number): { world: number; index: number } | undefined {
+  const to = progress.after(world, index);
   return to && { world: to.group, index: to.level };
 }

@@ -6,7 +6,7 @@ import { backIcon } from './icons';
 const ROW = 4;
 
 export const stickersScreen: Screen = (app) => {
-  const owned = app.save.stickers;
+  const owned = app.progress.game.stickers;
   const empties = Math.max(ROW * 2, Math.ceil((owned.length + 1) / ROW) * ROW) - owned.length;
   const grid = h(
     'div',

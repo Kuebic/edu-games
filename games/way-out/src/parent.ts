@@ -1,9 +1,7 @@
 // The grown-up menu, behind a 3-second hold on the gear. Words are fine here.
 
-import { setSoundEnabled } from '@shared/sound';
-import { canSpeak, setVoiceEnabled } from '@shared/voice';
+import { canSpeak } from '@shared/voice';
 import type { App } from './app';
-import { freshProgress } from './progress';
 
 export function showParent(app: App, close: () => void): void {
   const layer = document.createElement('div');
@@ -26,7 +24,6 @@ export function showParent(app: App, close: () => void): void {
     };
     button.addEventListener('click', () => {
       set(!get());
-      app.save();
       render();
     });
     render();
@@ -35,20 +32,13 @@ export function showParent(app: App, close: () => void): void {
 
   const { progress } = app;
   const toggles = [
-    toggle('Sound', () => progress.settings.sound, (on) => {
-      progress.settings.sound = on;
-      setSoundEnabled(on);
+    toggle('Sound', () => progress.settings.sound, (on) => progress.set('sound', on)),
+    ...(canSpeak ? [toggle('Voice', () => progress.settings.voice, (on) => progress.set('voice', on))] : []),
+    toggle('Every level open', () => progress.settings.everyLevelOpen, (on) => progress.set('everyLevelOpen', on)),
+    toggle('Grown-up pack (26 to 60 moves)', () => progress.game.grownUp, (on) => {
+      progress.game.grownUp = on;
+      progress.save();
     }),
-    ...(canSpeak
-      ? [
-          toggle('Voice', () => progress.settings.voice, (on) => {
-            progress.settings.voice = on;
-            setVoiceEnabled(on);
-          }),
-        ]
-      : []),
-    toggle('Every level open', () => progress.unlockAll, (on) => (progress.unlockAll = on)),
-    toggle('Grown-up pack (26 to 60 moves)', () => progress.grownUp, (on) => (progress.grownUp = on)),
   ];
 
   const erase = document.createElement('button');
@@ -64,11 +54,7 @@ export function showParent(app: App, close: () => void): void {
       return;
     }
     // Keep the settings and picture; clear the play.
-    const fresh = freshProgress();
-    progress.levels = fresh.levels;
-    progress.poolSeen = fresh.poolSeen;
-    progress.poolSparkles = fresh.poolSparkles;
-    app.save();
+    progress.reset();
     erase.textContent = 'Progress erased';
     erase.disabled = true;
   });

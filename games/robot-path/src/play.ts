@@ -10,13 +10,12 @@ import { GoalStrip } from './goals';
 import { holdButton, ICONS, iconButton, OP_ICONS, OP_LABELS, WORLD_ICONS } from './icons';
 import { levelAt, WORLDS } from './levels';
 import { ProgramBar, type RunMarks } from './program-bar';
-import { levelAfter, SPEEDS, withDraft, withWin, type Progress, type Speed } from './progress';
+import { levelAfter, saveDraft, SPEEDS, type Progress, type Speed } from './progress';
 import * as sfx from './sound';
 import { spellOut } from './spell';
 
 export interface PlayHooks {
-  progress(): Progress;
-  update(progress: Progress): void;
+  progress: Progress;
   /** Back to this World's Levels. */
   levels(): void;
   open(world: number, index: number): void;
@@ -51,9 +50,10 @@ interface Session {
 
 export function showPlay(root: HTMLElement, world: number, index: number, hooks: PlayHooks): () => void {
   const level = levelAt(world, index);
-  const skin = hooks.progress().skin;
-  const saved = hooks.progress().levels[level.id];
-  let editor: Editor = editorFor(saved?.draft ?? level.starterProgram);
+  const { progress } = hooks;
+  const skin = progress.game.skin;
+  const saved = progress.mark(world, index);
+  let editor: Editor = editorFor(progress.game.drafts[level.id] ?? level.starterProgram);
   let marks: RunMarks = {};
   let session: Session | null = null;
   let playing = false;
@@ -62,7 +62,7 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   let gone = false;
   let runs = 0;
   let hinted = 0;
-  const tutorial = !saved?.done && editor.program.length === 0 ? (level.tutorial ?? []) : [];
+  const tutorial = !saved.done && editor.program.length === 0 ? (level.tutorial ?? []) : [];
   let tutorialAt = 0;
   /** Numbers picked up in this Run, in order, for "2 plus 3 is 5!". */
   let numbers: number[] = [];
@@ -160,9 +160,8 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   const goButton = iconButton('rp-go', ICONS.go, 'Go', () => void onGo());
   const speedButton = iconButton('rp-ctl', '', 'Speed', () => {
     const speeds = [...SPEEDS];
-    const speed = speeds[(speeds.indexOf(speedNow()) + 1) % speeds.length]!;
-    const progress = hooks.progress();
-    hooks.update({ ...progress, settings: { ...progress.settings, speed } });
+    progress.game.speed = speeds[(speeds.indexOf(speedNow()) + 1) % speeds.length]!;
+    progress.save();
     sfx.tap();
     renderControls();
   });
@@ -206,7 +205,7 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   resize.observe(dock);
 
   function speedNow(): Speed {
-    return hooks.progress().settings.speed;
+    return progress.game.speed;
   }
 
   function locked(): boolean {
@@ -218,7 +217,7 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
     editor = next;
     session = null;
     marks = {};
-    hooks.update(withDraft(hooks.progress(), level.id, editor.program));
+    saveDraft(progress, level.id, editor.program);
     render();
   }
 
@@ -342,7 +341,7 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
   function win(): void {
     won = true;
     const sparkle = programLength(editor.program) <= level.par;
-    hooks.update(withWin(hooks.progress(), level.id, sparkle));
+    progress.finish(world, index, sparkle);
     board.celebrate();
     sfx.fanfare();
     if (sparkle) sfx.sparkle();
@@ -365,7 +364,7 @@ export function showPlay(root: HTMLElement, world: number, index: number, hooks:
       done.append(burst);
     }
     // After the very last Level, Next goes to its World.
-    const next = levelAfter(world, index);
+    const next = levelAfter(progress, world, index);
     const buttons = document.createElement('div');
     buttons.className = 'rp-done-buttons';
     buttons.append(

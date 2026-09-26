@@ -23,7 +23,7 @@ Whether a Game is **On** (a Tile on its Shelf), **Hidden** (playable at its addr
 _Avoid_: enabled/disabled, draft, published, shelved
 
 **Saved progress**:
-What a Game remembers on the device between visits: which Levels are Done, Stickers, settings. Each Game keeps its own under its Slug, so Games never overwrite each other.
+What a Game remembers on the device between visits, through one module every Game shares (`@shared/progress`): which Levels are Done and have Sparkles, the Grown-up Corner's switches, and in the Game's own slot what only it saves, such as Stickers or a Skin. Each Game keeps its own under its Slug, so Games never overwrite each other.
 _Avoid_: save file, storage, data
 
 **Game task**:
@@ -83,7 +83,7 @@ A Level the child may start. A Group's first Level is open, each next one opens 
 _Avoid_: unlocked, available
 
 **Every level open**:
-A Grown-up Corner switch that opens every Level (Robot Path, Way Out).
+A Grown-up Corner switch that opens every Level. Every Game has it.
 
 **Level select**:
 The two screens a Game opens on, drawn the same in every Game: the Group list and a Group screen.

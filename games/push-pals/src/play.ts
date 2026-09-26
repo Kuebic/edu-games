@@ -2,7 +2,7 @@ import type { Direction, Level, Position } from './game/level';
 import { hasCorneredBox, isSolved, step } from './game/rules';
 import { ICONS } from './icons';
 import { LEVELS } from './levels';
-import { levelAfter } from './progress';
+import { levelAfter, type Progress } from './progress';
 import { play } from './sound';
 
 const STEP_MS = 130;
@@ -21,7 +21,7 @@ const KEYS: Record<string, Direction> = {
 };
 
 export interface PlayHooks {
-  muted(): boolean;
+  progress: Progress;
   toggleMute(): void;
   /** Called once, the moment the level is solved. */
   solved(): void;
@@ -106,7 +106,7 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   const win = document.createElement('div');
   win.className = 'win';
   win.hidden = true;
-  const last = levelAfter(index) === undefined;
+  const last = levelAfter(hooks.progress, index) === undefined;
   win.innerHTML = `<div class="win-stars"><i>${ICONS.star}</i><i>${ICONS.star}</i><i>${ICONS.star}</i></div>`;
   // After the very last Level, Next goes back to its Chapter.
   const nextButton = button(last ? 'site-next all-levels' : 'site-next', last ? ICONS.levels : ICONS.next, () => hooks.next());
@@ -128,7 +128,7 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   }
 
   function renderMute(): void {
-    muteButton.innerHTML = hooks.muted() ? ICONS.soundOff : ICONS.soundOn;
+    muteButton.innerHTML = hooks.progress.settings.sound ? ICONS.soundOn : ICONS.soundOff;
   }
 
   function fit(): void {

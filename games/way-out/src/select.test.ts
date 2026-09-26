@@ -12,8 +12,7 @@ function fakeApp(progress: Progress) {
   return {
     root: undefined as unknown as HTMLElement,
     progress,
-    save() {},
-    skin: () => skinById(progress.skin),
+    skin: () => skinById(progress.game.skin),
     home() {},
     pack() {},
     level: vi.fn<App['level']>(),
@@ -36,7 +35,7 @@ describe("Way Out's level select", () => {
       ['Jam', 12],
       ['Gridlock', 12],
     ]);
-    progress.grownUp = true;
+    progress.game.grownUp = true;
     expect(game.groups().at(-1)!.name).toBe('Grown-up');
   });
 

@@ -4,14 +4,11 @@
 
 import { houseButton } from './house-button';
 import './level-select.css';
+import type { LevelMark } from './progress';
 import { currentLevel, isLevelOpen } from './unlock';
 
-/** One Level as the level select draws it, read from the Game's Saved progress. */
-export interface LevelMark {
-  done: boolean;
-  /** Leave out in a Game without Sparkles. */
-  sparkle?: boolean;
-}
+/** One Level as the level select draws it: Saved progress gives them (progress.ts). */
+export type { LevelMark };
 
 /** One Group (a Pack, Chapter, World or Stage) as the level select draws it. */
 export interface GroupView {

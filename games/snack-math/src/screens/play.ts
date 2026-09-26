@@ -17,10 +17,9 @@ type PlateMode = 'none' | 'eat' | 'count';
 /** One Round of a Stage, both counting from 0: five Problems with the next Friend, then a Sticker. */
 export function playScreen(app: App, stage: number, round: number): () => void {
   let alive = true;
-  const friend = FRIENDS[app.save.nextFriend % FRIENDS.length];
-  app.save.nextFriend++;
-  app.save.stage = stage;
-  app.persist();
+  const friend = FRIENDS[app.progress.game.nextFriend % FRIENDS.length];
+  app.progress.game.nextFriend++;
+  app.progress.save();
   const problems = makeRound(stage);
   const word = (n: number) => snackWord(friend, n);
 
@@ -339,10 +338,10 @@ export function playScreen(app: App, stage: number, round: number): () => void {
     }
     if (!alive) return;
 
-    const sticker = pickSticker(app.save.stickers);
-    const stageDone = finishRound(app.save, stage, round);
-    app.save.stickers.push(sticker);
-    app.persist();
+    const sticker = pickSticker(app.progress.game.stickers);
+    const stageDone = finishRound(app.progress, stage, round);
+    app.progress.game.stickers.push(sticker);
+    app.progress.save();
     showReward(sticker, stageDone);
   }
 
@@ -374,7 +373,7 @@ export function playScreen(app: App, stage: number, round: number): () => void {
     );
     screen.replaceChildren(reward);
     next.addEventListener('click', () => {
-      const to = roundAfter(stage, round);
+      const to = roundAfter(app.progress, stage, round);
       if (to) app.play(to.stage, to.round);
       else app.stages(stage);
     });

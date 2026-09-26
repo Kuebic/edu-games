@@ -10,7 +10,7 @@ import { nextMove } from './hint';
 import { ICONS, iconButton } from './icons';
 import { LEVELS } from './levels';
 import type { Level, PoolPuzzle } from './packs';
-import { levelAfter, levelProgress, recordPoolSolve, recordSolve, type Snapshot } from './progress';
+import { levelAfter, levelSave, recordPoolSolve, recordSolve, type Snapshot } from './progress';
 import { cheer, engine, twinkle } from './sound';
 import { colorOf, COLORS, kindName, RED } from './skins';
 
@@ -23,7 +23,8 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
   const pack = puzzle.kind === 'level' ? puzzle.level.pack : puzzle.pack;
   const start: Board = puzzle.kind === 'level' ? puzzle.level.board : puzzle.puzzle[0];
   const par = puzzle.kind === 'level' ? puzzle.level.par : puzzle.puzzle[1];
-  const saved = puzzle.kind === 'level' ? levelProgress(app.progress, puzzle.level.id) : undefined;
+  const saved = puzzle.kind === 'level' ? levelSave(app.progress, puzzle.level.id) : undefined;
+  const mark = puzzle.kind === 'level' ? app.progress.mark(puzzle.level.pack - 1, puzzle.level.index - 1) : undefined;
 
   let board = saved?.inProgress?.board ?? start;
   let moves = saved?.inProgress?.moves ?? 0;
@@ -63,7 +64,7 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
   earned.className = 'wo-earned';
   earned.innerHTML = ICONS.sparkle;
   earned.setAttribute('aria-label', 'Sparkle earned');
-  earned.hidden = !saved?.sparkle;
+  earned.hidden = !mark?.sparkle;
   status.append(counter, earned);
 
   const stage = document.createElement('div');
@@ -111,7 +112,7 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
     if (!saved || won) return;
     if (moves === 0 && history.length === 0) delete saved.inProgress;
     else saved.inProgress = { board, moves, history };
-    app.save();
+    app.progress.save();
   }
 
   function commit(move: Move): void {
@@ -166,7 +167,6 @@ export function showPlay(app: App, puzzle: Puzzle): () => void {
     const sparkle = moves <= par;
     if (puzzle.kind === 'level') recordSolve(app.progress, puzzle.level, moves);
     else recordPoolSolve(app.progress, pack, puzzle.puzzle, moves);
-    app.save();
 
     engine(skin.engine, EXIT_SECONDS);
     await view.driveOut(EXIT_SECONDS);

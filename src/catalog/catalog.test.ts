@@ -98,6 +98,13 @@ describe('Catalog', () => {
       expect(unlocks, 'a Game that imports @shared/voice must call unlockVoice from a touch').toBe(speaks);
     });
 
+    // ADR 0012: a Game's Saved progress is the site's, opened once; nothing else touches its storage.
+    it('saves only through Saved progress, opened once', () => {
+      const opens = scripts.flatMap((f) => source(f).match(/\bopenProgress\(/g) ?? []).length;
+      expect(opens, 'one openProgress()').toBe(1);
+      for (const f of scripts) expect(source(f), relative(dir, f)).not.toMatch(/\bstorage\.(read|write)\(/);
+    });
+
     // ADR 0011: a Game makes sound only through the Sound, which the shell unlocks.
     it('plays sound only through the Sound', () => {
       for (const f of scripts) {

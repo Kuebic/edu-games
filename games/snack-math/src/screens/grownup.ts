@@ -1,12 +1,10 @@
-import { setSoundEnabled } from '@shared/sound';
-import { canSpeak, setVoiceEnabled } from '@shared/voice';
+import { canSpeak } from '@shared/voice';
 import type { App } from '../app';
 import { h } from '../dom';
-import { defaultSave } from '../progress';
 
 /** The Grown-up Corner, opened from the Stage list or from `stage`'s Rounds, where Done goes back to. */
 export function grownupScreen(app: App, stage?: number): void {
-  const { save } = app;
+  const { progress } = app;
 
   const toggle = (label: string, get: () => boolean, set: (on: boolean) => void) => {
     const b = h('button', { class: 'toggle' });
@@ -17,21 +15,14 @@ export function grownupScreen(app: App, stage?: number): void {
     };
     b.addEventListener('click', () => {
       set(!get());
-      app.persist();
       render();
     });
     render();
     return b;
   };
 
-  const voice = toggle('Voice', () => save.voice, (on) => {
-    save.voice = on;
-    setVoiceEnabled(on);
-  });
-  const sound = toggle('Sounds', () => save.sound, (on) => {
-    save.sound = on;
-    setSoundEnabled(on);
-  });
+  const voice = toggle('Voice', () => progress.settings.voice, (on) => progress.set('voice', on));
+  const sound = toggle('Sounds', () => progress.settings.sound, (on) => progress.set('sound', on));
 
   const stickerCount = h('p', { class: 'muted' });
   const reset = h('button', { class: 'danger' });
@@ -46,11 +37,7 @@ export function grownupScreen(app: App, stage?: number): void {
       renderReset();
       return;
     }
-    const fresh = defaultSave();
-    save.stage = fresh.stage;
-    save.rounds = fresh.rounds;
-    save.stickers = fresh.stickers;
-    app.persist();
+    progress.reset();
     armed = false;
     renderReset();
     sync();
@@ -61,7 +48,7 @@ export function grownupScreen(app: App, stage?: number): void {
   done.addEventListener('click', () => app.stages(stage));
 
   function sync() {
-    stickerCount.textContent = `Stickers earned: ${save.stickers.length}`;
+    stickerCount.textContent = `Stickers earned: ${progress.game.stickers.length}`;
   }
   sync();
 

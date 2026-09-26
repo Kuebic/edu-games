@@ -2,7 +2,7 @@
 
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
 import { CHAPTERS, FIRST } from './levels';
-import { solvedIn, type Progress } from './progress';
+import type { Progress } from './progress';
 import { play } from './sound';
 
 /**
@@ -23,7 +23,7 @@ export const CHAPTER_COLOURS = [
 ] as const;
 
 export interface SelectHooks {
-  progress(): Progress;
+  progress: Progress;
   /** Play a Level, numbered across all Chapters from 0. */
   open(index: number): void;
 }
@@ -42,7 +42,7 @@ export function pushPalsSelect(hooks: SelectHooks): LevelSelectGame {
         name: `Chapter ${c + 1}, ${chapter.boxes} boxes`,
         colour: CHAPTER_COLOURS[c % CHAPTER_COLOURS.length]!,
         badge: () => crates(chapter.boxes),
-        levels: solvedIn(hooks.progress(), c).map((done) => ({ done })),
+        levels: hooks.progress.marks(c),
       })),
     play(c, i) {
       play('tap');

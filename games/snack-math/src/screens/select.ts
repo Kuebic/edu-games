@@ -5,7 +5,6 @@ import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@sh
 import type { App } from '../app';
 import { h } from '../dom';
 import { STAGES, type Stage } from '../problems';
-import { roundsDone } from '../progress';
 import { gearIcon } from './icons';
 
 /**
@@ -45,7 +44,7 @@ export function snackMathSelect(app: App): LevelSelectGame {
         name: stage.label,
         colour: STAGE_COLOURS[s]!,
         badge: () => stageBadge(stage, STAGE_COLOURS[s]!),
-        levels: roundsDone(app.save, s).map((done) => ({ done })),
+        levels: app.progress.marks(s),
       })),
     tools(stage) {
       const gear = h('button', { class: 'site-tool', label: 'Grown-Up Corner (press and hold)', html: gearIcon });
@@ -53,7 +52,7 @@ export function snackMathSelect(app: App): LevelSelectGame {
       return [gear];
     },
     underList() {
-      const count = app.save.stickers.length;
+      const count = app.progress.game.stickers.length;
       const book = h(
         'button',
         { class: 'book-btn', label: 'Sticker Book' },

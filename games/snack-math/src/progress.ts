@@ -1,5 +1,8 @@
+// What Snack Math remembers, on the site's Saved progress (ADR 0012): which Rounds are done, and
+// in its own slot the Stickers and whose turn it is among the Friends.
+
+import { openProgress, type Progress as SiteProgress } from '@shared/progress';
 import type { GameStorage } from '@shared/storage';
-import { nextLevel } from '@shared/unlock';
 import { STAGES, type Rng } from './problems';
 
 /** Every Stage is a Group of this many Rounds (ADR 0003). */
@@ -11,42 +14,67 @@ export const STICKERS = [
   '🐸', '🦁', '🍩', '🚂', '🐝', '🦉', '🐬', '🍉',
 ];
 
+/** What only Snack Math saves. */
 export interface Save {
-  /** The Stage last played. */
-  stage: number;
-  /** How many of each Stage's Rounds are done. They are done in order, so a count says which. */
-  rounds: number[];
   stickers: string[];
-  voice: boolean;
-  sound: boolean;
   nextFriend: number;
 }
 
+export type Progress = SiteProgress<Save>;
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
 /** Saved as "snack-math:v1": the shell puts the Slug in front. */
-const KEY = 'v1';
-
-export function defaultSave(): Save {
-  return { stage: 0, rounds: STAGES.map(() => 0), stickers: [], voice: true, sound: true, nextFriend: 0 };
-}
-
-/** Which of a Stage's Rounds are done, in play order. Which are open is the site's rule (ADR 0009). */
-export function roundsDone(save: Save, stage: number): boolean[] {
-  return Array.from({ length: ROUNDS_PER_STAGE }, (_, round) => round < (save.rounds[stage] ?? 0));
+export function loadProgress(storage: GameStorage): Progress {
+  return openProgress(storage, {
+    key: 'v1',
+    sizes: STAGES.map(() => ROUNDS_PER_STAGE),
+    game: {
+      read(raw) {
+        const r = isRecord(raw) ? raw : {};
+        return {
+          stickers: Array.isArray(r.stickers) ? r.stickers.filter((s): s is string => typeof s === 'string') : [],
+          nextFriend: Number.isInteger(r.nextFriend) && (r.nextFriend as number) >= 0 ? (r.nextFriend as number) : 0,
+        };
+      },
+      reset(save) {
+        save.stickers = [];
+      },
+    },
+    // Before ADR 0012: how many of each Stage's Rounds were done, in `rounds`. Before Stages were Groups
+    // (its ADR 0003), only the Stage a child had moved up to: the Stages below it count as done.
+    legacy(saved) {
+      const stage = Number.isInteger(saved.stage) && (saved.stage as number) >= 0 && (saved.stage as number) < STAGES.length ? (saved.stage as number) : 0;
+      const rounds = saved.rounds;
+      const counts = Array.isArray(rounds)
+        ? STAGES.map((_, s) => {
+            const n: unknown = rounds[s];
+            return Number.isInteger(n) && (n as number) >= 0 ? Math.min(n as number, ROUNDS_PER_STAGE) : 0;
+          })
+        : 'rounds' in saved
+          ? STAGES.map(() => 0)
+          : STAGES.map((_, s) => (s < stage ? ROUNDS_PER_STAGE : 0));
+      const done: Record<string, number[]> = {};
+      counts.forEach((n, s) => {
+        if (n > 0) done[s] = Array.from({ length: n }, (_, i) => i);
+      });
+      return { done, settings: { sound: saved.sound !== false, voice: saved.voice !== false }, game: saved };
+    },
+  });
 }
 
 /**
  * Marks a Round finished. Returns true the first time this finishes the Stage's last Round,
  * which is when the child hears how good they're getting.
  */
-export function finishRound(save: Save, stage: number, round: number): boolean {
-  const before = save.rounds[stage] ?? 0;
-  save.rounds[stage] = Math.max(before, round + 1);
-  return round === ROUNDS_PER_STAGE - 1 && before < ROUNDS_PER_STAGE;
+export function finishRound(progress: Progress, stage: number, round: number): boolean {
+  return progress.finish(stage, round).done && round === ROUNDS_PER_STAGE - 1;
 }
 
 /** Where Next goes from a Round: the next one, on into the next Stage, or undefined after the very last. */
-export function roundAfter(stage: number, round: number): { stage: number; round: number } | undefined {
-  const to = nextLevel(STAGES.map(() => ROUNDS_PER_STAGE), stage, round);
+export function roundAfter(progress: Progress, stage: number, round: number): { stage: number; round: number } | undefined {
+  const to = progress.after(stage, round);
   return to && { stage: to.group, round: to.level };
 }
 
@@ -56,33 +84,3 @@ export function pickSticker(owned: readonly string[], rng: Rng = Math.random): s
   const pool = fresh.length > 0 ? fresh : STICKERS;
   return pool[Math.floor(rng() * pool.length)];
 }
-
-export function loadSave(storage: GameStorage): Save {
-  const save = defaultSave();
-  const raw = storage.read(KEY);
-  if (!raw || typeof raw !== 'object') return save;
-  const r = raw as Record<string, unknown>;
-  if (Number.isInteger(r.stage) && (r.stage as number) >= 0 && (r.stage as number) < STAGES.length) {
-    save.stage = r.stage as number;
-  }
-  if (!('rounds' in r)) {
-    // Saved before Stages were Groups, when a child moved up by playing: the Stages below theirs count as done.
-    save.rounds = STAGES.map((_, s) => (s < save.stage ? ROUNDS_PER_STAGE : 0));
-  } else if (Array.isArray(r.rounds)) {
-    const saved = r.rounds as unknown[];
-    save.rounds = STAGES.map((_, s) => {
-      const n = saved[s];
-      return Number.isInteger(n) && (n as number) >= 0 ? Math.min(n as number, ROUNDS_PER_STAGE) : 0;
-    });
-  }
-  if (Array.isArray(r.stickers)) save.stickers = r.stickers.filter((s) => typeof s === 'string');
-  if (typeof r.voice === 'boolean') save.voice = r.voice;
-  if (typeof r.sound === 'boolean') save.sound = r.sound;
-  if (Number.isInteger(r.nextFriend) && (r.nextFriend as number) >= 0) save.nextFriend = r.nextFriend as number;
-  return save;
-}
-
-export function writeSave(save: Save, storage: GameStorage): void {
-  storage.write(KEY, save);
-}
-

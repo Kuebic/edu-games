@@ -3,15 +3,14 @@ import { isLevelOpen } from '@shared/unlock';
 import { describe, expect, it, vi } from 'vitest';
 import type { App } from '../app';
 import { STAGES } from '../problems';
-import { loadSave } from '../progress';
+import { loadProgress } from '../progress';
 import { snackMathSelect, STAGE_COLOURS, stageBadge } from './select';
 
 /** An App on a save as the Game wrote it, under its real key. */
 function app(save: object): App {
   return {
     root: undefined as never,
-    save: loadSave(gameStorage('snack-math', memoryStorage({ 'snack-math:v1': JSON.stringify(save) }))),
-    persist() {},
+    progress: loadProgress(gameStorage('snack-math', memoryStorage({ 'snack-math:v1': JSON.stringify(save) }))),
     stages: vi.fn(),
     play: vi.fn(),
     stickers: vi.fn(),

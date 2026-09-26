@@ -2,11 +2,10 @@
 
 import { canSpeak } from '@shared/voice';
 import { ICONS, iconButton } from './icons';
-import { freshProgress, SPEEDS, type Progress, type Speed } from './progress';
+import { SPEEDS, type Progress, type Speed } from './progress';
 
 export interface ParentHooks {
-  progress(): Progress;
-  update(progress: Progress): void;
+  progress: Progress;
   close(): void;
 }
 
@@ -32,12 +31,8 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
   };
 
   const draw = () => {
-    const progress = hooks.progress();
+    const { progress } = hooks;
     const { settings } = progress;
-    const set = (next: Partial<Progress>) => {
-      hooks.update({ ...hooks.progress(), ...next });
-      draw();
-    };
     const toggle = (label: string, on: boolean, flip: () => void) => {
       const button = document.createElement('button');
       button.type = 'button';
@@ -47,6 +42,11 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
       button.innerHTML = `<span>${label}</span><i></i>`;
       button.addEventListener('click', flip);
       return button;
+    };
+
+    const flip = (setting: 'sound' | 'voice' | 'everyLevelOpen') => {
+      progress.set(setting, !settings[setting]);
+      draw();
     };
 
     const heading = document.createElement('header');
@@ -60,8 +60,12 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
       const button = document.createElement('button');
       button.type = 'button';
       button.textContent = SPEED_NAMES[value];
-      button.setAttribute('aria-pressed', String(settings.speed === value));
-      button.addEventListener('click', () => set({ settings: { ...settings, speed: value } }));
+      button.setAttribute('aria-pressed', String(progress.game.speed === value));
+      button.addEventListener('click', () => {
+        progress.game.speed = value;
+        progress.save();
+        draw();
+      });
       speed.append(button);
     }
 
@@ -71,7 +75,7 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
     reset.textContent = 'Reset all progress';
     reset.addEventListener('click', () => {
       if (reset.dataset.armed) {
-        hooks.update({ ...freshProgress(), skin: hooks.progress().skin, settings: hooks.progress().settings });
+        progress.reset();
         draw();
       } else {
         reset.dataset.armed = 'yes';
@@ -85,10 +89,10 @@ export function showParent(host: HTMLElement, hooks: ParentHooks): void {
     const focused = buttons().indexOf(document.activeElement as HTMLButtonElement);
     panel.replaceChildren(
       heading,
-      toggle('Sound', settings.sound, () => set({ settings: { ...settings, sound: !settings.sound } })),
-      ...(canSpeak ? [toggle('Voice', settings.voice, () => set({ settings: { ...settings, voice: !settings.voice } }))] : []),
+      toggle('Sound', settings.sound, () => flip('sound')),
+      ...(canSpeak ? [toggle('Voice', settings.voice, () => flip('voice'))] : []),
       speed,
-      toggle('Every level open', progress.unlockAll, () => set({ unlockAll: !progress.unlockAll })),
+      toggle('Every level open', settings.everyLevelOpen, () => flip('everyLevelOpen')),
       reset,
     );
     if (opening || focused !== -1) buttons()[Math.max(focused, 0)]!.focus();
