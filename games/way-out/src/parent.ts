@@ -1,9 +1,9 @@
 // The grown-up menu, behind a 3-second hold on the gear. Words are fine here.
 
+import { setSoundEnabled } from '@shared/sound';
 import { canSpeak, setVoiceEnabled } from '@shared/voice';
 import type { App } from './app';
 import { freshProgress } from './progress';
-import { setSoundEnabled } from './sound';
 
 export function showParent(app: App, close: () => void): void {
   const layer = document.createElement('div');

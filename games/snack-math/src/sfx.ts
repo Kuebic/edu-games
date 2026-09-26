@@ -1,56 +1,31 @@
-// Sound effects synthesised with Web Audio, so there are no audio files to ship.
+// Sound effects, notes and a crunch on the site's Sound, so there are no audio files to ship.
+
+import { audio, note } from '@shared/sound';
 
 export type Sound = 'pop' | 'crunch' | 'chime' | 'boop' | 'tick' | 'fanfare';
 
-let ctx: AudioContext | null = null;
-let enabled = true;
+const tone = (from: number, at: number, length: number, wave: OscillatorType = 'sine', volume = 0.25, to?: number) =>
+  note({ from, to, at, length, wave, volume });
 
-export function setSoundEnabled(on: boolean) {
-  enabled = on;
-}
-
-/** Call from inside a tap handler: mobile browsers keep audio suspended until a user gesture. */
-export function unlockAudio() {
-  if (typeof AudioContext === 'undefined') return;
-  ctx ??= new AudioContext();
-  void ctx.resume();
-}
-
-function tone(freq: number, start: number, dur: number, type: OscillatorType = 'sine', gain = 0.25, slideTo?: number) {
-  const c = ctx!;
-  const t = c.currentTime + start;
-  const osc = c.createOscillator();
-  const g = c.createGain();
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, t);
-  if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(gain, t + 0.01);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  osc.connect(g).connect(c.destination);
-  osc.start(t);
-  osc.stop(t + dur + 0.05);
-}
-
-function noise(start: number, dur: number, gain = 0.3) {
-  const c = ctx!;
-  const t = c.currentTime + start;
-  const buf = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate);
-  const data = buf.getChannelData(0);
+function noise(at: number, length: number, volume = 0.3): void {
+  const live = audio();
+  if (!live) return;
+  const start = live.currentTime + at;
+  const buffer = live.createBuffer(1, Math.floor(live.sampleRate * length), live.sampleRate);
+  const data = buffer.getChannelData(0);
   for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
-  const src = c.createBufferSource();
-  src.buffer = buf;
-  const filter = c.createBiquadFilter();
+  const source = live.createBufferSource();
+  source.buffer = buffer;
+  const filter = live.createBiquadFilter();
   filter.type = 'bandpass';
   filter.frequency.value = 1800;
-  const g = c.createGain();
-  g.gain.value = gain;
-  src.connect(filter).connect(g).connect(c.destination);
-  src.start(t);
+  const gain = live.createGain();
+  gain.gain.value = volume;
+  source.connect(filter).connect(gain).connect(live.destination);
+  source.start(start);
 }
 
-export function play(sound: Sound) {
-  if (!enabled || !ctx || ctx.state !== 'running') return;
+export function play(sound: Sound): void {
   switch (sound) {
     case 'pop':
       tone(420, 0, 0.12, 'sine', 0.3, 900);
@@ -77,8 +52,4 @@ export function play(sound: Sound) {
       tone(1319, 0.5, 0.7, 'triangle', 0.15);
       break;
   }
-}
-
-export function buzz(ms = 30) {
-  if (enabled) navigator.vibrate?.(ms);
 }

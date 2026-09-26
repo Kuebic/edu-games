@@ -3,7 +3,7 @@ import { hasCorneredBox, isSolved, step } from './game/rules';
 import { ICONS } from './icons';
 import { LEVELS } from './levels';
 import { levelAfter } from './progress';
-import { play, unlockAudio } from './sound';
+import { play } from './sound';
 
 const STEP_MS = 130;
 const MAX_QUEUED = 2;
@@ -37,10 +37,7 @@ function button(className: string, icon: string, onPress: () => void): HTMLButto
   // Keep focus off the buttons so Enter or Space never re-presses one by surprise.
   el.tabIndex = -1;
   el.addEventListener('mousedown', (event) => event.preventDefault());
-  el.addEventListener('click', () => {
-    unlockAudio();
-    onPress();
-  });
+  el.addEventListener('click', onPress);
   return el;
 }
 
@@ -209,7 +206,6 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
 
   // --- input ----------------------------------------------------------------
   const onKey = (event: KeyboardEvent) => {
-    unlockAudio();
     if (solved) {
       if (['Enter', ' ', 'ArrowRight'].includes(event.key) && !win.hidden) {
         event.preventDefault();
@@ -238,7 +234,6 @@ export function showPlay(root: HTMLElement, index: number, hooks: PlayHooks): ()
   let swipe: { id: number; x: number; y: number; done: boolean } | undefined;
   const onPointerDown = (event: PointerEvent) => {
     if ((event.target as Element).closest('button')) return;
-    unlockAudio();
     swipe = { id: event.pointerId, x: event.clientX, y: event.clientY, done: false };
   };
   const onPointerMove = (event: PointerEvent) => {

@@ -4,6 +4,7 @@
 import type { Missing, RunState, Step } from './game/engine';
 import { flagOf, height, targetsOf, terrain, width, type Facing, type Level } from './game/level';
 import { SKIN_ART, tileMarkup, type Skin } from './skins';
+import { buzz } from '@shared/sound';
 import * as sfx from './sound';
 import type { SkinId } from './progress';
 
@@ -174,11 +175,7 @@ export class Board {
         const dy = event.toward.y - before.y;
         if (from !== to) await animate(ms * 0.4, (t) => this.placeRobot(before.x, before.y, from + (to - from) * easeInOut(t)));
         sfx.boing();
-        try {
-          navigator.vibrate?.(80);
-        } catch {
-          // Not allowed here: fine.
-        }
+        buzz(80);
         replay(this.body, 'rp-wobble');
         if (event.item !== undefined) replay(this.itemNodes[event.item]!.firstElementChild!, 'rp-wiggle');
         await animate(Math.max(ms, 320), (t) => {

@@ -5,8 +5,9 @@ import { gameStorage, memoryStorage } from './storage';
 function fakePage(app: object | null = {}) {
   const document = Object.assign(new EventTarget(), { querySelector: () => app }) as PageEnv['document'];
   const registerOffline = vi.fn();
+  const unlockSound = vi.fn();
   const storage = memoryStorage();
-  return { env: { document, storage, registerOffline } satisfies PageEnv, document, registerOffline, storage };
+  return { env: { document, storage, registerOffline, unlockSound } satisfies PageEnv, document, registerOffline, unlockSound, storage };
 }
 
 const fire = (target: EventTarget, type: string, extra: object = {}) => {
@@ -47,13 +48,22 @@ describe('startGame', () => {
     expect(page.storage.dump()).toEqual({ 'way-out:v1': '{"skin":"space"}' });
   });
 
-  it('calls unlock on every touch, before the page sees it', () => {
+  it('unlocks the Sound, and the Game’s unlock, on every touch and key press', () => {
     const page = fakePage();
     const unlock = vi.fn();
     startGame('x', { unlock }, page.env);
     fire(page.document, 'pointerdown');
     fire(page.document, 'pointerdown');
-    expect(unlock).toHaveBeenCalledTimes(2);
+    fire(page.document, 'keydown');
+    expect(page.unlockSound).toHaveBeenCalledTimes(3);
+    expect(unlock).toHaveBeenCalledTimes(3);
+  });
+
+  it('unlocks the Sound for a Game that passes no unlock', () => {
+    const page = fakePage();
+    startGame('x', {}, page.env);
+    fire(page.document, 'pointerdown');
+    expect(page.unlockSound).toHaveBeenCalledOnce();
   });
 });
 

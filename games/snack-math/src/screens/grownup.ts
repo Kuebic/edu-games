@@ -1,8 +1,8 @@
+import { setSoundEnabled } from '@shared/sound';
 import { canSpeak, setVoiceEnabled } from '@shared/voice';
 import type { App } from '../app';
 import { h } from '../dom';
 import { defaultSave } from '../progress';
-import { setSoundEnabled } from '../sfx';
 
 /** The Grown-up Corner, opened from the Stage list or from `stage`'s Rounds, where Done goes back to. */
 export function grownupScreen(app: App, stage?: number): void {

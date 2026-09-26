@@ -1,14 +1,14 @@
 import { startGame } from '@shared/shell';
+import { setSoundEnabled } from '@shared/sound';
 import { showPlay } from './play';
 import { chapterOf, levelAfter, loadProgress, saveProgress, withSolved } from './progress';
 import { showSelect, type SelectHooks } from './select';
-import { setMuted } from './sound';
 import './style.css';
 
 const { root: app, storage } = startGame('push-pals');
 let progress = loadProgress(storage);
 let leave: () => void = () => {};
-setMuted(progress.muted);
+setSoundEnabled(!progress.muted);
 
 const select: SelectHooks = { progress: () => progress, open: openLevel };
 
@@ -26,7 +26,7 @@ function openLevel(index: number): void {
     toggleMute() {
       progress = { ...progress, muted: !progress.muted };
       saveProgress(progress, storage);
-      setMuted(progress.muted);
+      setSoundEnabled(!progress.muted);
     },
     solved() {
       progress = withSolved(progress, index);

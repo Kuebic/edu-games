@@ -3,12 +3,14 @@
 
 import './base.css';
 import { registerOffline } from './pwa';
+import { unlockAudio } from './sound';
 import { deviceStorage, gameStorage, type Backing, type GameStorage } from './storage';
 
 export interface GameOptions {
   /**
-   * Called on every touch, before the page sees it. Browsers only start audio and speech
-   * after a touch, and may suspend audio again later, so this runs each time, not once.
+   * Called on every touch and key press, before the page sees it, for a Game that speaks: pass
+   * `unlockVoice`. Browsers only start speech after a gesture. The Sound needs no passing; the shell
+   * unlocks it for every Game (ADR 0011).
    */
   unlock?: () => void;
 }
@@ -25,6 +27,7 @@ export interface PageEnv {
   document: EventTarget & Pick<Document, 'querySelector'>;
   storage: Backing | undefined;
   registerOffline: () => void;
+  unlockSound: () => void;
 }
 
 const browser = (): PageEnv => ({
@@ -32,6 +35,7 @@ const browser = (): PageEnv => ({
   storage: deviceStorage(),
   // The dev server has no service worker to register.
   registerOffline: import.meta.env.PROD ? registerOffline : () => {},
+  unlockSound: unlockAudio,
 });
 
 /** Starts the Hub, or any page that isn't a Game: #app, offline install, touch guards. */
@@ -49,7 +53,11 @@ export function startPage(env: PageEnv = browser()): HTMLElement {
  */
 export function startGame(slug: string, options: GameOptions = {}, env: PageEnv = browser()): GameShell {
   const root = startPage(env);
-  if (options.unlock) env.document.addEventListener('pointerdown', options.unlock, { capture: true });
+  // A touch or a key press is the gesture browsers want before they'll make a sound.
+  for (const type of ['pointerdown', 'keydown']) {
+    env.document.addEventListener(type, env.unlockSound, { capture: true });
+    if (options.unlock) env.document.addEventListener(type, options.unlock, { capture: true });
+  }
   return { root, storage: gameStorage(slug, env.storage) };
 }
 

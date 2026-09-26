@@ -1,5 +1,6 @@
 import { startGame } from '@shared/shell';
-import { setVoiceEnabled } from '@shared/voice';
+import { setSoundEnabled } from '@shared/sound';
+import { setVoiceEnabled, unlockVoice } from '@shared/voice';
 import './style.css';
 import type { App } from './app';
 import { loadSave, writeSave } from './progress';
@@ -7,9 +8,9 @@ import { grownupScreen } from './screens/grownup';
 import { playScreen } from './screens/play';
 import { showSelect } from './screens/select';
 import { stickersScreen } from './screens/stickers';
-import { setSoundEnabled } from './sfx';
 
-const { root, storage } = startGame('snack-math');
+// Browsers only start the Voice after a touch.
+const { root, storage } = startGame('snack-math', { unlock: unlockVoice });
 let cleanup: (() => void) | void;
 
 function show(screen: () => (() => void) | void): void {

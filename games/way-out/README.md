@@ -34,4 +34,4 @@ curl -o games/way-out/scripts/rush.txt.gz https://www.michaelfogleman.com/static
 
 ## Credits
 
-The easy boards come from our own generator. The rest come from [Michael Fogleman's Rush Hour database](https://www.michaelfogleman.com/rush/). His code ([fogleman/rush](https://github.com/fogleman/rush)) is MIT-licensed, but the database page doesn't state terms. That's fine for family use. Before sharing this more widely, ask him, or switch the build to the generator only. The cheer is from Kenney's Interface Sounds (CC0), as in Traffic Jam. Every other sound is synthesized with Web Audio.
+The easy boards come from our own generator. The rest come from [Michael Fogleman's Rush Hour database](https://www.michaelfogleman.com/rush/). His code ([fogleman/rush](https://github.com/fogleman/rush)) is MIT-licensed, but the database page doesn't state terms. That's fine for family use. Before sharing this more widely, ask him, or switch the build to the generator only. The cheer is the site's (`@shared/sound`, Kenney's Interface Sounds, CC0). Every other sound is a note or an engine on the site's Sound.

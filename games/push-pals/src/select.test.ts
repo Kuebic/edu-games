@@ -5,7 +5,7 @@ import { CHAPTERS } from './levels';
 import { loadProgress, type Progress } from './progress';
 import { CHAPTER_COLOURS, pushPalsSelect, type SelectHooks } from './select';
 
-vi.mock('./sound', () => ({ unlockAudio: vi.fn(), play: vi.fn() }));
+vi.mock('./sound', () => ({ play: vi.fn() }));
 const sound = await import('./sound');
 
 /** A save as the Game wrote it before the level select, under its real key. */
@@ -38,10 +38,10 @@ describe("Push Pals' level select", () => {
     expect(crates).toEqual(CHAPTERS.map((c) => c.boxes));
   });
 
-  it('plays the Level tapped, numbered across Chapters, and starts the sound inside the tap', () => {
+  it('plays the Level tapped, numbered across Chapters, with a tap sound', () => {
     const h = hooks(oldSave({}));
     pushPalsSelect(h).play(1, 3);
     expect(h.open).toHaveBeenCalledWith(11);
-    expect(sound.unlockAudio).toHaveBeenCalled();
+    expect(sound.play).toHaveBeenCalledWith('tap');
   });
 });

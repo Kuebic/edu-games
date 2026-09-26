@@ -1,20 +1,20 @@
 import { startGame } from '@shared/shell';
+import { setSoundEnabled } from '@shared/sound';
 import { LEVELS_PER_CHAPTER } from './chapters';
 import { showPlay } from './play';
 import { levelAfter, loadProgress, saveProgress, withCleared } from './progress';
 import { showSelect, type SelectHooks } from './select';
-import { setMuted, unlockAudio } from './sound';
 import './style.css';
 
-const { root, storage } = startGame('traffic-jam', { unlock: unlockAudio });
+const { root, storage } = startGame('traffic-jam');
 let progress = loadProgress(storage);
 let leave: () => void = () => {};
-setMuted(progress.muted);
+setSoundEnabled(!progress.muted);
 
 function toggleMute(): void {
   progress = { ...progress, muted: !progress.muted };
   saveProgress(progress, storage);
-  setMuted(progress.muted);
+  setSoundEnabled(!progress.muted);
 }
 
 const select: SelectHooks = { progress: () => progress, toggleMute, open: openLevel };

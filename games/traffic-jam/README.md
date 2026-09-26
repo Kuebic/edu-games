@@ -23,4 +23,4 @@ npm run game traffic-jam generate 1        # rebuild levels.ts from seed 1 (abou
 
 ## Credits
 
-The engine and horn sounds are synthesized with Web Audio. The level-clear cheer is from Kenney's Interface Sounds (CC0), the same as Push Pals.
+The engine and horn sounds are synthesized on the site's Sound (`@shared/sound`). The level-clear cheer is the site's (Kenney's Interface Sounds, CC0).

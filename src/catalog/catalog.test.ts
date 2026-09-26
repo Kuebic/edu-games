@@ -98,6 +98,13 @@ describe('Catalog', () => {
       expect(unlocks, 'a Game that imports @shared/voice must call unlockVoice from a touch').toBe(speaks);
     });
 
+    // ADR 0011: a Game makes sound only through the Sound, which the shell unlocks.
+    it('plays sound only through the Sound', () => {
+      for (const f of scripts) {
+        expect(source(f), relative(dir, f)).not.toMatch(/\bAudioContext\b|\bdecodeAudioData\b|\bvibrate\b/);
+      }
+    });
+
     // Every Game opens on the level select, which draws the House button (ADR 0008); look.test.ts checks the rest.
     it('has a House button back to the Hub', () => {
       expect(scripts.some((f) => /\bshowLevelSelect\(/.test(source(f)))).toBe(true);

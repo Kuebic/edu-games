@@ -106,3 +106,7 @@ _Avoid_: theme
 **Voice**:
 What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Robot Path, Snack Math and Way Out have a Voice.
 _Avoid_: speech, TTS, narration
+
+**Sound**:
+Every noise a Game makes, through one module every Game shares (`@shared/sound`): its clips, its notes, the cheer and the buzz. The shell starts it on the first touch. A Grown-up Corner switch turns it off.
+_Avoid_: audio, sfx, sound effects (in site talk)

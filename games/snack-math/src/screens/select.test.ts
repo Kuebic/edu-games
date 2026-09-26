@@ -6,11 +6,6 @@ import { STAGES } from '../problems';
 import { loadSave } from '../progress';
 import { snackMathSelect, STAGE_COLOURS, stageBadge } from './select';
 
-vi.mock('../sfx', () => ({ unlockAudio: vi.fn() }));
-vi.mock('@shared/voice', () => ({ unlockVoice: vi.fn() }));
-const { unlockAudio } = await import('../sfx');
-const { unlockVoice } = await import('@shared/voice');
-
 /** An App on a save as the Game wrote it, under its real key. */
 function app(save: object): App {
   return {
@@ -52,11 +47,9 @@ describe("Snack Math's level select", () => {
     expect(badges.map((b) => b.match(/<path d="([^"]*)"/)![1]!.split('M').length - 1)).toEqual([2, 1, 3, 2, 1, 3]);
   });
 
-  it('plays the Round tapped, starting sound and speech inside the tap', () => {
+  it('plays the Round tapped', () => {
     const a = app({});
     snackMathSelect(a).play(2, 1);
     expect(a.play).toHaveBeenCalledWith(2, 1);
-    expect(unlockAudio).toHaveBeenCalled();
-    expect(unlockVoice).toHaveBeenCalled();
   });
 });

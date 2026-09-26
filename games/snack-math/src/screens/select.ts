@@ -2,12 +2,10 @@
 
 import { holdToActivate } from '@shared/hold';
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
-import { unlockVoice } from '@shared/voice';
 import type { App } from '../app';
 import { h } from '../dom';
 import { STAGES, type Stage } from '../problems';
 import { roundsDone } from '../progress';
-import { unlockAudio } from '../sfx';
 import { gearIcon } from './icons';
 
 /**
@@ -37,12 +35,6 @@ export function stageBadge(stage: Stage, colour: string): string {
   );
 }
 
-/** Sound and the Voice start inside a tap, on phones. */
-function start(): void {
-  unlockAudio();
-  unlockVoice();
-}
-
 /** Snack Math as the level select sees it: Stages and Rounds count from 0 there, as here. */
 export function snackMathSelect(app: App): LevelSelectGame {
   return {
@@ -68,16 +60,10 @@ export function snackMathSelect(app: App): LevelSelectGame {
         h('span', { class: 'book-icon', text: '📒' }),
         count > 0 && h('span', { class: 'book-count', text: String(count) }),
       );
-      book.addEventListener('click', () => {
-        start();
-        app.stickers();
-      });
+      book.addEventListener('click', () => app.stickers());
       return book;
     },
-    play(s, round) {
-      start();
-      app.play(s, round);
-    },
+    play: (s, round) => app.play(s, round),
   };
 }
 

@@ -4,24 +4,20 @@ import { showParent } from './parent';
 import { showPlay } from './play';
 import { loadProgress, saveProgress, type Progress } from './progress';
 import { paintSkin, showSelect, type SelectHooks } from './select';
-import { setMuted, setSkinSound, unlockAudio } from './sound';
+import { setSkinSound } from './sound';
+import { setSoundEnabled } from '@shared/sound';
 import { setVoiceEnabled, unlockVoice } from '@shared/voice';
 import './style.css';
 
-// Browsers only start audio and the Voice after a touch.
-const { root, storage } = startGame('robot-path', {
-  unlock() {
-    unlockAudio();
-    unlockVoice();
-  },
-});
+// Browsers only start the Voice after a touch.
+const { root, storage } = startGame('robot-path', { unlock: unlockVoice });
 let progress = loadProgress(storage);
 let leave: () => void = () => {};
 /** The level select while it's up, so the Grown-up Corner can redraw it. */
 let select: LevelSelectView | undefined;
 
 function apply(): void {
-  setMuted(!progress.settings.sound);
+  setSoundEnabled(progress.settings.sound);
   setVoiceEnabled(progress.settings.voice);
   setSkinSound(progress.skin);
   paintSkin(progress.skin);

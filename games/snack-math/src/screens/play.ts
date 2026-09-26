@@ -4,7 +4,8 @@ import { dragOrTap, flipMove, flyInto, h, inside, sparkle, wait } from '../dom';
 import { FRIENDS, snackWord } from '../friends';
 import { PLATE_SIZE, ROUND_LENGTH, answerChoices, makeRound, type Problem } from '../problems';
 import { finishRound, pickSticker, roundAfter } from '../progress';
-import { buzz, play } from '../sfx';
+import { buzz } from '@shared/sound';
+import { play } from '../sfx';
 import { backIcon, nextIcon } from './icons';
 
 const IDLE_MS = 8000;

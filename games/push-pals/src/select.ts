@@ -3,7 +3,7 @@
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
 import { CHAPTERS, FIRST } from './levels';
 import { solvedIn, type Progress } from './progress';
-import { play, unlockAudio } from './sound';
+import { play } from './sound';
 
 /**
  * One colour per Chapter, easiest first: round the colour wheel from the grass green to the red of the
@@ -45,8 +45,6 @@ export function pushPalsSelect(hooks: SelectHooks): LevelSelectGame {
         levels: solvedIn(hooks.progress(), c).map((done) => ({ done })),
       })),
     play(c, i) {
-      // Still inside the tap, so the sounds can start.
-      unlockAudio();
       play('tap');
       hooks.open(FIRST[c]! + i);
     },

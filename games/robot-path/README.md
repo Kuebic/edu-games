@@ -29,4 +29,4 @@ A new level goes in its World's JSON file. `npm run game robot-path levels` show
 
 ## Credits
 
-All art is SVG drawn in `src/skins.ts` and `src/icons.ts`. All sounds are synthesized with Web Audio. The Voice is the browser's own, through `@shared/voice`.
+All art is SVG drawn in `src/skins.ts` and `src/icons.ts`. All sounds are notes on the site's Sound (`@shared/sound`). The Voice is the browser's own, through `@shared/voice`.

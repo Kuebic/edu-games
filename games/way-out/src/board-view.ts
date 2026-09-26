@@ -4,6 +4,7 @@
 
 import { EXIT_ROW, exitIsClear, HERO, parse, reach, SIZE, walls, type Board, type Move, type Piece } from './game/board';
 import { ICONS } from './icons';
+import { buzz } from '@shared/sound';
 import { bump, pop, tick } from './sound';
 import { vehicleSvg, type Skin } from './skins';
 
@@ -294,7 +295,7 @@ export function createBoardView(options: BoardViewOptions): BoardView {
     const against = wanted < drag.min - 0.1 ? -1 : wanted > drag.max + 0.1 ? 1 : 0;
     if (against !== 0 && against !== drag.against) {
       bump();
-      navigator.vibrate?.(12);
+      buzz(12);
     }
     if (against !== 0) drag.against = against;
     else if (wanted > drag.min + 0.25 && wanted < drag.max - 0.25) drag.against = 0;
