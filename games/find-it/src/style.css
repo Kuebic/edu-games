@@ -137,8 +137,9 @@ body::before {
   --bean: min(6.2vw, 34px);
 }
 
+/* Ten beans, the five-gap and the padding come to 13.4 beans; the screen's column is 532px, so 38px is the most a bean can be. */
 .prompt .tray-row {
-  --bean: min(6.6vw, 42px);
+  --bean: min(6.6vw, 38px);
 }
 
 .glyph {
