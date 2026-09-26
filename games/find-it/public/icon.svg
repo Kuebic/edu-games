@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#eef6ff"/>
+  <text x="150" y="250" font-family="Nunito, 'Varela Round', 'DejaVu Sans', sans-serif" font-size="230" font-weight="900" text-anchor="middle" fill="#7a6cf0">A</text>
+  <text x="372" y="250" font-family="Nunito, 'Varela Round', 'DejaVu Sans', sans-serif" font-size="230" font-weight="900" text-anchor="middle" fill="#ff8a3d">3</text>
+  <rect x="76" y="300" width="360" height="130" rx="34" fill="#ffffff" stroke="#cfe0f5" stroke-width="12"/>
+  <g transform="rotate(-18 150 365)"><ellipse cx="150" cy="365" rx="46" ry="32" fill="#a8452e"/><ellipse cx="136" cy="352" rx="16" ry="10" fill="#d9806a"/></g>
+  <g transform="rotate(12 256 365)"><ellipse cx="256" cy="365" rx="46" ry="32" fill="#a8452e"/><ellipse cx="242" cy="352" rx="16" ry="10" fill="#d9806a"/></g>
+  <g transform="rotate(-8 362 365)"><ellipse cx="362" cy="365" rx="46" ry="32" fill="#a8452e"/><ellipse cx="348" cy="352" rx="16" ry="10" fill="#d9806a"/></g>
+</svg>
