@@ -47,3 +47,9 @@ export const LOOK_ALIKES: readonly string[] = ['BPRD', 'CGOQ', 'EF', 'MNW', 'UVY
 export function looksAlike(a: string, b: string): boolean {
   return LOOK_ALIKES.some((family) => family.includes(a) && family.includes(b));
 }
+
+/** The Letter board: every capital A to Z in order, each marked if it's one of the Name letters. */
+export function boardLetters(name: string): { letter: string; mine: boolean }[] {
+  const mine = new Set(nameLetters(name));
+  return [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((letter) => ({ letter, mine: mine.has(letter) }));
+}

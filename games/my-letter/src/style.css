@@ -289,6 +289,72 @@ body::before {
   }
 }
 
+/* ---------- Letter board ---------- */
+
+.board {
+  display: flex;
+  flex-direction: column;
+  /* Every letter on one screen: 4 across and 7 down in portrait, 9 across and 3 down on its side. */
+  --cols: 4;
+  --rows: 7;
+  --gap: 12px;
+  /* The header, the screen's padding and a breath. */
+  --chrome: 110px;
+  --key: min(
+    calc((var(--column) - 28px - (var(--cols) - 1) * var(--gap)) / var(--cols)),
+    calc((100dvh - var(--chrome) - (var(--rows) - 1) * var(--gap)) / var(--rows))
+  );
+}
+
+/* Rows fill left to right; the last, shorter row sits in the middle. */
+.board-letters {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: var(--gap);
+  width: calc(var(--cols) * var(--key) + (var(--cols) - 1) * var(--gap));
+  margin: 0 auto;
+}
+
+.board-letter {
+  width: var(--key);
+  height: var(--key);
+  border-radius: calc(var(--key) * 0.24);
+  background: var(--sky);
+  box-shadow: 0 6px 0 var(--sky-dark);
+  color: var(--ink);
+  font-size: calc(var(--key) * 0.62);
+  font-weight: 900;
+  line-height: 1;
+  animation: pop-in 380ms cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+}
+
+/* The Name letters, so a child spots their own. */
+.board-letter.board-mine {
+  background: var(--coral);
+  box-shadow: 0 6px 0 var(--coral-dark);
+  color: #fff;
+}
+
+.board-letter:active {
+  transform: translateY(5px);
+  box-shadow: none;
+}
+
+.board-letter.dance {
+  animation: dance 900ms ease-in-out;
+}
+
+@media (orientation: landscape) {
+  .board {
+    --cols: 9;
+    --rows: 3;
+    --gap: 10px;
+  }
+}
+
 /* ---------- Reward ---------- */
 
 .reward {

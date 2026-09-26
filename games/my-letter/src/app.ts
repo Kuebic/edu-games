@@ -9,6 +9,8 @@ export interface App {
   groups(group?: number): void;
   /** Play one Level of a Group. Both count from 0. */
   play(group: number, level: number): void;
+  /** The Letter board: every letter, to tap and hear. */
+  board(): void;
   /** The Grown-up Corner, over whatever screen is showing. */
   corner: GrownUpCorner;
 }

@@ -34,14 +34,14 @@ A Level is four Finds of its letter, then the site's cheer and Next button. No s
 **The ask.** The Voice says:
 - My name, first letter of the Name: "Find the S for Sam!"
 - My name, other letters: "Find the A in Sam!"
-- New letters: "Find the B!"
+- New letters: "Find the B!", then B's Letter sound clip, when it will be heard (its `ready()`). With no speech engine the child still hears the letter.
 
 Say letter names so speech engines read them as the letter, not a word or a sound (Find It already speaks letters; reuse whatever it does).
 
 **On screen**, above the Choices:
 - My name: the **Name line**, the Name's capitals big, with an empty box wherever the asked-for letter goes (SAM asking S shows `_AM`; ANNA asking A shows `_NN_`). Letters of later Levels show normally.
 - New letters: a big speaker picture.
-- Tapping the Name line or speaker says the ask again.
+- Tapping the Name line or speaker says the ask again, the Letter sound too in New letters. The ask after a Fade is the same.
 
 **Choices.** Two big letter buttons, side by side in portrait, capitals in the site's rounded font. One is the Level's letter. The other:
 1. never Looks alike the target (families: B P R D, C G O Q, E F, M N W, U V Y, I L T J, K X), and is never the target;
@@ -55,6 +55,12 @@ The target's side is random, but never the same side more than twice in a row. A
 
 Input is ignored while a line or clip is playing, so a child can't tap through.
 
+## Letter board
+
+Free play, opened by an ABC tool button beside the gear on the Group list. A header with Back to the Group list and the gear, then every capital A to Z in order as big letter buttons in the Choices' look: 4 across in portrait, 9 across on its side, the last row centred, no scrolling on a phone. The Name letters have their own colour.
+
+A tap makes the letter dance, and the Voice says "The letter B says" and the Letter sound clip plays, or only "That's the letter B!" when the clip won't be heard (ADR 0001). A new tap never waits: it cuts off the last line and starts its own. No lock, Done, Saved progress, Next or cheer.
+
 ## Letter sounds
 
 - One clip per letter A–Z: `src/assets/sounds/<letter>.<ext>` (lowercase letter, ogg/opus or mp3; whatever the Sound's decoder handles on iOS too — check what Push Pals / Way Out ship). One sound each: short vowels (a as in apple, e egg, i igloo, o octopus, u up), hard C /k/, hard G /g/, X /ks/, Q /kw/, Y /j/ as in yes. As clean as possible: no added vowel after a stop if avoidable.
@@ -67,6 +73,7 @@ Input is ignored while a line or clip is playing, so a child can't tap through.
 - Name → Name letters (dedupe, order, accents, non-letters, cap of 10, empty).
 - Choices: never a Look-alike, never the target, prefers Met letters, falls back, sides rule, deterministic with a seeded random.
 - Asks: the three wordings.
+- Letter board: A to Z in order, the Name letters marked; its button on the Group list only.
 - Progress: New letters is Group 1 whatever the Name; a changed Name clears Group 0's Done only; reset keeps the Name.
 - Shared `textRow`: in `grownup.test.ts`.
 - Catalog/look guards pass.

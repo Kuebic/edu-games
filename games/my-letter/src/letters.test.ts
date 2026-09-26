@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GROUP_NAMES, MY_NAME, NEW_LETTERS, NEW_LETTER_ORDER, levelLetters, looksAlike, metLetters, nameCapitals, nameLetters } from './letters';
+import { GROUP_NAMES, MY_NAME, NEW_LETTERS, NEW_LETTER_ORDER, boardLetters, levelLetters, looksAlike, metLetters, nameCapitals, nameLetters } from './letters';
 
 describe('Name letters', () => {
   it('are the different letters of the Name, in the order they first appear', () => {
@@ -80,5 +80,18 @@ describe('Looks alike', () => {
     expect(looksAlike('B', 'S')).toBe(false);
     expect(looksAlike('M', 'A')).toBe(false);
     expect(looksAlike('S', 'Z')).toBe(false);
+  });
+});
+
+describe('the Letter board', () => {
+  it('is every capital A to Z in order, the Name letters marked', () => {
+    const board = boardLetters('Sam');
+    expect(board.map((b) => b.letter).join('')).toBe('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    expect(board.filter((b) => b.mine).map((b) => b.letter)).toEqual(['A', 'M', 'S']);
+  });
+
+  it('marks none without a Name', () => {
+    expect(boardLetters('').some((b) => b.mine)).toBe(false);
+    expect(boardLetters('42').some((b) => b.mine)).toBe(false);
   });
 });

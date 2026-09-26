@@ -6,6 +6,7 @@ import './style.css';
 import type { App } from './app';
 import { MY_NAME } from './letters';
 import { hasName, loadProgress, setName } from './progress';
+import { boardScreen } from './screens/board';
 import { playScreen } from './screens/play';
 import { showSelect } from './screens/select';
 
@@ -37,10 +38,11 @@ const corner = grownUpCorner(root, progress, {
   ],
   note:
     'My name has a level for each letter of the name, in order: Sam gets S, A and M. It shows once there is a name. ' +
-    'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound. ' +
+    'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound; its question ends with the letter\'s sound. ' +
     'Each level asks for its letter four times, from two to pick from. A letter picked by mistake is named and fades away. ' +
     'A found letter says its sound. A new name with different letters starts My name again; New letters stays. ' +
-    'Levels open in order, and Next goes on to the next one.',
+    'Levels open in order, and Next goes on to the next one. ' +
+    'The ABC button on the first screen opens the Letter board: every letter, the name\'s in their own colour, to tap and hear. Nothing there is saved.',
   closed: () => {
     // Closed without a Name: don't open by itself again.
     if (!hasName(progress) && !progress.game.skipped) {
@@ -68,6 +70,7 @@ const app: App = {
       playing = group;
       return playScreen(app, group, level);
     }),
+  board: () => show(() => boardScreen(app)),
   corner,
 };
 

@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it, vi } from 'vitest';
 import type { App } from '../app';
@@ -12,7 +13,8 @@ function app(save: object): App {
     progress: loadProgress(gameStorage('my-letter', memoryStorage({ 'my-letter:v1': JSON.stringify(save) }))),
     groups: vi.fn(),
     play: vi.fn(),
-    corner: { gear: vi.fn(), open: vi.fn() },
+    board: vi.fn(),
+    corner: { gear: vi.fn(() => document.createElement('button')), open: vi.fn() },
   };
 }
 
@@ -41,5 +43,17 @@ describe("My Letter's level select", () => {
   it('draws the Name’s first letter on My name’s badge, and a B on New letters’', () => {
     expect(groupBadge(MY_NAME, 'Zoë')).toMatch(/>Z<\/text>/);
     expect(groupBadge(NEW_LETTERS, 'Zoë')).toMatch(/>B<\/text>/);
+  });
+
+  it('has a Letter board button beside the gear on the Group list only, which opens the board', () => {
+    const a = app({});
+    const tools = myLetterSelect(a).tools!();
+    expect(tools).toHaveLength(2);
+    const board = tools[0]!;
+    expect(board.getAttribute('aria-label')).toBe('Letter board');
+    expect(board.className).toBe('site-tool');
+    board.click();
+    expect(a.board).toHaveBeenCalledOnce();
+    expect(myLetterSelect(a).tools!(NEW_LETTERS)).toHaveLength(1);
   });
 });

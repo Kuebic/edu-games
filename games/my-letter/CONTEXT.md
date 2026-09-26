@@ -19,7 +19,7 @@ B, D, K, P, T, V, Z and J: letters whose name starts with their sound, so saying
 _Avoid_: Other letters, extra letters, bonus
 
 **Find**:
-One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from two Choices. Four make a Level.
+One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from two Choices. In New letters the ask ends with the letter's Letter sound. Four make a Level.
 _Avoid_: Question, turn, trial
 
 **Choices**:
@@ -45,6 +45,10 @@ _Avoid_: Phoneme (in UI copy), Sound (the site's word for every noise), phonics
 **Fade**:
 What a wrong pick does: the letter wobbles, the Voice says its name ("That's M."), and it fades away, leaving only the right one. There's no failing.
 _Avoid_: Wrong, miss, error
+
+**Letter board**:
+Every capital A to Z on one screen, opened from the Group list, where a child taps any letter to hear it say its Letter sound. Free play: nothing to finish or save.
+_Avoid_: Keyboard, alphabet, soundboard
 
 ### Progress
 

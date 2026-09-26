@@ -40,6 +40,14 @@ export function playScreen(app: App, group: number, level: number): () => void {
   if (letter === undefined) throw new Error(`My Letter: no Level ${level} in Group ${group}`);
   const finds = makeFinds(letter, metLetters(name, group, level));
   const line = group === MY_NAME ? ask(letter, name) : ask(letter);
+  // In New letters there's no Name line to look at, so the ask ends with the letter's own sound, where it will be heard.
+  const askClip = group === MY_NAME ? undefined : letterSound(letter);
+
+  /** The ask: the Voice's line, then in New letters the Letter sound. Resolves when both are done. */
+  async function sayAsk(): Promise<void> {
+    await say(line);
+    if (alive && askClip?.ready()) await askClip();
+  }
 
   // ---- Layout ------------------------------------------------------------
   const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
@@ -71,7 +79,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
     if (busy) return;
     busy = true;
     replay(promptBtn, 'wiggle');
-    await say(line);
+    await sayAsk();
     busy = false;
   });
 
@@ -92,7 +100,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
     choicesEl.replaceChildren(...buttons);
 
     busy = true;
-    await say(line);
+    await sayAsk();
     for (;;) {
       if (!alive) return;
       busy = false;
@@ -108,7 +116,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
       await say(fadeLine(chosen));
       b.classList.add('gone');
       if (!alive) return;
-      await say(line);
+      await sayAsk();
     }
 
     // Found: the letter dances, fills the Name line, and says its sound.

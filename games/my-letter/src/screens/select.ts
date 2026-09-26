@@ -1,5 +1,5 @@
 // The level select: My name (left out until there's a Name) and New letters as Groups, each Level's card
-// its letter, and the gear.
+// its letter, and on the Group list the Letter board's button beside the gear.
 
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
 import type { App } from '../app';
@@ -23,6 +23,21 @@ export function groupBadge(group: number, name: string): string {
   return `<svg viewBox="0 0 48 48" aria-hidden="true">${body}</svg>`;
 }
 
+/** The Letter board's tool: A, B and C, big to small, the way a child meets them on the board. */
+const ABC =
+  '<svg viewBox="0 0 48 48" aria-hidden="true" font-weight="900" text-anchor="middle" fill="currentColor">' +
+  '<text x="11" y="37" font-size="30">A</text><text x="27" y="37" font-size="24">B</text><text x="40" y="37" font-size="19">C</text></svg>';
+
+function boardButton(app: App): HTMLButtonElement {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'site-tool';
+  b.setAttribute('aria-label', 'Letter board');
+  b.innerHTML = ABC;
+  b.addEventListener('click', () => app.board());
+  return b;
+}
+
 /** My Letter as the level select sees it: Groups and Levels count from 0 there, as here. */
 export function myLetterSelect(app: App): LevelSelectGame {
   return {
@@ -36,7 +51,7 @@ export function myLetterSelect(app: App): LevelSelectGame {
         labels: levelLetters(app.progress.game.name, g),
       })),
     everyLevelOpen: () => app.progress.settings.everyLevelOpen,
-    tools: () => [app.corner.gear()],
+    tools: (group) => (group === undefined ? [boardButton(app), app.corner.gear()] : [app.corner.gear()]),
     play: (g, level) => app.play(g, level),
   };
 }
