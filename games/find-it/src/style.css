@@ -166,14 +166,8 @@ body::before {
   box-shadow: 0 6px 0 var(--tray-edge);
 }
 
-.tray-row {
-  width: auto;
-  min-width: calc(var(--bean) * 3.2);
-}
-
 .tray-empty {
   min-height: calc(var(--bean) * 1.5);
-  min-width: calc(var(--bean) * 4);
   box-shadow: inset 0 0 0 3px var(--tray-edge), 0 6px 0 var(--tray-edge);
 }
 
@@ -233,8 +227,23 @@ body::before {
   background: #ffffffb3;
 }
 
-.choice .tray-row {
-  --bean: calc(var(--card) * 0.13);
+/* Trays of ten or fewer: three bars, one under the other, each a full row of ten, so amounts sit side by side. */
+.choices-rows {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-height: 0;
+}
+
+.choices-rows .choice {
+  width: auto;
+  min-height: 0;
+  padding: 10px 14px;
+  border-radius: 22px;
+}
+
+.choices-rows .tray-row {
+  --bean: min(5.4vw, 26px);
 }
 
 .choice.c0 {
@@ -313,6 +322,20 @@ body::before {
 
   .prompt .tray-row {
     --bean: 5vh;
+  }
+
+  .choices-rows {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: clamp(10px, 4vw, 24px);
+  }
+
+  .choices-rows .choice {
+    padding: 6px 10px;
+  }
+
+  .choices-rows .tray-row {
+    --bean: min(1.2vw, 2.5vh);
   }
 }
 

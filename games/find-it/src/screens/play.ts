@@ -156,6 +156,7 @@ export function playScreen(app: App, box: number, round: number): () => void {
       return b;
     });
     choicesEl.replaceChildren(...buttons);
+    choicesEl.classList.toggle('choices-rows', nodes.every((node) => node.classList.contains('tray-row')));
     return { buttons, pick: () => new Promise((r) => (resolvePick = r)) };
   }
 
