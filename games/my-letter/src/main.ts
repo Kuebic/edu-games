@@ -38,7 +38,7 @@ const corner = grownUpCorner(root, progress, {
   ],
   note:
     'My name has a level for each letter of the name, in order: Sam gets S, A and M. It shows once there is a name. ' +
-    'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound; its question ends with the letter\'s sound. ' +
+    'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound. Every question ends with the letter\'s sound. ' +
     'Each level asks for its letter four times, from two to pick from. A letter picked by mistake is named and fades away. ' +
     'A found letter says its sound. A new name with different letters starts My name again; New letters stays. ' +
     'Levels open in order, and Next goes on to the next one. ' +

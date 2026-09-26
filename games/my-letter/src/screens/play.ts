@@ -40,10 +40,10 @@ export function playScreen(app: App, group: number, level: number): () => void {
   if (letter === undefined) throw new Error(`My Letter: no Level ${level} in Group ${group}`);
   const finds = makeFinds(letter, metLetters(name, group, level));
   const line = group === MY_NAME ? ask(letter, name) : ask(letter);
-  // In New letters there's no Name line to look at, so the ask ends with the letter's own sound, where it will be heard.
-  const askClip = group === MY_NAME ? undefined : letterSound(letter);
+  // The ask ends with the letter's own sound, where it will be heard, so it's never silent without a Voice.
+  const askClip = letterSound(letter);
 
-  /** The ask: the Voice's line, then in New letters the Letter sound. Resolves when both are done. */
+  /** The ask: the Voice's line, then the Letter sound. Resolves when both are done. */
   async function sayAsk(): Promise<void> {
     await say(line);
     if (alive && askClip?.ready()) await askClip();

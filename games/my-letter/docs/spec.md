@@ -34,14 +34,16 @@ A Level is four Finds of its letter, then the site's cheer and Next button. No s
 **The ask.** The Voice says:
 - My name, first letter of the Name: "Find the S for Sam!"
 - My name, other letters: "Find the A in Sam!"
-- New letters: "Find the B!", then B's Letter sound clip, when it will be heard (its `ready()`). With no speech engine the child still hears the letter.
+- New letters: "Find the B!"
+
+Every ask then plays the letter's Letter sound clip, when it will be heard (its `ready()`). With no speech engine the child still hears the letter.
 
 Say letter names so speech engines read them as the letter, not a word or a sound (Find It already speaks letters; reuse whatever it does).
 
 **On screen**, above the Choices:
 - My name: the **Name line**, the Name's capitals big, with an empty box wherever the asked-for letter goes (SAM asking S shows `_AM`; ANNA asking A shows `_NN_`). Letters of later Levels show normally.
 - New letters: a big speaker picture.
-- Tapping the Name line or speaker says the ask again, the Letter sound too in New letters. The ask after a Fade is the same.
+- Tapping the Name line or speaker says the ask again, Letter sound and all. The ask after a Fade is the same.
 
 **Choices.** Two big letter buttons, side by side in portrait, capitals in the site's rounded font. One is the Level's letter. The other:
 1. never Looks alike the target (families: B P R D, C G O Q, E F, M N W, U V Y, I L T J, K X), and is never the target;

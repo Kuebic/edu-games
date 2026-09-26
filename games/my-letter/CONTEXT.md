@@ -19,7 +19,7 @@ B, D, K, P, T, V, Z and J: letters whose name starts with their sound, so saying
 _Avoid_: Other letters, extra letters, bonus
 
 **Find**:
-One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from two Choices. In New letters the ask ends with the letter's Letter sound. Four make a Level.
+One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from two Choices. The ask ends with the letter's Letter sound. Four make a Level.
 _Avoid_: Question, turn, trial
 
 **Choices**:
