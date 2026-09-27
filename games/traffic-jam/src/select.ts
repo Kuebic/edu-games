@@ -25,6 +25,7 @@ export function trafficJamSelect(hooks: SelectHooks): LevelSelectGame {
         badge: () => chapterIcon(c),
         levels: hooks.progress.marks(c),
       })),
+    everyLevelOpen: () => hooks.progress.settings.everyLevelOpen,
     tools: () => [hooks.corner.gear()],
     play: (c, i) => hooks.open(c * LEVELS_PER_CHAPTER + i),
   };

@@ -42,9 +42,9 @@ describe("Push Pals' level select", () => {
   it('opens every Level while the Grown-up Corner says so', () => {
     const progress = oldSave({});
     const game = pushPalsSelect(hooks(progress));
-    expect(game.everyLevelOpen?.()).toBe(false);
+    expect(game.everyLevelOpen()).toBe(false);
     progress.set('everyLevelOpen', true);
-    expect(game.everyLevelOpen?.()).toBe(true);
+    expect(game.everyLevelOpen()).toBe(true);
   });
 
   it('plays the Level tapped, numbered across Chapters, with a tap sound', () => {

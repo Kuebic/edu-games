@@ -36,6 +36,14 @@ describe("Snack Math's level select", () => {
     expect(groups.flatMap((g) => g.levels).some((l) => 'sparkle' in l)).toBe(false);
   });
 
+  it("follows the Grown-up Corner's Every level open", () => {
+    const a = app({});
+    const game = snackMathSelect(a);
+    expect(game.everyLevelOpen()).toBe(false);
+    a.progress.set('everyLevelOpen', true);
+    expect(game.everyLevelOpen()).toBe(true);
+  });
+
   it('calls its Levels Rounds', () => {
     expect(snackMathSelect(app({})).levelWord).toBe('Round');
   });

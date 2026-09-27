@@ -40,8 +40,8 @@ export interface LevelSelectGame {
   groups(): readonly GroupView[];
   /** The Game's word for a Level, which screen readers say on each card ("Round 3"). "Level" if left out. */
   levelWord?: string;
-  /** The Grown-up Corner's "Every level open", in a Game that has it. */
-  everyLevelOpen?(): boolean;
+  /** The Grown-up Corner's "Every level open": `progress.settings.everyLevelOpen`. Required, as the Corner shows it in every Game with Levels. */
+  everyLevelOpen(): boolean;
   /** Header buttons right of the heading, on both screens (speaker, mute, gear). Fresh nodes each call. `group` is the Group whose screen is up, undefined on the list. */
   tools?(group?: number): HTMLElement[];
   /** Skin chips under the Group list's header. Leave out in a Game without Skins. */
@@ -233,7 +233,7 @@ function groupScreen(
   grid.style.setProperty('--site-cols-l', String(landscape));
   grid.style.setProperty('--site-rows-l', String(Math.ceil(n / landscape)));
   const done = group.levels.map((l) => l.done);
-  const everyOpen = game.everyLevelOpen?.() ?? false;
+  const everyOpen = game.everyLevelOpen();
   const current = currentLevel(done, everyOpen);
   group.levels.forEach((mark, i) => {
     const open = isLevelOpen(done, i, everyOpen);

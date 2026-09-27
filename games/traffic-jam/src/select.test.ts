@@ -29,6 +29,14 @@ describe("Traffic Jam's level select", () => {
     expect(open).toEqual(Array.from({ length: 64 }, (_, n) => before(n)));
   });
 
+  it("follows the Grown-up Corner's Every level open", () => {
+    const progress = oldSave({});
+    const game = trafficJamSelect(hooks(progress));
+    expect(game.everyLevelOpen()).toBe(false);
+    progress.set('everyLevelOpen', true);
+    expect(game.everyLevelOpen()).toBe(true);
+  });
+
   it('plays the Level tapped, numbered across Chapters', () => {
     const h = hooks(oldSave({}));
     trafficJamSelect(h).play(1, 3);

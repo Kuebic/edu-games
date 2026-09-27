@@ -12,7 +12,7 @@ function testGame(extra: Partial<LevelSelectGame> = {}) {
     { name: 'Hard', colour: '#2f9be0', badge: () => document.createElement('b'), levels: marks('........'), bonusSparkles: 0 },
   ];
   const play = vi.fn();
-  const game: LevelSelectGame = { title: 'Test', groups: () => groups, play, ...extra };
+  const game: LevelSelectGame = { title: 'Test', groups: () => groups, everyLevelOpen: () => false, play, ...extra };
   return { game, groups, play };
 }
 
@@ -88,7 +88,7 @@ describe('the Group list', () => {
   });
 
   it('throws on a Game with no Groups, or none with Levels', () => {
-    expect(() => showLevelSelect(root, { title: 'Empty', groups: () => [], play() {} })).toThrow(/no Groups/);
+    expect(() => showLevelSelect(root, { title: 'Empty', groups: () => [], everyLevelOpen: () => false, play() {} })).toThrow(/no Groups/);
     const { game, groups } = testGame();
     groups[0]!.levels = [];
     groups[1]!.levels = [];

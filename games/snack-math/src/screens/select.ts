@@ -44,6 +44,7 @@ export function snackMathSelect(app: App): LevelSelectGame {
         badge: () => stageBadge(stage, STAGE_COLOURS[s]!),
         levels: app.progress.marks(s),
       })),
+    everyLevelOpen: () => app.progress.settings.everyLevelOpen,
     tools: () => [app.corner.gear()],
     underList() {
       const count = app.progress.game.stickers.length;
