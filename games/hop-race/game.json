@@ -2,6 +2,6 @@
   "name": "Hop Race",
   "category": "math",
   "tile": "icon.svg",
-  "shelf": "hidden",
+  "shelf": "on",
   "added": "2026-09-26"
 }
