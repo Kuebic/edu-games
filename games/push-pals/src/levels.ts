@@ -22,7 +22,8 @@ export const MAX_BOARD = 8;
 
 export const CHAPTERS: readonly Chapter[] = [
   {
-    // One box, pushed one way to its goal. Each direction in turn, then a walk to reach the box.
+    // One box, pushed one way to its goal. Two corridors, then rooms: the player walks round
+    // to get behind the box, and the goal sits in a nook so no push can get stuck.
     boxes: 1,
     minPushes: 1,
     maxPushes: 3,
@@ -41,42 +42,44 @@ export const CHAPTERS: readonly Chapter[] = [
 #@#
 ###`,
       `
+#####
+#.$ #
+##  #
+# @ #
+#####`,
+      `
+#####
+#@  #
+#  $#
+# #.#
+#####`,
+      `
 ######
-#. $@#
+#  @ #
+#  ###
+# $ .#
 ######`,
       `
-###
-#@#
-#$#
-# #
-#.#
-###`,
+######
+#.#  #
+# #  #
+#$   #
+#   @#
+######`,
       `
 #######
-#@ $ .#
+#. $  #
+###   #
+#     #
+#    @#
 #######`,
       `
-###
-#.#
-# #
-# #
-#$#
-#@#
-###`,
-      `
-###
-#@#
-# #
-#$#
-# #
-#.#
-###`,
-      `
-#######
-#.  $ #
-##### #
-#####@#
-#######`,
+######
+#@   #
+#   $#
+#  # #
+#  #.#
+######`,
     ],
   },
   {
