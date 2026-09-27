@@ -90,7 +90,7 @@ The two screens a Game with Levels opens on, drawn the same in every Game: the G
 _Avoid_: level picker, map, menu
 
 **Practice**:
-The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. The Game saves the picks. Find It is a Practice Game.
+The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. A Topic may have Skin chips too. The Game saves the picks. Find It is a Practice Game.
 _Avoid_: mode, free play, endless
 
 **Topic**:

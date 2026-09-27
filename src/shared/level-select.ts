@@ -5,7 +5,10 @@
 import { houseButton } from './house-button';
 import './level-select.css';
 import type { LevelMark } from './progress';
+import { skinChips, type SkinPicker } from './skins';
 import { currentLevel, isLevelOpen } from './unlock';
+
+export type { SkinChip, SkinPicker } from './skins';
 
 /** One Level as the level select draws it: Saved progress gives them (progress.ts). */
 export type { LevelMark };
@@ -24,23 +27,6 @@ export interface GroupView {
   labels?: readonly string[];
   /** Sparkles earned outside its Levels (Way Out's Pool), added to its count. */
   bonusSparkles?: number;
-}
-
-export interface SkinChip {
-  id: string;
-  /** For screen readers; the child sees the picture. */
-  label: string;
-  /** SVG markup on the chip. */
-  picture: string;
-  /** The colour behind the picture. */
-  colour: string;
-}
-
-export interface SkinPicker {
-  chips: readonly SkinChip[];
-  current(): string;
-  /** Save the choice and repaint the page (paintPage). The Group list redraws itself afterwards. */
-  choose(id: string): void;
 }
 
 /** Everything the level select needs from a Game. Read again on every draw, never cached. */
@@ -189,24 +175,7 @@ function groupList(game: LevelSelectGame, groups: readonly GroupView[], open: (g
   title.textContent = game.title;
   screen.append(bar(game, undefined, houseButton(), title));
 
-  const { skins } = game;
-  if (skins) {
-    const row = document.createElement('div');
-    row.className = 'site-skins';
-    row.setAttribute('role', 'radiogroup');
-    row.setAttribute('aria-label', 'Pictures');
-    for (const chip of skins.chips) {
-      const b = button('site-skin', chip.label, chip.picture, () => {
-        skins.choose(chip.id);
-        redraw();
-      });
-      b.setAttribute('role', 'radio');
-      b.setAttribute('aria-checked', String(skins.current() === chip.id));
-      b.style.setProperty('--site-skin', chip.colour);
-      row.append(b);
-    }
-    screen.append(row);
-  }
+  if (game.skins) screen.append(skinChips(game.skins, redraw));
 
   const cards = document.createElement('div');
   cards.className = 'site-groups';

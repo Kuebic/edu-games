@@ -4,6 +4,7 @@ import type { App } from '../app';
 import { h, replay, sparkle, wait } from '../dom';
 import { CHEER_EVERY, practice, type Find, type Picture, type Topic } from '../finds';
 import { play } from '../sfx';
+import { JELLY, SKIN_LOOKS, counted, type Skin } from '../skins';
 import { backIcon } from './icons';
 
 /** How long a Cheer's confetti falls before the next Find. */
@@ -30,28 +31,38 @@ interface Shown {
   countAlong?: boolean;
 }
 
-const beans = (n: number) => (n === 1 ? '1 bean' : `${n} beans`);
 const letterName = (l: string) => `the letter ${l}`;
 const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1);
 const list = (words: string[]) => `${words.slice(0, -1).join(', ')}, or ${words[words.length - 1]}`;
 
-/** A Tray of beans, in rows of ten, five and five. Empty when n is 0. */
-function tray(n: number): HTMLElement {
-  const t = h('div', { class: `tray${n === 0 ? ' tray-empty' : ''}`, label: beans(n) });
-  for (let i = 0; i < n; i++) t.append(h('i', { class: 'bean' }));
+/** A Tray of beans, in rows of ten, five and five, drawn as the Skin has them. Empty when n is 0. */
+function tray(n: number, skin: Skin): HTMLElement {
+  const t = h('div', { class: `tray${n === 0 ? ' tray-empty' : ''}`, label: counted(skin, n) });
+  const { emoji } = SKIN_LOOKS[skin];
+  for (let i = 0; i < n; i++) {
+    const bean = h('i', { class: emoji ? 'bean bean-emoji' : `bean bean-${skin}`, text: emoji });
+    bean.setAttribute('aria-hidden', 'true');
+    if (skin === 'jellybean') {
+      const [light, dark] = JELLY[Math.floor(Math.random() * JELLY.length)]!;
+      bean.style.setProperty('--bean-light', light);
+      bean.style.setProperty('--bean-dark', dark);
+    }
+    t.append(bean);
+  }
   return t;
 }
 
 const glyph = (text: string) => h('span', { class: 'glyph', text, label: text });
 const picture = (p: Picture) => h('span', { class: 'picture', text: p.emoji, label: p.word });
 
-function shown(find: Find): Shown {
+function shown(find: Find, skin: Skin): Shown {
   if (find.kind === 'number') {
     const n = find.target;
+    const beans = (n: number) => counted(skin, n);
     if (find.direction === 'find-symbol') {
       return {
-        prompt: tray(n),
-        ask: 'How many beans? Find the number!',
+        prompt: tray(n, skin),
+        ask: `How many ${SKIN_LOOKS[skin].many}? Find the number!`,
         choices: find.choices.map((c) => glyph(String(c))),
         right: find.choices.indexOf(n),
         wrong: (i) => `That's ${find.choices[i]}.`,
@@ -61,8 +72,8 @@ function shown(find: Find): Shown {
     }
     return {
       prompt: glyph(String(n)),
-      ask: n === 0 ? 'Find zero beans. Which tray is empty?' : `Find ${beans(n)}!`,
-      choices: find.choices.map((c) => tray(c)),
+      ask: n === 0 ? `Find zero ${SKIN_LOOKS[skin].many}. Which tray is empty?` : `Find ${beans(n)}!`,
+      choices: find.choices.map((c) => tray(c, skin)),
       right: find.choices.indexOf(n),
       wrong: (i) => `That's ${beans(find.choices[i]!)}.`,
       yes: `Yes! ${beans(n)}!`,
@@ -94,7 +105,7 @@ function shown(find: Find): Shown {
 /** Practice of a Topic: Finds from its Scope, the Way it's set to, a Cheer every six, until Back. */
 export function playScreen(app: App, topic: Topic): () => void {
   let alive = true;
-  const { scopes, ways } = app.progress.game;
+  const { scopes, ways, skin } = app.progress.game;
   const nextFind = practice(topic, scopes[topic], ways[topic]);
 
   // ---- Layout ------------------------------------------------------------
@@ -184,7 +195,7 @@ export function playScreen(app: App, topic: Topic): () => void {
 
   // ---- One Find -----------------------------------------------------------
   async function runFind(find: Find, index: number): Promise<void> {
-    const it = shown(find);
+    const it = shown(find, skin);
     hint = null;
     promptBtn.replaceChildren(it.prompt);
     const { buttons, pick } = offer(it.choices);

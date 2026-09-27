@@ -14,40 +14,6 @@
   width: var(--site-tool);
 }
 
-/* Skin chips: a picture on its Skin's colour, a green ring round the one in use. */
-
-.site-skins {
-  flex: none;
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  padding: 10px 14px 6px;
-}
-
-.site-skin {
-  flex: 1;
-  max-width: 120px;
-  height: 84px;
-  border-radius: 22px;
-  background: var(--site-skin);
-  border: 4px solid #ffffffb3;
-  box-shadow: 0 5px 0 var(--site-lip);
-  display: grid;
-  place-items: center;
-}
-
-.site-skin svg {
-  width: 82%;
-  height: 82%;
-}
-
-.site-skin[aria-checked='true'] {
-  border-color: var(--site-go);
-  box-shadow:
-    0 5px 0 var(--site-lip),
-    0 0 0 4px #fff;
-}
-
 /* The Group list: one column on a phone, never wider than 560px; two columns from 680px, never wider than 960px. */
 
 .site-groups {
@@ -283,17 +249,5 @@
 
   .site-select > .site-under {
     margin-top: 24px;
-  }
-}
-
-/* Short landscape phones: smaller chips leave room for the cards. */
-@media (max-height: 500px) {
-  .site-skins {
-    padding-top: 4px;
-  }
-
-  .site-skin {
-    max-width: 96px;
-    height: 60px;
   }
 }

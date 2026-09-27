@@ -2,7 +2,7 @@ import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it, vi } from 'vitest';
 import type { App } from '../app';
 import { loadProgress } from '../progress';
-import { TOPIC_COLOURS, findItPractice, topicBadge } from './practice';
+import { TOPIC_COLOURS, findItPractice, skinPicture, topicBadge } from './practice';
 
 /** An App on a device holding this save, as the Game wrote it, under its real key. */
 function app(save: object = {}): App {
@@ -38,6 +38,23 @@ describe("Find It's Practice", () => {
     expect(practice.scope(1)).toEqual(['B', 'Q']);
     expect(practice.way(1)).toBe('find-symbol');
     expect(findItPractice(app({ format: 1, game: { topic: 'letter' } })).topic()).toBe(1);
+  });
+
+  it('has Skin chips on Numbers only, and saves the one picked', () => {
+    const a = app();
+    const [numbers, letters] = findItPractice(a).topics;
+    expect(letters!.skins).toBeUndefined();
+    expect(numbers!.skins!.chips.map((c) => c.label)).toEqual(['Beans', 'Jellybeans', 'Ladybugs', 'Stars', 'Strawberries']);
+    expect(numbers!.skins!.current()).toBe('bean');
+    numbers!.skins!.choose('strawberry');
+    expect(a.progress.game.skin).toBe('strawberry');
+    expect(findItPractice(app({ format: 1, game: { skin: 'star' } })).topics[0]!.skins!.current()).toBe('star');
+  });
+
+  it('draws beans and jellybeans, and the rest as their emoji', () => {
+    expect(skinPicture('bean').match(/<ellipse/g)).toHaveLength(3);
+    expect(skinPicture('jellybean').match(/<ellipse/g)).toHaveLength(3);
+    expect(skinPicture('ladybug')).toContain('🐞');
   });
 
   it('plays the Topic that’s up', () => {

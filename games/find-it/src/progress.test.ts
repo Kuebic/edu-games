@@ -6,11 +6,12 @@ import { loadProgress } from './progress';
 const device = (initial?: string) => gameStorage('find-it', memoryStorage(initial === undefined ? {} : { 'find-it:v1': initial }));
 
 describe('the picks', () => {
-  it('start on Numbers, 0 to 10 and A to E, both on Mix', () => {
+  it('start on Numbers, 0 to 10 and A to E, both on Mix, with beans', () => {
     expect(loadProgress(device()).game).toEqual({
       topic: 'number',
       scopes: { number: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], letter: ['A', 'B', 'C', 'D', 'E'] },
       ways: { number: 'mix', letter: 'mix' },
+      skin: 'bean',
     });
   });
 
@@ -21,20 +22,23 @@ describe('the picks', () => {
     first.game.scopes.letter = ['A', 'M', 'Z'];
     first.game.scopes.number = [];
     first.game.ways.letter = 'find-picture';
+    first.game.skin = 'ladybug';
     first.save();
     const again = loadProgress(storage).game;
     expect(again.topic).toBe('letter');
     expect(again.scopes).toEqual({ number: [], letter: ['A', 'M', 'Z'] });
     expect(again.ways).toEqual({ number: 'mix', letter: 'find-picture' });
+    expect(again.skin).toBe('ladybug');
   });
 
   it('keep only a Scope’s own items, in order, and fall back for anything else saved', () => {
-    const saved = { format: 1, game: { topic: 'shapes', scopes: { number: ['7', '3', '3', '99', 'A'], letter: 'ABC' }, ways: { number: 'sideways' } } };
+    const saved = { format: 1, game: { topic: 'shapes', scopes: { number: ['7', '3', '3', '99', 'A'], letter: 'ABC' }, ways: { number: 'sideways' }, skin: 'marbles' } };
     const { game } = loadProgress(device(JSON.stringify(saved)));
     expect(game.topic).toBe('number');
     expect(game.scopes.number).toEqual(['3', '7']);
     expect(game.scopes.letter).toEqual(['A', 'B', 'C', 'D', 'E']);
     expect(game.ways.number).toBe('mix');
+    expect(game.skin).toBe('bean');
   });
 
   it('keep the Ways from a save made when Find It had Rounds, and start fresh from a damaged one', () => {

@@ -100,6 +100,27 @@ describe('Practice', () => {
     expect(on('.site-way')).toEqual(['Pictures to letters']);
   });
 
+  it('shows a Topic’s Skin chips, only on that Topic, and picks one in one tap', () => {
+    let current = 'bean';
+    const skins = {
+      chips: [
+        { id: 'bean', label: 'Beans', picture: '<svg></svg>', colour: '#fda' },
+        { id: 'star', label: 'Stars', picture: '<svg></svg>', colour: '#00f' },
+      ],
+      current: () => current,
+      choose: (id: string) => (current = id),
+    };
+    const { game } = testGame({ topics: [{ ...topics[0]!, skins }, topics[1]!] });
+    showPractice(root, game);
+    expect(root.querySelector('.site-skins')).toBeNull();
+    byLabel('Numbers').click();
+    expect(on('.site-skin')).toEqual(['Beans']);
+    byLabel('Stars').click();
+    expect(current).toBe('star');
+    expect(on('.site-skin')).toEqual(['Stars']);
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('Stars');
+  });
+
   it('turns one item on or off, keeping the Scope in order', () => {
     const { game, state } = testGame();
     showPractice(root, game);

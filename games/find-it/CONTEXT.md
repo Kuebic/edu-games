@@ -23,8 +23,12 @@ Beans laid out in rows of ten, five and five, so an amount can be counted by ten
 _Avoid_: Ten-frame (in UI copy), plate, grid
 
 **Bean**:
-One counter on a Tray.
+One counter on a Tray, drawn as the Skin has it.
 _Avoid_: Dot, token, item
+
+**Skin**:
+What the beans on a Tray are: beans, jellybeans, ladybugs, stars or strawberries, picked from the chips under the Ways on Numbers. The Voice calls them by it ("Find 7 ladybugs!"). Beans to start with.
+_Avoid_: Theme, counter type
 
 **Picture**:
 An emoji with a word the child can say (an apple, a cat). Each is filed under the letter its word starts with, and the Voice says the word.

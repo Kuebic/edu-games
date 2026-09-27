@@ -1,9 +1,11 @@
 // Practice (ADR 0014): the first screen of a Game with no Levels, where the same Finds go round for as long
 // as a child likes. A grown-up picks, in one tap each, the Topic, the Way and the Scope (which numbers or
-// letters come up), then Play. The Game saves the picks; this draws them the same way in every Game.
+// letters come up), then Play. A Topic may have Skins too (ADR 0015), for the child to pick. The Game saves
+// the picks; this draws them the same way in every Game.
 
 import { houseButton } from './house-button';
 import './practice.css';
+import { skinChips, type SkinPicker } from './skins';
 
 /** One Way a Topic's Finds can go ("🍎 → A"). */
 export interface PracticeWay {
@@ -32,6 +34,8 @@ export interface PracticeTopic {
   items: readonly string[];
   ranges: readonly PracticeRange[];
   ways: readonly PracticeWay[];
+  /** Skin chips under its Ways (Find It's beans, ladybugs or stars). Leave out in a Topic without Skins. */
+  skins?: SkinPicker;
 }
 
 /** Everything Practice needs from a Game. Read again on every draw, never cached. */
@@ -158,6 +162,8 @@ export function showPractice(root: HTMLElement, game: PracticeGame): PracticeVie
       ways.append(chip);
     }
     picks.append(ways);
+
+    if (topic.skins) picks.append(skinChips(topic.skins, (id) => render(`skin:${id}`)));
 
     const ranges = row('site-ranges', 'Ranges');
     for (const range of topic.ranges) {

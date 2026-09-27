@@ -1,9 +1,11 @@
 // Find It's first screen, Practice (ADR 0014 of the site): Numbers and Letters as Topics, each with its
-// Ranges, its Way and its Scope, saved in Find It's slot, and the gear.
+// Ranges, its Way and its Scope, saved in Find It's slot, and the gear. Numbers has the Skins too (ADR 0006).
 
 import { showPractice, type PracticeGame, type PracticeView } from '@shared/practice';
 import type { App } from '../app';
+import type { SkinPicker } from '@shared/skins';
 import { ITEMS, LETTER_RANGES, NUMBER_RANGES, TOPICS, WAYS, type Topic, type Way } from '../finds';
+import { JELLY, SKINS, SKIN_LOOKS, type Skin } from '../skins';
 
 /** One colour per Topic: Numbers in the Math Shelf's orange, Letters in the Reading Shelf's violet. */
 export const TOPIC_COLOURS: Readonly<Record<Topic, string>> = { number: '#ff8a3d', letter: '#7a6cf0' };
@@ -39,6 +41,31 @@ export function topicBadge(topic: Topic): string {
   return `<svg viewBox="0 0 48 48" aria-hidden="true">${body}</svg>`;
 }
 
+/** A Skin's chip picture: three beans, three jellybeans, or its emoji. */
+export function skinPicture(skin: Skin): string {
+  const { emoji } = SKIN_LOOKS[skin];
+  if (emoji) return `<svg viewBox="0 0 48 48" aria-hidden="true"><text x="24" y="37" font-size="32" text-anchor="middle">${emoji}</text></svg>`;
+  const fills = skin === 'jellybean' ? [JELLY[0]![1], JELLY[3]![1], JELLY[4]![1]] : ['#a8452e', '#a8452e', '#a8452e'];
+  const bean = ([cx, cy]: readonly number[], i: number) =>
+    `<ellipse cx="${cx}" cy="${cy}" rx="9.5" ry="6.5" fill="${fills[i]}" transform="rotate(-15 ${cx} ${cy})"/>`;
+  return `<svg viewBox="0 0 48 48" aria-hidden="true">${[[13, 32], [35, 32], [24, 17]].map(bean).join('')}</svg>`;
+}
+
+/** The Skin chips, on Numbers only: what a Tray's beans are. */
+function skinPicker(app: App): SkinPicker {
+  const { game } = app.progress;
+  return {
+    chips: SKINS.map((id) => ({ id, label: cap(SKIN_LOOKS[id].many), picture: skinPicture(id), colour: SKIN_LOOKS[id].colour })),
+    current: () => game.skin,
+    choose: (id) => {
+      game.skin = id as Skin;
+      app.progress.save();
+    },
+  };
+}
+
+const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1);
+
 /** Find It as Practice sees it: Topics count from 0 there, in TOPICS order. */
 export function findItPractice(app: App): PracticeGame {
   const { game } = app.progress;
@@ -55,6 +82,7 @@ export function findItPractice(app: App): PracticeGame {
         { label: 'All', items: ITEMS[topic] },
       ],
       ways: WAYS.map((id) => ({ id, ...WAY_CHIPS[topic][id] })),
+      skins: topic === 'number' ? skinPicker(app) : undefined,
     })),
     topic: () => TOPICS.indexOf(game.topic),
     chooseTopic: (t) => {

@@ -178,6 +178,25 @@ body::before {
   transition: scale 150ms, filter 150ms;
 }
 
+/* Jellybeans: each its own colour, set on it, and glossy. */
+.bean-jellybean {
+  height: calc(var(--bean) * 0.64);
+  background: radial-gradient(ellipse at 30% 30%, #ffffffd0 0 14%, var(--bean-light) 30%, var(--bean-dark) 88%);
+}
+
+/* A Skin's emoji: as wide as a bean, and square, so a row of ten is as long as ever. */
+.bean-emoji {
+  height: var(--bean);
+  border-radius: 0;
+  background: none;
+  transform: none;
+  font-family: var(--emoji);
+  font-size: calc(var(--bean) * 0.84);
+  font-style: normal;
+  line-height: var(--bean);
+  text-align: center;
+}
+
 .bean:nth-child(10n + 5) {
   margin-right: calc(var(--bean) * 0.6);
 }

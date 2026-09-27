@@ -74,6 +74,18 @@
   gap: 8px;
 }
 
+/* Skin chips (skins.css) as one row, the height of the Ways. */
+.site-practice .site-skins {
+  gap: 8px;
+  padding: 0;
+}
+
+.site-practice .site-skin {
+  max-width: none;
+  height: 52px;
+  border-radius: 16px;
+}
+
 /* One row of Ranges, as many as there are, on a phone. */
 .site-ranges {
   display: grid;
@@ -154,7 +166,8 @@
     height: 40px;
   }
 
-  .site-way {
+  .site-way,
+  .site-practice .site-skin {
     height: 46px;
   }
 
@@ -200,7 +213,8 @@
     height: 38px;
   }
 
-  .site-way {
+  .site-way,
+  .site-practice .site-skin {
     height: 44px;
   }
 

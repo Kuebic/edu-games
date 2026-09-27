@@ -27,7 +27,7 @@ const corner = grownUpCorner(root, progress, {
   levels: false,
   note:
     'The first screen is for you. Pick Numbers or Letters, then which way round: 🫘 → 3 shows beans and the child finds the number; ' +
-    '3 → 🫘 shows a number and the child finds the tray of beans. 🍎 → A shows a picture and the child finds its first letter; ' +
+    '3 → 🫘 shows a number and the child finds the tray of beans. The pictures under them turn the beans into jellybeans, ladybugs, stars or strawberries. 🍎 → A shows a picture and the child finds its first letter; ' +
     'A → 🍎 shows a letter and the child finds a picture that starts with it. Mix takes turns. ' +
     'Then tap the numbers or letters to practise, or a range like A–E to turn five on or off at once, and Play. ' +
     'Each one comes up once before any comes again, for as long as the child likes, with a cheer every six. ' +

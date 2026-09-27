@@ -33,9 +33,9 @@ const HOUSES = ['M8 23 24 9l16 14', 'M3.5 11.2 12 4l8.5 7.2'];
 const LOCKS = ['M16 22v-6a8 8', 'M8 11V7a4 4'];
 /** The unlock rules Games have had, by name. The one rule is src/shared/unlock.ts; a rule under a new name isn't caught. */
 const OWN_RULES = /\b(?:isUnlocked|isPackOpen|isWorldUnlocked|isLevelUnlocked|OPENS_NEXT|WORLD_UNLOCK_AT)\b/;
-/** The level select's, Practice's and the Grown-up Corner's own classes, which no Game restyles. */
+/** The level select's, Practice's, the Skin chips' and the Grown-up Corner's own classes, which no Game restyles. */
 const baseClasses = classesIn(base);
-const SELECT_CLASSES = ['level-select', 'practice', 'grownup']
+const SELECT_CLASSES = ['level-select', 'practice', 'skins', 'grownup']
   .flatMap((m) => [...classesIn(read(`src/shared/${m}.css`))])
   .filter((c) => !baseClasses.has(c));
 
