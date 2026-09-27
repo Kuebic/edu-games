@@ -71,7 +71,7 @@ One puzzle, or Round, that a child starts from a Group screen. Each Game has its
 _Avoid_: stage, puzzle (in site talk)
 
 **Group**:
-A run of Levels at one difficulty, easiest first. Each Game has its own word: Pack (Way Out), Chapter (Push Pals, Traffic Jam), World (Robot Path), Stage (Snack Math). Every Group is always open.
+A run of Levels at one difficulty, easiest first. Each Game has its own word: Pack (Way Out), Chapter (Push Pals, Traffic Jam), World (Robot Path), Stage (Snack Math), Track (Hop Race). Every Group is always open.
 _Avoid_: set, tier, section
 
 **Done**:
@@ -116,11 +116,11 @@ A mark for doing a Level especially well: in the fewest Moves (Way Out) or with 
 _Avoid_: star, bonus, score
 
 **Skin**:
-A picture set a child picks from the chips on the Group list. It changes looks and sounds, never the Levels. Robot Path and Way Out have Skins.
+A picture set a child picks from the chips on the Group list. It changes looks and sounds, never the Levels. Hop Race (its Hopper), Robot Path and Way Out have Skins.
 _Avoid_: theme
 
 **Voice**:
-What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Find It, My Letter, Robot Path, Snack Math and Way Out have a Voice.
+What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Find It, Hop Race, My Letter, Robot Path, Snack Math and Way Out have a Voice.
 _Avoid_: speech, TTS, narration
 
 **Sound**:
