@@ -208,7 +208,8 @@
   border: 4px solid var(--site-group);
   background: #fff;
   color: var(--site-group);
-  font-size: 28px;
+  /* A long label (My Letter's Name) shrinks to fit across the card. */
+  font-size: min(28px, (var(--site-card) - 20px) / (var(--site-label, 1) * 0.72));
   font-weight: 800;
   display: grid;
   place-items: center;

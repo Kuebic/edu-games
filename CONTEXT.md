@@ -93,7 +93,7 @@ _Avoid_: level picker, map, menu
 A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group that has Levels, with its badge, done dots and Sparkles if it has them.
 
 **Group screen**:
-One Group's Levels as numbered cards (My Letter's show their letters): done ones filled and ticked, the next one open, later ones locked.
+One Group's Levels as numbered cards (My Letter's show the Name or a letter): done ones filled and ticked, the next one open, later ones locked.
 
 **Sparkle**:
 A mark for doing a Level especially well: in the fewest Moves (Way Out) or with a Program no longer than Par (Robot Path). It shows on the Level's card and is counted on its Group's card. Games without Sparkles show none.

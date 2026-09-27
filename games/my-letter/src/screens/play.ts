@@ -1,10 +1,10 @@
 import { buzz, cheer } from '@shared/sound';
 import { hush, say } from '@shared/voice';
 import type { App } from '../app';
-import { ask, fadeLine, foundLine, saysLine } from '../asks';
-import { FINDS, makeFinds, type Find } from '../choices';
+import { ask, fadeLine, foundLine, saysLine, spellAsk } from '../asks';
+import { newLetterFinds, spellFinds, type Find } from '../choices';
 import { h, replay, sparkle, wait } from '../dom';
-import { MY_NAME, levelLetters, metLetters, nameCapitals } from '../letters';
+import { MY_NAME, levelLabels, metLetters, nameCapitals } from '../letters';
 import { letterSound, play } from '../sounds';
 import { backIcon, nextIcon, speakerIcon } from './icons';
 
@@ -12,47 +12,48 @@ import { backIcon, nextIcon, speakerIcon } from './icons';
 const FOUND_MS = 800;
 
 /**
- * The Name line: the Name's capitals, with a blank wherever `letter` goes (SAM asking S is _AM).
- * `fill()` puts the letter in the blanks; `clear()` empties them again for the next Find.
+ * The Name line: the Name's capitals, every one a blank to start with, the letter faint in it so a child can
+ * match it without the Voice. `now(i)` marks the blank being asked for; `fill(i)` puts its letter in.
  */
-function drawNameLine(name: string, letter: string): { el: HTMLElement; fill(): void; clear(): void } {
+function drawNameLine(name: string): { el: HTMLElement; now(i: number): void; fill(i: number): void } {
   const capitals = [...nameCapitals(name)];
-  const blanks: HTMLElement[] = [];
   const el = h('span', { class: 'name-line', label: name });
   el.style.setProperty('--n', String(capitals.length));
-  for (const c of capitals) {
-    const cell = h('span', { class: c === letter ? 'nl-cell nl-blank' : 'nl-cell', text: c });
-    if (c === letter) blanks.push(cell);
-    el.append(cell);
-  }
+  const cells = capitals.map((c) => h('span', { class: 'nl-cell nl-blank', text: c }));
+  el.append(...cells);
   return {
     el,
-    fill: () => blanks.forEach((b) => b.classList.add('nl-filled')),
-    clear: () => blanks.forEach((b) => b.classList.remove('nl-filled')),
+    now: (i) => cells.forEach((cell, j) => cell.classList.toggle('nl-now', j === i)),
+    fill: (i) => cells[i]!.classList.replace('nl-blank', 'nl-filled'),
   };
 }
 
-/** One Level of a Group, both counting from 0: four Finds of its letter, then the cheer and Next. */
+/** One Level of a Group, both counting from 0: its Finds, then the cheer and Next. */
 export function playScreen(app: App, group: number, level: number): () => void {
   let alive = true;
   const name = app.progress.game.name;
-  const letter = levelLetters(name, group)[level];
-  if (letter === undefined) throw new Error(`My Letter: no Level ${level} in Group ${group}`);
-  const finds = makeFinds(letter, metLetters(name, group, level));
-  const line = group === MY_NAME ? ask(letter, name) : ask(letter);
-  // The ask ends with the letter's own sound, where it will be heard, so it's never silent without a Voice.
-  const askClip = letterSound(letter);
+  const label = levelLabels(name, group)[level];
+  if (label === undefined) throw new Error(`My Letter: no Level ${level} in Group ${group}`);
+  const spelling = group === MY_NAME;
+  const finds = spelling ? spellFinds(name) : newLetterFinds(label, metLetters(name, level));
+  /** The Find being played, for the ask a tap on the prompt says again. */
+  let current = 0;
+  const line = (i: number) => (spelling ? spellAsk(name, i) : ask(finds[i]!.letter));
 
-  /** The ask: the Voice's line, then the Letter sound. Resolves when both are done. */
-  async function sayAsk(): Promise<void> {
-    await say(line);
-    if (alive && askClip?.ready()) await askClip();
+  /**
+   * The ask for the Find being played. A Find starts with the Voice's line alone; a tap on the prompt adds
+   * the letter's Letter sound, so it's heard when a child asks for it and not on every Find.
+   */
+  async function sayAsk(sound: boolean): Promise<void> {
+    await say(line(current));
+    const clip = letterSound(finds[current]!.letter);
+    if (sound && alive && clip?.ready()) await clip();
   }
 
   // ---- Layout ------------------------------------------------------------
   const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
-  const dots = Array.from({ length: FINDS }, () => h('span', { class: 'dot' }));
-  const nameLine = group === MY_NAME ? drawNameLine(name, letter) : undefined;
+  const dots = finds.map(() => h('span', { class: 'dot' }));
+  const nameLine = spelling ? drawNameLine(name) : undefined;
   const promptBtn = h(
     'button',
     { class: 'prompt', label: 'Hear it again' },
@@ -79,13 +80,15 @@ export function playScreen(app: App, group: number, level: number): () => void {
     if (busy) return;
     busy = true;
     replay(promptBtn, 'wiggle');
-    await sayAsk();
+    await sayAsk(true);
     busy = false;
   });
 
   // ---- One Find -----------------------------------------------------------
   async function runFind(find: Find, index: number): Promise<void> {
-    nameLine?.clear();
+    const { letter } = find;
+    current = index;
+    nameLine?.now(index);
     const buttons = find.choices.map((c, i) => {
       const b = h('button', { class: `choice c${i}`, label: c }, h('span', { class: 'glyph', text: c }));
       b.style.animationDelay = `${i * 80}ms`;
@@ -100,7 +103,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
     choicesEl.replaceChildren(...buttons);
 
     busy = true;
-    await sayAsk();
+    await sayAsk(false);
     for (;;) {
       if (!alive) return;
       busy = false;
@@ -109,20 +112,18 @@ export function playScreen(app: App, group: number, level: number): () => void {
       busy = true;
       const chosen = find.choices[i]!;
       if (chosen === letter) break;
-      // A Fade: it wobbles, is named, fades away, and the ask comes again.
+      // A Fade: it wobbles, is named and fades away. The ask isn't said again; a tap on the prompt says it.
       const b = buttons[i]!;
       replay(b, 'wobble');
       play('boop');
       await say(fadeLine(chosen));
       b.classList.add('gone');
-      if (!alive) return;
-      await sayAsk();
     }
 
-    // Found: the letter dances, fills the Name line, and says its sound.
+    // Found: the letter dances, fills its blank in the Name line, and says its sound.
     const right = buttons[find.choices.indexOf(letter)]!;
     right.classList.add('right');
-    nameLine?.fill();
+    nameLine?.fill(index);
     play('pop');
     buzz(40);
     sparkle(right, fx);
@@ -151,7 +152,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
     showReward();
   }
 
-  /** Confetti and the Level's letter, then Next: the next Level, on into New letters, or after the very last back to its Group. */
+  /** Confetti and the Level's card, the Name or the letter, then Next: the next Level, on into New letters, or after the very last back to its Group. */
   function showReward(): void {
     const next = h('button', { class: 'site-next', label: 'Next', html: nextIcon });
     const back = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
@@ -166,7 +167,8 @@ export function playScreen(app: App, group: number, level: number): () => void {
       c.style.setProperty('--spin', `${Math.random() * 720 - 360}deg`);
       confetti.append(c);
     }
-    const badge = h('div', { class: 'reward-letter', text: letter });
+    const badge = h('div', { class: spelling ? 'reward-letter reward-name' : 'reward-letter', text: label });
+    badge.style.setProperty('--n', String(label.length));
     screen.replaceChildren(h('div', { class: 'reward' }, confetti, badge, h('div', { class: 'reward-actions' }, back, next)));
     next.addEventListener('click', () => {
       const to = app.progress.after(group, level);

@@ -168,6 +168,13 @@ describe('a Group screen', () => {
     expect(byLabel('Level M')!.textContent).toBe('M');
   });
 
+  it('tells a card how long its label is, so a long one can shrink to fit', () => {
+    const { game, groups } = testGame();
+    groups[0]!.labels = ['ALEXANDRIA', 'A', 'B', 'C'];
+    showLevelSelect(root, game, 0);
+    expect(byLabel('Level ALEXANDRIA, done, sparkle')!.style.getPropertyValue('--site-label')).toBe('10');
+  });
+
   it('names the Levels with the Game’s own word', () => {
     showLevelSelect(root, testGame({ levelWord: 'Round' }).game, 0);
     expect(labels('.site-level')).toEqual(['Round 1, done, sparkle', 'Round 2, done', 'Round 3', 'Round 4, locked']);

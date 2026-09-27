@@ -1,4 +1,4 @@
-// Which letters My Letter teaches: the Name's own, then the eight New letters, and which capitals Look alike.
+// Which letters My Letter teaches: the Name, spelt, then the eight New letters, and which capitals Look alike.
 // Pure, so it's tested as data.
 
 /** The Groups, as Saved progress counts them. My name is Group 0 even with no Name, so New letters never moves. */
@@ -29,15 +29,19 @@ export function nameLetters(name: string): string[] {
   return [...new Set(nameCapitals(name))];
 }
 
-/** A Group's Levels as their letters: one per Name letter, or always all eight New letters. */
-export function levelLetters(name: string, group: number): readonly string[] {
-  return group === MY_NAME ? nameLetters(name) : NEW_LETTER_ORDER;
+/**
+ * A Group's Levels as their cards say them: My name is one Level, its card the Name's capitals (none without a
+ * Name); New letters is always all eight, a card per letter.
+ */
+export function levelLabels(name: string, group: number): readonly string[] {
+  if (group !== MY_NAME) return NEW_LETTER_ORDER;
+  const capitals = nameCapitals(name);
+  return capitals === '' ? [] : [capitals];
 }
 
-/** The letters of every Level before this one in play order (My name's, then New letters'), each once. */
-export function metLetters(name: string, group: number, level: number): string[] {
-  const before = group === MY_NAME ? nameLetters(name).slice(0, level) : [...nameLetters(name), ...NEW_LETTER_ORDER.slice(0, level)];
-  return [...new Set(before)];
+/** The letters met before a New letters Level: the Name letters, then the New letters before it, each once. */
+export function metLetters(name: string, level: number): string[] {
+  return [...new Set([...nameLetters(name), ...NEW_LETTER_ORDER.slice(0, level)])];
 }
 
 /** Capitals a three-year-old mixes up, never offered side by side. */

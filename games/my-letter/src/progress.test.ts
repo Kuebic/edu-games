@@ -20,11 +20,11 @@ describe('Levels', () => {
     expect(hasName(progress)).toBe(false);
   });
 
-  it('are one per Name letter in My name, and New letters stays Group 1 whatever the Name', () => {
+  it('are one in My name once there’s a Name, and New letters stays Group 1 whatever the Name', () => {
     const progress = loadProgress(device());
     progress.finish(NEW_LETTERS, 0);
     setName(progress, 'Anna');
-    expect(progress.marks(MY_NAME)).toHaveLength(2);
+    expect(progress.marks(MY_NAME)).toHaveLength(1);
     expect(done(progress.marks(NEW_LETTERS))[0]).toBe(true);
     setName(progress, '');
     expect(progress.marks(MY_NAME)).toEqual([]);
@@ -33,8 +33,7 @@ describe('Levels', () => {
 
   it('go on from My name into New letters, and stop after J', () => {
     const progress = loadProgress(device({ format: 1, game: { name: 'Sam' } }));
-    expect(progress.after(MY_NAME, 1)).toEqual({ group: MY_NAME, level: 2 });
-    expect(progress.after(MY_NAME, 2)).toEqual({ group: NEW_LETTERS, level: 0 });
+    expect(progress.after(MY_NAME, 0)).toEqual({ group: NEW_LETTERS, level: 0 });
     expect(progress.after(NEW_LETTERS, 7)).toBeUndefined();
   });
 });
@@ -55,15 +54,18 @@ describe('the Name', () => {
     expect(progress.marks(MY_NAME)).toEqual([]);
   });
 
-  it('when it changes to different letters, clears My name’s Done marks, and only those', () => {
+  it('when it’s spelt differently, clears My name’s Done mark, and only that', () => {
     const progress = loadProgress(device());
     setName(progress, 'Sam');
     progress.finish(MY_NAME, 0);
-    progress.finish(MY_NAME, 1);
     progress.finish(NEW_LETTERS, 3);
     expect(setName(progress, 'Sara')).toBe(true);
-    expect(done(progress.marks(MY_NAME))).toEqual([false, false, false]);
+    expect(done(progress.marks(MY_NAME))).toEqual([false]);
     expect(done(progress.marks(NEW_LETTERS))[3]).toBe(true);
+    // The same letters in another order are another spelling.
+    progress.finish(MY_NAME, 0);
+    expect(setName(progress, 'Aras')).toBe(true);
+    expect(done(progress.marks(MY_NAME))).toEqual([false]);
   });
 
   it('keeps My name’s Done marks when only case, spaces or accents change', () => {
@@ -71,7 +73,7 @@ describe('the Name', () => {
     setName(progress, 'Zoe');
     progress.finish(MY_NAME, 0);
     expect(setName(progress, ' zoë')).toBe(false);
-    expect(done(progress.marks(MY_NAME))).toEqual([true, false, false]);
+    expect(done(progress.marks(MY_NAME))).toEqual([true]);
   });
 
   it('outlasts a reset, as does a skip', () => {
@@ -85,7 +87,7 @@ describe('the Name', () => {
     first.reset();
     const again = loadProgress(storage);
     expect(again.game).toEqual({ name: 'Sam', skipped: true });
-    expect(done(again.marks(MY_NAME))).toEqual([false, false, false]);
+    expect(done(again.marks(MY_NAME))).toEqual([false]);
   });
 
   it('starts empty and not skipped, and from a damaged slot', () => {

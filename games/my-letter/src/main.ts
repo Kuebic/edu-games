@@ -37,10 +37,11 @@ const corner = grownUpCorner(root, progress, {
     }),
   ],
   note:
-    'My name has a level for each letter of the name, in order: Sam gets S, A and M. It shows once there is a name. ' +
-    'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound. Every question ends with the letter\'s sound. ' +
-    'Each level asks for its letter four times, from two to pick from. A letter picked by mistake is named and fades away. ' +
-    'A found letter says its sound. A new name with different letters starts My name again; New letters stays. ' +
+    'My name spells the name, a letter at a time from three to pick from: S, then A, then M. It shows once there is a name. ' +
+    'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound. Each asks for its letter twice, ' +
+    'and twice for a letter met before, from three to pick from. Tapping the name or the speaker asks again, with the letter\'s sound. ' +
+    'A letter picked by mistake is named and fades away. A found letter says its sound. ' +
+    'A name spelt differently starts My name again; New letters stays. ' +
     'Levels open in order, and Next goes on to the next one. ' +
     'The ABC button on the first screen opens the Letter board: every letter, the name\'s in their own colour, to tap and hear. Nothing there is saved.',
   closed: () => {

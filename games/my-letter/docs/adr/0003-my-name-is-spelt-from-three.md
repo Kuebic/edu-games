@@ -1,0 +1,7 @@
+---
+status: accepted
+---
+
+# My name is spelt, from three Choices, and the ask's Letter sound waits for a tap
+
+The first play with a three-year-old on 2026-09-26 went against three choices in the spec. A Level asked for one letter four times, from two Choices, and every ask (the first, each after a Fade, each tap) ended with the Letter sound, so on a machine with no speech the same clip played again and again for the same letter; she didn't like it. Her grown-up asked for the sound only when she taps, three letters to pick from, and each letter of her name once, so she learns to spell it. So My name is now one Level, a Spell: a Find for each capital of the Name from left to right (ANNA is A, N, N, A), the other Choices from the Name letters, and the Name line shows every blank with its letter faint inside, since with no Voice a child has nothing else to match. A New letters Level has three Choices too, and asks for its letter, a Met letter, then its letter and another Met letter in either order, never the same letter twice running. The ask is said once when a Find starts, without the clip, and not again after a Fade; a tap on the Name line or speaker says it with the clip. The found line ("S says /s/") stays, as it's the one moment the sound belongs to. We rejected keeping a Level per Name letter before the Spell (the drill she tired of) and a hinted Spell followed by a plain one (more Levels than the Name needs); the faint letters can go later if she spells without them. Old saves keep a Done on My name's first Level, now the Spell.

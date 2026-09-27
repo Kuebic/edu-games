@@ -1,18 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { ask, foundLine, saysLine, fadeLine } from './asks';
+import { ask, fadeLine, foundLine, saysLine, spellAsk } from './asks';
 
 describe('the ask', () => {
-  it('in My name, for the Name’s first letter, is for the Name', () => {
-    expect(ask('S', 'Sam')).toBe('Find the letter S for Sam!');
-    expect(ask('A', 'Anna')).toBe('Find the letter A for Anna!');
+  it('in My name, for the Name’s first capital, is for the Name', () => {
+    expect(spellAsk('Sam', 0)).toBe('Find the letter S for Sam!');
+    expect(spellAsk('Anna', 0)).toBe('Find the letter A for Anna!');
   });
 
-  it('in My name, for its other letters, is in the Name', () => {
-    expect(ask('A', 'Sam')).toBe('Find the letter A in Sam!');
-    expect(ask('N', 'Anna')).toBe('Find the letter N in Anna!');
+  it('in My name, for its other capitals, is in the Name, even a letter that was first too', () => {
+    expect(spellAsk('Sam', 1)).toBe('Find the letter A in Sam!');
+    expect(spellAsk('Anna', 2)).toBe('Find the letter N in Anna!');
+    expect(spellAsk('Anna', 3)).toBe('Find the letter A in Anna!');
     // The Name as typed, accents and all; the letters from its capitals.
-    expect(ask('Z', 'Zoë')).toBe('Find the letter Z for Zoë!');
-    expect(ask('E', 'Zoë')).toBe('Find the letter E in Zoë!');
+    expect(spellAsk('Zoë', 0)).toBe('Find the letter Z for Zoë!');
+    expect(spellAsk('Zoë', 2)).toBe('Find the letter E in Zoë!');
   });
 
   it('in New letters, is the letter alone', () => {

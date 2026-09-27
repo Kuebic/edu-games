@@ -1,6 +1,6 @@
 # My Letter
 
-Status: agreed 2026-09-25 in a design interview. Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr).
+Status: agreed 2026-09-25 in a design interview. Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr). Changed on 2026-09-27 after the first play with a child (ADR 0003): My name is one Level that spells the Name, every Find has three Choices, New letters Levels mix in Met letters, and only a tap on the prompt plays the Letter sound with the ask. Where this spec says otherwise, CONTEXT.md and the ADR win.
 
 ## The problem
 

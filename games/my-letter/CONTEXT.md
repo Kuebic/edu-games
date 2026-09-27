@@ -1,6 +1,6 @@
 # My Letter
 
-A touch game that teaches a three-year-old letter names and sounds, starting from their own name. The Voice asks for a letter, the child picks it from two, and the letter says its sound.
+A touch game that teaches a three-year-old letter names and sounds, starting from spelling their own name. The Voice asks for a letter, the child picks it from three, and the letter says its sound.
 
 ## Language
 
@@ -14,16 +14,20 @@ _Avoid_: Username, child name, profile
 The different letters in the Name, in the order they first appear: SAM is S, A, M; ANNA is A, N.
 _Avoid_: Initials, name part
 
+**Spell**:
+What My name's Level does: a Find for each capital of the Name, left to right, so ANNA is A, N, N, A.
+_Avoid_: Type, write
+
 **New letters**:
 B, D, K, P, T, V, Z and J: letters whose name starts with their sound, so saying the letter teaches the sound. The same eight for every child.
 _Avoid_: Other letters, extra letters, bonus
 
 **Find**:
-One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from two Choices. The ask ends with the letter's Letter sound. Four make a Level.
+One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from three Choices. Tapping the Name line or the speaker asks again, and that ask ends with the letter's Letter sound; the Find's own ask doesn't, so the sound isn't heard on every Find.
 _Avoid_: Question, turn, trial
 
 **Choices**:
-The two big letter buttons. One is the letter asked for; the other never Looks alike.
+The three big letter buttons. One is the letter asked for; the other two never Look alike it. In a Spell they're the Name letters when there are enough.
 _Avoid_: Options, answers
 
 **Looks alike**:
@@ -31,11 +35,11 @@ Two capitals a three-year-old mixes up, kept apart as Choices: B P R D, C G O Q,
 _Avoid_: Similar, confusable
 
 **Met letter**:
-A letter from an earlier Level. The other Choice is a Met letter when one doesn't Look alike, so old letters come back.
+A letter met before a New letters Level: the Name letters, then the New letters before it. Two Finds of each New letters Level ask for one, and the other Choices are Met letters when they don't Look alike, so old letters come back.
 _Avoid_: Learned, known, mastered
 
 **Name line**:
-The Name drawn big above the Choices during a Name letters Level, with a blank wherever the asked-for letter goes. A find fills the blanks.
+The Name drawn big above the Choices during a Spell: a blank for every capital, the letter faint in it to match, the one being asked for outlined. A find fills its blank.
 _Avoid_: Title, header, word
 
 **Letter sound**:
@@ -43,7 +47,7 @@ The one sound a letter says: short vowels, hard C and G, X as /ks/, Q as /kw/. A
 _Avoid_: Phoneme (in UI copy), Sound (the site's word for every noise), phonics
 
 **Fade**:
-What a wrong pick does: the letter wobbles, the Voice says its name ("That's M."), and it fades away, leaving only the right one. There's no failing.
+What a wrong pick does: the letter wobbles, the Voice says its name ("That's M."), and it fades away, leaving fewer to pick from. The ask isn't said again. There's no failing.
 _Avoid_: Wrong, miss, error
 
 **Letter board**:
@@ -53,11 +57,11 @@ _Avoid_: Keyboard, alphabet, soundboard
 ### Progress
 
 **Level**:
-Four Finds of one letter, then the cheer and the Next button. A Level's card is its letter.
+Its Finds, then the cheer and the Next button: My name's is a Spell, and its card is the Name; a New letters Level is its letter, a Met letter, and its letter again with the other Met letter before or after, and its card is its letter.
 _Avoid_: Round, lesson, stage
 
 **My name**:
-The first Group: a Level for each Name letter. It isn't shown until there's a Name, and a new Name starts it fresh.
+The first Group: one Level, a Spell of the Name. It isn't shown until there's a Name, and a Name spelt differently starts it fresh.
 _Avoid_: Name group, chapter
 
 **New letters** (the Group):

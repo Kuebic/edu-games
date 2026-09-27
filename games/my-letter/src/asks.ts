@@ -1,14 +1,16 @@
 // What the Voice says in a Level. Letters go as "the letter A", as in Find It, so a speech engine says
 // the letter's name and never reads A as a word ("uh") or a capital as a sound.
 
-import { nameLetters } from './letters';
+import { nameCapitals } from './letters';
 
 const theLetter = (letter: string) => `the letter ${letter}`;
 
-/** The ask. In My name `name` is the Name as typed: "for Sam" on its first letter, "in Sam" on the rest. */
-export function ask(letter: string, name?: string): string {
-  if (name === undefined) return `Find ${theLetter(letter)}!`;
-  return `Find ${theLetter(letter)} ${nameLetters(name)[0] === letter ? 'for' : 'in'} ${name}!`;
+/** A New letters ask. */
+export const ask = (letter: string) => `Find ${theLetter(letter)}!`;
+
+/** A My name ask, for the Name's capital at `index`: "for Sam" on its first, "in Sam" on the rest. `name` is as typed. */
+export function spellAsk(name: string, index: number): string {
+  return `Find ${theLetter(nameCapitals(name)[index]!)} ${index === 0 ? 'for' : 'in'} ${name}!`;
 }
 
 /** A Fade: the name of the letter that fades. */

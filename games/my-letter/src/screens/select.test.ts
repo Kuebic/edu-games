@@ -19,11 +19,11 @@ function app(save: object): App {
 }
 
 describe("My Letter's level select", () => {
-  it('shows My name with a card per Name letter, then New letters, each in its own colour', () => {
+  it('shows My name with one card, the Name, then New letters, each in its own colour', () => {
     const groups = myLetterSelect(app({ format: 1, game: { name: 'Anna' } })).groups();
     expect(groups.map((g) => g.name)).toEqual(['My name', 'New letters']);
-    expect(groups.map((g) => g.labels)).toEqual([['A', 'N'], NEW_LETTER_ORDER]);
-    expect(groups.map((g) => g.levels.length)).toEqual([2, 8]);
+    expect(groups.map((g) => g.labels)).toEqual([['ANNA'], NEW_LETTER_ORDER]);
+    expect(groups.map((g) => g.levels.length)).toEqual([1, 8]);
     expect(groups.map((g) => g.colour)).toEqual([...GROUP_COLOURS]);
   });
 

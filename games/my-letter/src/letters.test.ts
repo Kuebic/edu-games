@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GROUP_NAMES, MY_NAME, NEW_LETTERS, NEW_LETTER_ORDER, boardLetters, levelLetters, looksAlike, metLetters, nameCapitals, nameLetters } from './letters';
+import { GROUP_NAMES, MY_NAME, NEW_LETTERS, NEW_LETTER_ORDER, boardLetters, levelLabels, looksAlike, metLetters, nameCapitals, nameLetters } from './letters';
 
 describe('Name letters', () => {
   it('are the different letters of the Name, in the order they first appear', () => {
@@ -42,25 +42,26 @@ describe('the Groups', () => {
     expect(NEW_LETTER_ORDER).toEqual(['B', 'D', 'K', 'P', 'T', 'V', 'Z', 'J']);
   });
 
-  it('have a Level per Name letter, then always all eight New letters', () => {
-    expect(levelLetters('Ben', MY_NAME)).toEqual(['B', 'E', 'N']);
-    expect(levelLetters('Ben', NEW_LETTERS)).toEqual(NEW_LETTER_ORDER);
-    expect(levelLetters('', MY_NAME)).toEqual([]);
-    expect(levelLetters('', NEW_LETTERS)).toEqual(NEW_LETTER_ORDER);
+  it('have one Level, the Name, in My name, then always all eight New letters', () => {
+    expect(levelLabels('Ben', MY_NAME)).toEqual(['BEN']);
+    expect(levelLabels('Zoë', MY_NAME)).toEqual(['ZOE']);
+    expect(levelLabels('Ben', NEW_LETTERS)).toEqual(NEW_LETTER_ORDER);
+    expect(levelLabels('', MY_NAME)).toEqual([]);
+    expect(levelLabels('42', MY_NAME)).toEqual([]);
+    expect(levelLabels('', NEW_LETTERS)).toEqual(NEW_LETTER_ORDER);
   });
 });
 
 describe('Met letters', () => {
-  it('are the letters of every earlier Level: My name first, then New letters', () => {
-    expect(metLetters('Sam', MY_NAME, 0)).toEqual([]);
-    expect(metLetters('Sam', MY_NAME, 2)).toEqual(['S', 'A']);
-    expect(metLetters('Sam', NEW_LETTERS, 0)).toEqual(['S', 'A', 'M']);
-    expect(metLetters('Sam', NEW_LETTERS, 2)).toEqual(['S', 'A', 'M', 'B', 'D']);
-    expect(metLetters('', NEW_LETTERS, 1)).toEqual(['B']);
+  it('before a New letters Level are the Name letters, then the New letters before it', () => {
+    expect(metLetters('Sam', 0)).toEqual(['S', 'A', 'M']);
+    expect(metLetters('Sam', 2)).toEqual(['S', 'A', 'M', 'B', 'D']);
+    expect(metLetters('', 0)).toEqual([]);
+    expect(metLetters('', 1)).toEqual(['B']);
   });
 
   it('are each letter once, even one met in both Groups', () => {
-    expect(metLetters('Ben', NEW_LETTERS, 3)).toEqual(['B', 'E', 'N', 'D', 'K']);
+    expect(metLetters('Ben', 3)).toEqual(['B', 'E', 'N', 'D', 'K']);
   });
 });
 

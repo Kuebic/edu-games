@@ -277,6 +277,7 @@ function groupScreen(
     );
     if (open) {
       card.textContent = label;
+      card.style.setProperty('--site-label', String(label.length));
       if (mark.done) {
         card.classList.add('site-done');
         card.insertAdjacentHTML('beforeend', `<span class="site-tick">${TICK}</span>`);

@@ -13,6 +13,8 @@
   --sky-dark: #4fa9e0;
   --mint: #6fd3a8;
   --mint-dark: #43b085;
+  --lilac: #c9b4f7;
+  --lilac-dark: #9a7fe0;
   --site-lip: #0000001a;
   --site-tool-ink: var(--ink-soft);
   --site-go: var(--mint);
@@ -20,8 +22,8 @@
   --site-ring: var(--coral);
   --site-focus: var(--teal-dark);
 
-  /* A Choice: two side by side, as big as the column lets them be. */
-  --card: min(40vw, 200px);
+  /* A Choice: three side by side, as big as the column lets them be. */
+  --card: min(27vw, 170px);
   /* The column a screen sits in. */
   --column: min(100vw, 560px);
   --emoji: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
@@ -139,16 +141,29 @@ body::before {
   transition: color 200ms;
 }
 
-/* Where the asked-for letter goes: an empty box the size of a capital, until a find fills it. */
+/* A letter still to find: a box the size of a capital with the letter faint in it, to match a Choice to. */
 .nl-blank {
   width: 0.78em;
   border-radius: 0.14em;
-  color: transparent;
-  background: #fff;
-  box-shadow: inset 0 0 0 0.05em var(--coral);
+  color: #f0604d38;
+  background: #ffffff99;
+  box-shadow: inset 0 0 0 0.03em #f0604d55;
+  transition: background 200ms, box-shadow 200ms;
 }
 
-.nl-blank.nl-filled {
+.nl-blank.nl-now {
+  background: #fff;
+  box-shadow: inset 0 0 0 0.06em var(--coral);
+  animation: now 1.4s ease-in-out infinite;
+}
+
+@keyframes now {
+  50% {
+    transform: translateY(-0.05em);
+  }
+}
+
+.nl-filled {
   color: var(--coral);
   background: transparent;
   box-shadow: none;
@@ -167,12 +182,12 @@ body::before {
   box-shadow: 0 8px 0 #0000000f;
 }
 
-/* The two Choices. */
+/* The three Choices. */
 .choices {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: clamp(14px, 6vw, 32px);
+  gap: clamp(10px, 4vw, 24px);
   min-height: calc(var(--card) + 14px);
   padding-bottom: 8px;
 }
@@ -202,6 +217,11 @@ body::before {
 .choice.c1 {
   background: var(--sky);
   box-shadow: 0 8px 0 var(--sky-dark);
+}
+
+.choice.c2 {
+  background: var(--lilac);
+  box-shadow: 0 8px 0 var(--lilac-dark);
 }
 
 .choice:active {
@@ -248,7 +268,7 @@ body::before {
 /* Short landscape phones: the Name line or speaker on the left, the Choices on the right. */
 @media (max-height: 500px) {
   :root {
-    --card: min(38vh, 150px);
+    --card: min(34vh, 130px, calc((min(100vw, 820px) / 2 - 70px) / 3));
     --column: min(100vw, 820px);
   }
 
@@ -382,6 +402,16 @@ body::before {
   animation: star-in 900ms cubic-bezier(0.3, 1.5, 0.5, 1) 300ms both;
 }
 
+/* My name's reward: the whole Name, in a pill as wide as it needs. */
+.reward-letter.reward-name {
+  width: auto;
+  min-width: min(62vw, 240px);
+  aspect-ratio: auto;
+  padding: 0.25em 0.35em;
+  border-radius: 999px;
+  font-size: min(40vw, 160px, calc((var(--column) - 90px) / (var(--n) * 0.8)));
+}
+
 .reward-actions {
   display: flex;
   align-items: center;
@@ -409,6 +439,11 @@ body::before {
   .reward-letter {
     width: min(48vh, 200px);
     font-size: min(32vh, 130px);
+  }
+
+  .reward-letter.reward-name {
+    min-width: min(48vh, 200px);
+    font-size: min(32vh, 130px, calc((var(--column) - 90px) / (var(--n) * 0.8)));
   }
 
   .reward-actions {

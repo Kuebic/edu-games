@@ -1,9 +1,9 @@
 // The level select: My name (left out until there's a Name) and New letters as Groups, each Level's card
-// its letter, and on the Group list the Letter board's button beside the gear.
+// its Name or letter, and on the Group list the Letter board's button beside the gear.
 
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
 import type { App } from '../app';
-import { GROUP_NAMES, MY_NAME, levelLetters, nameLetters } from '../letters';
+import { GROUP_NAMES, MY_NAME, levelLabels, nameLetters } from '../letters';
 
 /** One colour per Group, by its number: My name in the name tag's coral, New letters in teal. */
 export const GROUP_COLOURS = ['#f0604d', '#159a9c'] as const;
@@ -48,7 +48,7 @@ export function myLetterSelect(app: App): LevelSelectGame {
         colour: GROUP_COLOURS[g]!,
         badge: () => groupBadge(g, app.progress.game.name),
         levels: app.progress.marks(g),
-        labels: levelLetters(app.progress.game.name, g),
+        labels: levelLabels(app.progress.game.name, g),
       })),
     everyLevelOpen: () => app.progress.settings.everyLevelOpen,
     tools: (group) => (group === undefined ? [boardButton(app), app.corner.gear()] : [app.corner.gear()]),
