@@ -1,0 +1,219 @@
+/* Practice (practice.ts, ADR 0014): a Game's first screen when it has no Levels, the same in every Game.
+   A Game colours it only through tokens: --site-lip, --site-tool-ink, --site-go, and each Topic's colour,
+   which the module sets as --site-group (and --site-topic on its tab). Games never restyle these classes. */
+
+.site-practice {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The picks above, the Scope and Play below; beside each other on a short landscape phone. */
+.site-practice-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 6px 14px 18px;
+  box-sizing: border-box;
+}
+
+.site-practice-picks,
+.site-practice-go {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.site-practice-go {
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+
+/* The Topic tabs: its badge on its colour, a white ring round the one that's up. */
+.site-topics {
+  display: flex;
+  gap: 12px;
+}
+
+.site-topic {
+  flex: 1;
+  height: 64px;
+  border-radius: 22px;
+  background: var(--site-topic);
+  color: #fff;
+  border: 4px solid #ffffffb3;
+  box-shadow: 0 5px 0 var(--site-lip);
+  display: grid;
+  place-items: center;
+  opacity: 0.55;
+}
+
+.site-topic svg {
+  width: 48px;
+  height: 48px;
+}
+
+.site-topic[aria-checked='true'] {
+  opacity: 1;
+  border-color: #fff;
+  box-shadow:
+    0 5px 0 var(--site-lip),
+    0 0 0 4px var(--site-group);
+}
+
+/* Ways, Ranges and the Scope's items: white until they're on, then the Topic's colour. */
+.site-ways {
+  display: flex;
+  gap: 8px;
+}
+
+/* One row of Ranges, as many as there are, on a phone. */
+.site-ranges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  gap: 8px;
+}
+
+.site-way,
+.site-range,
+.site-item {
+  border-radius: 14px;
+  background: #fff;
+  color: var(--site-tool-ink);
+  box-shadow: 0 4px 0 var(--site-lip);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.site-way {
+  flex: 1;
+  height: 52px;
+  font-size: 22px;
+}
+
+.site-range {
+  height: 44px;
+  padding: 0 4px;
+  font-size: 17px;
+}
+
+.site-way[aria-checked='true'],
+.site-range[aria-pressed='true'],
+.site-item[aria-pressed='true'] {
+  background: var(--site-group);
+  color: #fff;
+}
+
+.site-way:active,
+.site-range:active,
+.site-item:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--site-lip);
+}
+
+.site-scope {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.site-item {
+  height: 48px;
+  font-size: 22px;
+}
+
+.site-practice-play {
+  flex: none;
+}
+
+.site-practice-play:disabled {
+  opacity: 0.35;
+  animation: none;
+}
+
+/* Short phones: everything smaller, so Play is on the screen without scrolling. */
+@media (max-height: 720px) {
+  .site-practice-body {
+    gap: 10px;
+  }
+
+  .site-topic {
+    height: 54px;
+  }
+
+  .site-topic svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .site-way {
+    height: 46px;
+  }
+
+  .site-range {
+    height: 40px;
+  }
+
+  .site-item {
+    height: 40px;
+  }
+
+  .site-practice-play {
+    --site-next: 96px;
+  }
+}
+
+/* Short landscape phones: the picks on the left, the Scope and Play on the right. */
+@media (max-height: 500px) {
+  .site-practice-body {
+    max-width: 960px;
+    flex-direction: row;
+    gap: 18px;
+    padding-top: 2px;
+  }
+
+  .site-practice-picks,
+  .site-practice-go {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .site-practice-go {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .site-topic {
+    height: 52px;
+  }
+
+  .site-topic svg {
+    width: 38px;
+    height: 38px;
+  }
+
+  .site-way {
+    height: 44px;
+  }
+
+  .site-range {
+    height: 38px;
+  }
+
+  .site-item {
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .site-practice-play {
+    --site-next: 80px;
+  }
+}

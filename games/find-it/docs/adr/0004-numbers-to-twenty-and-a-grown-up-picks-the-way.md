@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: amended by 0005
 ---
 
 # Numbers stop at 20, and a grown-up picks which way round each Box goes

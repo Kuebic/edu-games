@@ -7,7 +7,7 @@ A touch game that teaches little kids to recognise numbers and letters. The chil
 ### Play
 
 **Find**:
-One question: something to look at, and three to choose from, one of which matches. Six make a Round.
+One question: something to look at, and three to choose from, one of which matches. Every sixth ends in a Cheer.
 _Avoid_: Question, problem, card
 
 **Both ways round**:
@@ -15,7 +15,7 @@ A Find goes one of two ways. Find the symbol: the child sees beans or a picture 
 _Avoid_: Mode, direction (in UI copy), forward/reverse
 
 **Way**:
-Which way round a Box's Finds go, set by a grown-up in the Grown-up Corner: always Find the symbol, always Find the picture, or Mix, which takes turns. Each Box has its own; Mix to start with.
+Which way round a Topic's Finds go, picked by a grown-up on Practice: always Find the symbol, always Find the picture, or Mix, which takes turns. Each Topic has its own; Mix to start with.
 _Avoid_: Mode, setting
 
 **Tray**:
@@ -31,19 +31,21 @@ An emoji with a word the child can say (an apple, a cat). Each is filed under th
 _Avoid_: Icon, image, object
 
 **Choices**:
-The three large buttons the child picks from: numerals, Trays, letters or Pictures.
+The three large buttons the child picks from: numerals, Trays, letters or Pictures. The other two are from the Scope where it has them: letters from it, else the nearest in the alphabet; numbers 1 or 2 away, those in it first.
 _Avoid_: Options, answers
 
 **Count-along**:
 The help after a wrong pick on a Tray: the Voice counts the beans aloud, full rows by tens and then one by one, while they light up.
 _Avoid_: Hint, correction
 
-### Progress
+### Practice
 
-**Round**:
-Six Finds over one range of numbers or letters, ending in confetti. Done once it's finished; there's no failing one.
-_Avoid_: Level (the site word; say Round here), session, quiz
+Find It is a Practice Game (the site's word): it has no Levels. Practice, Topic, Scope and Range are the site's words, in the site's CONTEXT.md.
 
-**Box**:
-A Group of Rounds. Numbers has two: 0 to 10, then 11 to 20. Letters has five, by fives: A to E up to U to Z. Its badge is a 3 over beans, or an A.
-_Avoid_: Category, section, mode
+**Topics**:
+Numbers, 0 to 20, with the Ranges 0–10 and 11–20; and Letters, A to Z, with the Ranges A–E, F–J, K–O, P–T and U–Z. Each has All too. A new save starts on Numbers, with 0 to 10 and A to E. The badge is a 3 over beans, or an A.
+_Avoid_: Box (it had Rounds), Category
+
+**Cheer**:
+Confetti and a star over the Finds after every sixth, then the dots empty and Practice goes on.
+_Avoid_: Round, reward, level up

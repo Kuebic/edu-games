@@ -9,6 +9,8 @@ import { canSpeak } from './voice';
 export interface CornerSpec {
   /** The Game speaks, so the Voice switch shows (where the browser can speak). */
   voice?: boolean;
+  /** The Game has Levels, so "Every level open" and "Reset progress" show. Left out, it has; a Practice Game hasn't (ADR 0014). */
+  levels?: boolean;
   /** The Game's own rows, under the site's: switchRow(), choiceRow(), textRow() or any element. Made fresh each time it opens. */
   rows?(): HTMLElement[];
   /** A note for grown-ups, in words, under the rows. */
@@ -189,10 +191,10 @@ export function grownUpCorner(root: HTMLElement, progress: Progress<unknown>, sp
       heading,
       setting('Sound', 'sound'),
       ...(spec.voice && env.canSpeak ? [setting('Voice', 'voice')] : []),
-      setting('Every level open', 'everyLevelOpen'),
+      ...(spec.levels === false ? [] : [setting('Every level open', 'everyLevelOpen')]),
       rows,
       note,
-      erase,
+      ...(spec.levels === false ? [] : [erase]),
       done,
     );
     veil.addEventListener('keydown', (event) => {

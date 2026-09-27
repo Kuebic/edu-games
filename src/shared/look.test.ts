@@ -1,7 +1,8 @@
 // The Shared look (ADR 0007): base.css draws what every Game shares, and a Game only adds its own.
 // A Game that copies a shared rule back, or uses a --site-* token base.css doesn't have, fails here.
-// Every Game opens on the shared level select (ADR 0008) with the one unlock rule (ADR 0009). What
-// draws the locks is the level select alone; the checks below only catch the old locks and rules coming back.
+// Every Game opens on the shared level select (ADR 0008) with the one unlock rule (ADR 0009), or on Practice
+// (ADR 0014). What draws the locks is the level select alone; the checks below only catch the old locks and
+// rules coming back.
 import { readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -32,9 +33,11 @@ const HOUSES = ['M8 23 24 9l16 14', 'M3.5 11.2 12 4l8.5 7.2'];
 const LOCKS = ['M16 22v-6a8 8', 'M8 11V7a4 4'];
 /** The unlock rules Games have had, by name. The one rule is src/shared/unlock.ts; a rule under a new name isn't caught. */
 const OWN_RULES = /\b(?:isUnlocked|isPackOpen|isWorldUnlocked|isLevelUnlocked|OPENS_NEXT|WORLD_UNLOCK_AT)\b/;
-/** The level select's and the Grown-up Corner's own classes, which no Game restyles. */
+/** The level select's, Practice's and the Grown-up Corner's own classes, which no Game restyles. */
 const baseClasses = classesIn(base);
-const SELECT_CLASSES = [...classesIn(read('src/shared/level-select.css')), ...classesIn(read('src/shared/grownup.css'))].filter((c) => !baseClasses.has(c));
+const SELECT_CLASSES = ['level-select', 'practice', 'grownup']
+  .flatMap((m) => [...classesIn(read(`src/shared/${m}.css`))])
+  .filter((c) => !baseClasses.has(c));
 
 /** Where a Game has drifted from the Shared look; empty when it hasn't. */
 function drift(slug: string): string[] {
@@ -49,11 +52,11 @@ function drift(slug: string): string[] {
     }
   }
   if (!files.some(({ text }) => text.includes('site-screen'))) found.push("its screens aren't site-screens");
-  // Every Game opens on the level select, which draws the House button, the locks and the unlock rule.
-  const selects = files.flatMap(({ text }) => text.match(/\bshowLevelSelect\(/g) ?? []).length;
-  if (selects !== 1) found.push(`one showLevelSelect(), not ${selects}`);
+  // Every Game opens on the level select, which draws the House button, the locks and the unlock rule, or on Practice.
+  const selects = files.flatMap(({ text }) => text.match(/\bshow(?:LevelSelect|Practice)\(/g) ?? []).length;
+  if (selects !== 1) found.push(`one showLevelSelect() or showPractice(), not ${selects}`);
   for (const { f, text } of files) {
-    if (/houseButton\(|@shared\/house-button/.test(text)) found.push(`${f}: a House button of its own; the level select draws it`);
+    if (/houseButton\(|@shared\/house-button/.test(text)) found.push(`${f}: a House button of its own; the first screen draws it`);
     for (const lock of LOCKS) if (text.includes(lock)) found.push(`${f}: draws an old lock of its own`);
     const rule = OWN_RULES.exec(text);
     if (rule) found.push(`${f}: an old unlock rule of its own (${rule[0]}); use @shared/unlock`);

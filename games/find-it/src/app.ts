@@ -1,14 +1,15 @@
 import type { GrownUpCorner } from '@shared/grownup';
+import type { Topic } from './finds';
 import type { Progress } from './progress';
 
 /** What every screen gets: the page, the Saved progress, and the ways to the other screens. */
 export interface App {
   root: HTMLElement;
   progress: Progress;
-  /** The level select: the Box list, or with `box` that Box's Rounds. */
-  boxes(box?: number): void;
-  /** Play one Round of a Box. Both count from 0. */
-  play(box: number, round: number): void;
+  /** Practice, where a grown-up picks the Topic, Scope and Way. */
+  start(): void;
+  /** Practise a Topic with its saved Scope and Way, until Back. */
+  play(topic: Topic): void;
   /** The Grown-up Corner, over whatever screen is showing. */
   corner: GrownUpCorner;
 }

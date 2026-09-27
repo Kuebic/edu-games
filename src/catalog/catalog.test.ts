@@ -119,9 +119,9 @@ describe('Catalog', () => {
       }
     });
 
-    // Every Game opens on the level select, which draws the House button (ADR 0008); look.test.ts checks the rest.
+    // Every Game opens on the level select (ADR 0008) or Practice (ADR 0014), which draw the House button; look.test.ts checks the rest.
     it('has a House button back to the Hub', () => {
-      expect(scripts.some((f) => /\bshowLevelSelect\(/.test(source(f)))).toBe(true);
+      expect(scripts.some((f) => /\bshow(?:LevelSelect|Practice)\(/.test(source(f)))).toBe(true);
     });
 
     it('keeps in public/ only the Tile picture and the files its page links', () => {

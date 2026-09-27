@@ -78,6 +78,13 @@ describe('the Grown-up Corner', () => {
     expect(progress.settings.everyLevelOpen).toBe(true);
   });
 
+  it('leaves out Every level open and the reset in a Game with no Levels', () => {
+    corner(testProgress(), { levels: false }).open();
+    expect(switches().map((s) => s.textContent)).toEqual(['Sound']);
+    expect(byText('Reset progress')).toBeUndefined();
+    expect(byText('Done')).toBeDefined();
+  });
+
   it('shows the Game’s rows and note under the site’s', () => {
     const progress = testProgress();
     const rows = vi.fn(() => [

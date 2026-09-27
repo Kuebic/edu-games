@@ -63,7 +63,7 @@ The big round green arrow that appears when a child finishes a Level, and goes o
 _Avoid_: continue, play button
 
 **Grown-up Corner**:
-A Game's settings for grown-ups, opened by holding the gear for 3 seconds: the same dialog in every Game (`@shared/grownup`), with the Sound, Voice and Every level open switches, the Game's own rows, and reset. Words are fine there.
+A Game's settings for grown-ups, opened by holding the gear for 3 seconds: the same dialog in every Game (`@shared/grownup`), with the Sound, Voice and Every level open switches, the Game's own rows, and reset. A Practice Game has no Every level open and no reset. Words are fine there.
 _Avoid_: parent menu, grown-up menu, settings
 
 **Level**:
@@ -71,7 +71,7 @@ One puzzle, or Round, that a child starts from a Group screen. Each Game has its
 _Avoid_: stage, puzzle (in site talk)
 
 **Group**:
-A run of Levels at one difficulty, easiest first. Each Game has its own word: Pack (Way Out), Chapter (Push Pals, Traffic Jam), World (Robot Path), Stage (Snack Math), Box (Find It). Every Group is always open.
+A run of Levels at one difficulty, easiest first. Each Game has its own word: Pack (Way Out), Chapter (Push Pals, Traffic Jam), World (Robot Path), Stage (Snack Math). Every Group is always open.
 _Avoid_: set, tier, section
 
 **Done**:
@@ -83,11 +83,27 @@ A Level the child may start. A Group's first Level is open, each next one opens 
 _Avoid_: unlocked, available
 
 **Every level open**:
-A Grown-up Corner switch that opens every Level. Every Game has it.
+A Grown-up Corner switch that opens every Level. Every Game with Levels has it.
 
 **Level select**:
-The two screens a Game opens on, drawn the same in every Game: the Group list and a Group screen.
+The two screens a Game with Levels opens on, drawn the same in every Game: the Group list and a Group screen.
 _Avoid_: level picker, map, menu
+
+**Practice**:
+The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. The Game saves the picks. Find It is a Practice Game.
+_Avoid_: mode, free play, endless
+
+**Topic**:
+One kind of thing a Practice Game teaches, a tab on Practice with its own Scope and Way: Find It's Numbers and Letters.
+_Avoid_: mode, category (a Shelf word)
+
+**Scope**:
+Which items of a Topic come up in Practice, as a grown-up turned them on: any mix, such as A to E, or A, M and Z. Each one comes up once before any comes again.
+_Avoid_: set, selection, filter
+
+**Range**:
+A run of a Topic's items a grown-up turns on or off in one tap on Practice, such as A–E or 0–10, and All.
+_Avoid_: preset, group (a Group has Levels)
 
 **Group list**:
 A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group that has Levels, with its badge, done dots and Sparkles if it has them.

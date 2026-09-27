@@ -2,10 +2,12 @@ import { buzz, cheer } from '@shared/sound';
 import { hush, say } from '@shared/voice';
 import type { App } from '../app';
 import { h, replay, sparkle, wait } from '../dom';
-import { roundAfter } from '../progress';
-import { BOXES, ROUND_LENGTH, makeRound, type Find, type Picture } from '../rounds';
+import { CHEER_EVERY, practice, type Find, type Picture, type Topic } from '../finds';
 import { play } from '../sfx';
-import { backIcon, nextIcon } from './icons';
+import { backIcon } from './icons';
+
+/** How long a Cheer's confetti falls before the next Find. */
+const CHEER_MS = 2400;
 
 const IDLE_MS = 10000;
 const MAX_NUDGES = 3;
@@ -89,14 +91,15 @@ function shown(find: Find): Shown {
   };
 }
 
-/** One Round of a Box, both counting from 0: six Finds, then Next. */
-export function playScreen(app: App, box: number, round: number): () => void {
+/** Practice of a Topic: Finds from its Scope, the Way it's set to, a Cheer every six, until Back. */
+export function playScreen(app: App, topic: Topic): () => void {
   let alive = true;
-  const finds = makeRound(box, round, app.progress.game.ways[BOXES[box]!.kind]);
+  const { scopes, ways } = app.progress.game;
+  const nextFind = practice(topic, scopes[topic], ways[topic]);
 
   // ---- Layout ------------------------------------------------------------
   const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
-  const dots = Array.from({ length: ROUND_LENGTH }, () => h('span', { class: 'dot' }));
+  const dots = Array.from({ length: CHEER_EVERY }, () => h('span', { class: 'dot' }));
   const promptBtn = h('button', { class: 'prompt', label: 'Hear it again' });
   const choicesEl = h('div', { class: 'choices' });
   const fx = h('div', { class: 'fx-layer' });
@@ -133,7 +136,7 @@ export function playScreen(app: App, box: number, round: number): () => void {
   };
   screen.addEventListener('pointerdown', touched, { capture: true });
 
-  backBtn.addEventListener('click', () => app.boxes(box));
+  backBtn.addEventListener('click', () => app.start());
   promptBtn.addEventListener('click', () => {
     if (ask) void say(ask);
     replay(promptBtn, 'wiggle');
@@ -225,49 +228,40 @@ export function playScreen(app: App, box: number, round: number): () => void {
     await wait(400);
   }
 
-  // ---- The Round ----------------------------------------------------------
-  async function runRound(): Promise<void> {
+  // ---- Practice -----------------------------------------------------------
+  async function runPractice(): Promise<void> {
     await wait(250);
-    for (let i = 0; i < finds.length; i++) {
-      if (!alive) return;
-      await runFind(finds[i]!, i);
+    for (let i = 0; alive; i = (i + 1) % CHEER_EVERY) {
+      await runFind(nextFind(), i);
+      if (alive && i === CHEER_EVERY - 1) await showCheer();
     }
-    if (!alive) return;
-    app.progress.finish(box, round);
-    showReward();
   }
 
-  /** Confetti, then Next: the next Round, on into the next Box, or after the very last back to its Box. */
-  function showReward(): void {
+  /** A Cheer: confetti and a star over the Finds, then the dots empty and Practice goes on. */
+  async function showCheer(): Promise<void> {
     clearTimeout(idleTimer);
     hint = null;
-    const next = h('button', { class: 'site-next', label: 'Next', html: nextIcon });
-    const back = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
     const confetti = h('div', { class: 'confetti' });
     const colors = ['#ff8a3d', '#ffce4f', '#6fd3a8', '#7cc3f5', '#7a6cf0'];
     for (let i = 0; i < 40; i++) {
       const c = h('i');
       c.style.left = `${Math.random() * 100}%`;
       c.style.background = colors[i % colors.length]!;
-      c.style.animationDelay = `${Math.random() * 0.8}s`;
-      c.style.animationDuration = `${2 + Math.random() * 1.5}s`;
+      c.style.animationDelay = `${Math.random() * 0.5}s`;
+      c.style.animationDuration = `${1.6 + Math.random()}s`;
       c.style.setProperty('--spin', `${Math.random() * 720 - 360}deg`);
       confetti.append(c);
     }
-    const star = h('div', { class: 'reward-star', text: '🌟' });
-    screen.replaceChildren(h('div', { class: 'reward' }, confetti, star, h('div', { class: 'reward-actions' }, back, next)));
-    next.addEventListener('click', () => {
-      const to = roundAfter(app.progress, box, round);
-      if (to) app.play(to.box, to.round);
-      else app.boxes(box);
-    });
-    back.addEventListener('click', () => app.boxes(box));
+    const layer = h('div', { class: 'cheer' }, confetti, h('div', { class: 'reward-star', text: '🌟' }));
+    screen.append(layer);
     cheer();
     buzz(80);
-    void say('You found them all! Well done!');
+    await Promise.all([say('Well done!'), wait(CHEER_MS)]);
+    layer.remove();
+    for (const d of dots) d.classList.remove('filled');
   }
 
-  void runRound();
+  void runPractice();
 
   return () => {
     alive = false;
