@@ -17,6 +17,11 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: false,
       workbox: {
+        // A new deploy takes over as soon as it has installed, and autoUpdate reloads the page onto it. The
+        // plugin only sets these itself when it injects the register script, and the shell registers instead,
+        // so without them a new version waited until every tab of the site was closed.
+        skipWaiting: true,
+        clientsClaim: true,
         // A new asset file type (mp3, webp, woff2) must be added here, or it isn't precached.
         globPatterns: ['**/*.{js,css,html,png,svg,ogg,mp3,webmanifest}'],
         // Each game has its own index.html; never answer a game URL with the hub page.
