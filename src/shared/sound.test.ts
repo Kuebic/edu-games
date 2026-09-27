@@ -23,6 +23,7 @@ class FakeContext {
   static made: FakeContext[] = [];
   state: AudioContextState = 'suspended';
   currentTime = 10;
+  outputLatency = 0;
   destination = { kind: 'destination' };
   sampleRate = 48000;
   resumes = 0;
@@ -207,6 +208,38 @@ describe('the Sound', () => {
       } finally {
         vi.useRealTimers();
       }
+    });
+
+    it('stops partway: every play of it ends at once and resolves', async () => {
+      const { sound, nodes } = soundOver();
+      const song = sound.clip('song.mp3');
+      sound.unlockAudio();
+      await settle();
+      let ended = 0;
+      void song().then(() => ended++);
+      void song().then(() => ended++);
+      song.stop();
+      await settle();
+      expect(ended).toBe(2);
+      for (const source of nodes('source')) expect(source.stop).toHaveBeenCalledOnce();
+      expect(song.time()).toBeUndefined();
+    });
+
+    it('says how far into its latest play is being heard, the output delay allowed for', async () => {
+      const { sound, nodes, context } = soundOver();
+      const song = sound.clip('song.mp3');
+      sound.unlockAudio();
+      await settle();
+      expect(song.time()).toBeUndefined();
+      void song();
+      context().currentTime = 12.5;
+      context().outputLatency = 0.1;
+      expect(song.time()).toBeCloseTo(2.4);
+      // Not before it started.
+      context().currentTime = 10;
+      expect(song.time()).toBe(0);
+      nodes('source')[0]!.onended!();
+      expect(song.time()).toBeUndefined();
     });
 
     it('registered after the first touch is fetched at once, and only once', () => {

@@ -75,3 +75,15 @@ The language pack repository itself states only the BSD licence. The CC BY state
 | Z /z/ | z.mp3 | [z.WAV](https://github.com/curiouslearning/ftm-languagepacks/blob/b0f50baf7ee6c3b6cac9ecd9e5488f6249bab0ea/USENGLISH/sounds/letters/z.WAV) | as is | | 0.89 s |
 
 The vowels, Q, X and Y were checked by their spectra (formants and voicing), not by ear. The cuts were placed the same way. Listen to each clip before shipping.
+
+## ABC song
+
+`src/assets/abc-song.mp3` is **Kara - ABCs** by [FourthWoods](https://freesound.org/people/FourthWoods/) on Freesound: a girl singing the Alphabet Song.
+
+<https://freesound.org/s/439088/>
+
+Licence: [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). The Game task `npm run game my-letter song` downloads Freesound's high-quality MP3 preview (the original needs a login) to `scripts/raw/`, and makes the song (ADR 0005): mono, 1 s cut from the 1.7 s pause after Z, silence trimmed from the end and the last 0.3 s faded, levelled to -18 LUFS, 150 ms of silence in front, a 96 kbps MP3. 22.1 s long.
+
+**Attribution:** "Kara - ABCs" by FourthWoods, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Shortened, trimmed, levelled and re-encoded.
+
+When each letter is sung (`src/song.ts`) was measured by machine, not by ear. Listen to it with the board before shipping.

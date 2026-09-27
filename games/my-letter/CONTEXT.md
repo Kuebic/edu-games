@@ -59,8 +59,12 @@ What a wrong pick does: the letter wobbles, the Voice says its name ("That's M."
 _Avoid_: Wrong, miss, error
 
 **Letter board**:
-Every capital A to Z on one screen, opened from the Group list, where a child taps any letter to hear it say its Letter sound. Free play: nothing to finish or save.
+Every capital A to Z on one screen, opened from the Group list, where a child taps any letter to hear it say its Letter sound, with the ABC song's button under the letters. Free play: nothing to finish or save.
 _Avoid_: Keyboard, alphabet, soundboard
+
+**ABC song**:
+A girl singing the Alphabet Song, a recording (ADR 0005), played from the Letter board's song button. Each letter lights up and shakes as it's sung, and at "Now I know my ABCs" every letter dances. The button stops it, and so does a tap on a letter. With sound off the letters still go along, without the singing.
+_Avoid_: Alphabet song (in UI copy), music, tune
 
 ### Progress
 

@@ -45,6 +45,10 @@ export interface Clip {
   (): Promise<void>;
   /** True when a play now would be heard: decoded, with sound on and the context running. */
   ready(): boolean;
+  /** Stops every play of it at once; each resolves. For a long clip, like a song, that's left partway. */
+  stop(): void;
+  /** Seconds into its latest play that are being heard now, the output's delay allowed for; undefined while it isn't playing. */
+  time(): number | undefined;
 }
 
 /** What the Sound uses of the browser. Tests pass fakes; missing pieces mean silence. */
@@ -59,6 +63,8 @@ export function createSound(env: SoundEnv): Sound {
   let enabled = true;
   /** Every registered clip's URL and, once decoded, its buffer. The cheer is one from the start. */
   const clips = new Map<string, AudioBuffer | undefined>([[cheerUrl, undefined]]);
+  /** Each clip's plays still going, oldest first: when each started on the context's clock, and how to end it. */
+  const playing = new Map<string, { started: number; source: AudioBufferSourceNode; end: () => void }[]>();
 
   function decode(url: string): void {
     if (!context || !env.fetch) return;
@@ -80,15 +86,40 @@ export function createSound(env: SoundEnv): Sound {
     source.buffer = buffer;
     source.connect(live.destination);
     return new Promise((resolve) => {
-      // A context suspended mid-clip never ends it; don't let a Game hang waiting.
-      const guard = Number.isFinite(buffer.duration) ? setTimeout(resolve, buffer.duration * 1000 + 500) : undefined;
-      source.onended = () => {
+      const plays = playing.get(url) ?? [];
+      playing.set(url, plays);
+      const now = { started: live.currentTime, source, end };
+      function end() {
         clearTimeout(guard);
+        const at = plays.indexOf(now);
+        if (at >= 0) plays.splice(at, 1);
         resolve();
-      };
+      }
+      // A context suspended mid-clip never ends it; don't let a Game hang waiting.
+      const guard = Number.isFinite(buffer.duration) ? setTimeout(end, buffer.duration * 1000 + 500) : undefined;
+      source.onended = end;
+      plays.push(now);
       source.start();
     });
   };
+
+  function stop(url: string): void {
+    for (const play of [...(playing.get(url) ?? [])]) {
+      play.source.onended = null;
+      try {
+        play.source.stop();
+      } catch {
+        // Already stopped: fine.
+      }
+      play.end();
+    }
+  }
+
+  function time(url: string): number | undefined {
+    const play = playing.get(url)?.at(-1);
+    if (!play || !context) return undefined;
+    return Math.max(0, context.currentTime - play.started - (context.outputLatency || 0));
+  }
 
   return {
     setSoundEnabled(on) {
@@ -133,7 +164,11 @@ export function createSound(env: SoundEnv): Sound {
         clips.set(url, undefined);
         if (context) decode(url);
       }
-      return Object.assign(() => play(url), { ready: () => clips.get(url) !== undefined && audio() !== undefined });
+      return Object.assign(() => play(url), {
+        ready: () => clips.get(url) !== undefined && audio() !== undefined,
+        stop: () => stop(url),
+        time: () => time(url),
+      });
     },
 
     cheer() {

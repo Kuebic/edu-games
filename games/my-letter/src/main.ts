@@ -48,7 +48,7 @@ const corner = grownUpCorner(root, progress, {
     'A letter picked by mistake is named and fades away. A found letter says its sound. ' +
     'Adding a word at the end keeps what is done; changing or taking one away starts My words again. New letters stays. ' +
     'Levels open in order, and Next goes on to the next one. ' +
-    'The ABC button on the first screen opens the Letter board: every letter, the name\'s in their own colour, to tap and hear. Nothing there is saved.',
+    'The ABC button on the first screen opens the Letter board: every letter, the name\'s in their own colour, to tap and hear, and a button that sings the ABC song as each letter shakes. Nothing there is saved.',
   closed: () => {
     // Closed without a Name: don't open by itself again.
     if (!hasName(progress) && !progress.game.skipped) {

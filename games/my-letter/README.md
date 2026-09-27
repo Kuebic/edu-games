@@ -24,10 +24,14 @@ There are two groups. My words has a level for each word, the name first: each s
 
 There are always three letters to pick from, and the other two never look like the one asked for (never B beside D, or M beside W). In My words they're the word's own letters, and the word is shown big with a box for each letter, the letter faint inside so it can be matched even without the voice. A New letters level asks for its letter, then a letter met before (from My words, or an earlier New letter), then its letter again and another met letter, in either order; the letters to pick from are met ones too, so old letters come back. The letter asked for dances when it's found, fills its box, and says its sound ("S says /s/"). One picked by mistake is named ("That's M.") and fades away. There are no scores or timers, and no level can be failed. Tapping the name or the speaker asks again and adds the letter's sound; the question on its own doesn't, so the sound isn't played on every turn. On a device that can't speak, that tap is how to hear it.
 
-The ABC button beside the gear opens the Letter board: every letter A to Z, the name's letters in their own colour. Tap any letter to see it dance and hear its sound. It's free play, so nothing there is saved or finished.
+The ABC button beside the gear opens the Letter board: every letter A to Z, the name's letters in their own colour. Tap any letter to see it dance and hear its sound. The yellow button under the letters sings the ABC song: each letter lights up and shakes as it's sung, and they all dance at the end. Tap it again, or tap a letter, to stop. It's free play, so nothing there is saved or finished.
 
 A word added at the end of the more words keeps what's done. Changing the name or a word, or taking one away, starts My words again; New letters stays done. Reset progress keeps the name and the words.
 
 ## Letter sounds
 
 One clip per letter, from Curious Learning's [Feed The Monster](https://github.com/curiouslearning/ftm-languagepacks) US English letter sounds (CC BY 4.0 and BSD 2-Clause, Copyright (c) 2020, Curious Learning), trimmed and levelled by a Game task, `npm run game my-letter sounds` (ADR 0001). The source files, licences, copyright notice and what was cut are in [docs/sound-credits.md](./docs/sound-credits.md).
+
+## ABC song
+
+"[Kara - ABCs](https://freesound.org/s/439088/)" by [FourthWoods](https://freesound.org/people/FourthWoods/), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): a girl singing the Alphabet Song. Shortened, trimmed and levelled by a Game task, `npm run game my-letter song` (ADR 0005); details in [docs/sound-credits.md](./docs/sound-credits.md).

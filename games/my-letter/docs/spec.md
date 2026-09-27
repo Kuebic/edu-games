@@ -63,6 +63,8 @@ Free play, opened by an ABC tool button beside the gear on the Group list. A hea
 
 A tap makes the letter dance, and the Voice says "The letter B says" and the Letter sound clip plays, or only "That's the letter B!" when the clip won't be heard (ADR 0001). A new tap never waits: it cuts off the last line and starts its own. No lock, Done, Saved progress, Next or cheer.
 
+Under the letters, a wide song button (quavers and "ABC") sings the ABC song (added 2026-09-27, ADR 0005): a recording of a girl singing, `src/assets/abc-song.mp3`, made by `npm run game my-letter song`. Each letter lights up in sun and shakes as it's sung, following the times in `src/song.ts` and the clip's own clock; at "Now I know my ABCs" every letter dances. While it sings the button turns coral with a stop square, and a tap stops it. A tap on a letter stops it too and plays that letter as usual; leaving the board stops it. With sound off the letters still go along on the clock, silently.
+
 ## Letter sounds
 
 - One clip per letter A–Z: `src/assets/sounds/<letter>.<ext>` (lowercase letter, ogg/opus or mp3; whatever the Sound's decoder handles on iOS too — check what Push Pals / Way Out ship). One sound each: short vowels (a as in apple, e egg, i igloo, o octopus, u up), hard C /k/, hard G /g/, X /ks/, Q /kw/, Y /j/ as in yes. As clean as possible: no added vowel after a stop if avoidable.
@@ -76,6 +78,7 @@ A tap makes the letter dance, and the Voice says "The letter B says" and the Let
 - Choices: never a Look-alike, never the target, prefers Met letters, falls back, sides rule, deterministic with a seeded random.
 - Asks: the three wordings.
 - Letter board: A to Z in order, the Name letters marked; its button on the Group list only.
+- ABC song: a time for each of the 26 letters, in order, before "Now I know" and the song's end; the letters sung by a moment. Shared `Clip.stop()` and `time()`: in `sound.test.ts`.
 - Progress: New letters is Group 1 whatever the Name; a changed Name clears Group 0's Done only; reset keeps the Name.
 - Shared `textRow`: in `grownup.test.ts`.
 - Catalog/look guards pass.

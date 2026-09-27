@@ -1,7 +1,9 @@
 // My Letter's noises on the site's Sound: a Letter sound clip per letter (ADR 0001), found by looking at
-// which files are in assets/sounds/ rather than a hand list, and two little notes. The cheer is the site's.
+// which files are in assets/sounds/ rather than a hand list, the ABC song (ADR 0005), and two little notes.
+// The cheer is the site's.
 
 import { clip, note, type Clip } from '@shared/sound';
+import songUrl from './assets/abc-song.mp3';
 
 /** Each Letter sound clip's URL by its letter: s.mp3 is S. */
 export function clipsByLetter(files: Readonly<Record<string, string>>): Map<string, string> {
@@ -14,6 +16,9 @@ const letterSounds = new Map([...clipsByLetter(files)].map(([letter, url]) => [l
 
 /** A letter's Letter sound, or undefined for a letter with no clip. */
 export const letterSound = (letter: string): Clip | undefined => letterSounds.get(letter);
+
+/** The ABC song, sung by a girl; src/song.ts says when each letter comes. */
+export const abcSong = clip(songUrl);
 
 /** A soft pop when the letter asked for is found, and a low boop for a Fade. */
 export function play(sound: 'pop' | 'boop'): void {

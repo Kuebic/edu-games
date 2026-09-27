@@ -46,7 +46,7 @@ Documented in the docblocks where they live, so this spec doesn't repeat them:
 
 - **One context.** Made once, on the first touch, inside a try/catch; resumed on every touch after that while suspended. Nothing plays unless sound is on and the context is `running`: the union of the five checks.
 - **The shell unlocks it.** Every Game has sound, so `startGame` calls `unlockAudio` on every `pointerdown` and `keydown`, before the page sees them. A Game passes `unlock` to `startGame` only for the Voice. Push Pals' four unlock calls and Snack Math's `start()` go.
-- **Clips.** `clip(url)` returns a play function. The clip is fetched and decoded once the context exists; a play before then is silent. A failed fetch is silent.
+- **Clips.** `clip(url)` returns a play function. The clip is fetched and decoded once the context exists; a play before then is silent. A failed fetch is silent. A play resolves when it ends; `ready()` says beforehand whether it would be heard, `stop()` ends every play of it, and `time()` says how far into the latest play is being heard (for keeping pictures in time with a long clip).
 - **Notes.** `note({ from, to, at, length, volume, wave })` is Robot Path's helper, the most general of the four: a glide with a quick fade in and out.
 - **A Game's own recipes** (Traffic Jam's honk and vroom, Way Out's engine and bump, Snack Math's crunch) call `audio()` for the context and build what they like, as they do now through their `ready()`.
 - **The cheer.** `cheer()` plays the site's jingle, `src/shared/assets/cheer.ogg`. The three copies go.

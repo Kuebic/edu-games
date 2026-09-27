@@ -11,3 +11,11 @@ export const backIcon =
 export const speakerIcon =
   '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 18h8l11-9v30l-11-9H8a2 2 0 0 1-2-2V20a2 2 0 0 1 2-2Z" fill="currentColor"/>' +
   '<path d="M33 17a9 9 0 0 1 0 14M37.5 12a15.5 15.5 0 0 1 0 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>';
+
+/** The Letter board's song button: a pair of quavers. */
+export const songIcon =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V6l11-2.5v11.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>' +
+  '<ellipse cx="6.5" cy="17.5" rx="3.5" ry="2.8" fill="currentColor"/><ellipse cx="17.5" cy="15" rx="3.5" ry="2.8" fill="currentColor"/></svg>';
+
+/** Stops the song. */
+export const stopIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3" fill="currentColor"/></svg>';
