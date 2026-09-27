@@ -109,14 +109,14 @@ _Avoid_: preset, group (a Group has Levels)
 A Game's first screen: the House button, Skin chips if it has Skins, and a card per Group that has Levels, with its badge, done dots and Sparkles if it has them.
 
 **Group screen**:
-One Group's Levels as numbered cards (My Letter's show the Name or a letter): done ones filled and ticked, the next one open, later ones locked.
+One Group's Levels as numbered cards (My Letter's show a word or a letter): done ones filled and ticked, the next one open, later ones locked.
 
 **Sparkle**:
 A mark for doing a Level especially well: in the fewest Moves (Way Out) or with a Program no longer than Par (Robot Path). It shows on the Level's card and is counted on its Group's card. Games without Sparkles show none.
 _Avoid_: star, bonus, score
 
 **Skin**:
-A picture set a child picks from the chips on the Group list. It changes looks and sounds, never the Levels. Hop Race (its Hopper), Robot Path and Way Out have Skins.
+A picture set a child picks from the chips on the Group list, or on a Topic of Practice, drawn the same in both (`@shared/skins`). It changes looks and sounds, never the Levels or the Finds. Find It (the beans on its Trays), Hop Race (its Hopper), Robot Path and Way Out have Skins.
 _Avoid_: theme
 
 **Voice**:

@@ -147,6 +147,8 @@
   max-width: calc(var(--site-cols) * var(--site-card) + (var(--site-cols) - 1) * 14px + 36px);
   margin: 0 auto;
   box-sizing: border-box;
+  /* So a card's label can size to the card as drawn: a narrow phone makes cards smaller than --site-card. */
+  container-type: inline-size;
 }
 
 @supports (height: 100dvh) {
@@ -174,8 +176,9 @@
   border: 4px solid var(--site-group);
   background: #fff;
   color: var(--site-group);
-  /* A long label (My Letter's Name) shrinks to fit across the card. */
-  font-size: min(28px, (var(--site-card) - 20px) / (var(--site-label, 1) * 0.72));
+  /* A long label (My Letter's words) shrinks to fit across the card as drawn, wide capitals like MAMA's too. */
+  --site-drawn: min(var(--site-card), (100cqi - 36px - (var(--site-cols) - 1) * 14px) / var(--site-cols));
+  font-size: min(28px, (var(--site-drawn) - 20px) / (var(--site-label, 1) * 0.88));
   font-weight: 800;
   display: grid;
   place-items: center;

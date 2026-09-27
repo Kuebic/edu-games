@@ -8,4 +8,4 @@ Every Game's Saved progress is `src/shared/progress.ts`: which Levels are done a
 
 Amended: a Game whose Groups move (Push Pals put three easy Chapters in front) saves under a new key and names the old one as `formerKey`. While the new key holds nothing, the save under the old one goes through the Game's `legacy` reader, format 1 or not, so the reader can move its Groups on. The old save is left where it is. We rejected a version number inside the save, because every other Game would carry it for nothing.
 
-Amended: `forget(group)` erases one Group's done Levels and Sparkles, for a Group whose Levels change under it: My Letter's My name when a grown-up types a Name with different letters (its ADR 0002).
+Amended: `forget(group)` erases one Group's done Levels and Sparkles, for a Group whose Levels change under it: My Letter's My words when a grown-up changes the Name or a Word (its ADR 0002 and 0004).

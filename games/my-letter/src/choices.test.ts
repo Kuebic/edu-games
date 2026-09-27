@@ -46,7 +46,7 @@ describe('the other Choices', () => {
   });
 });
 
-describe('My name’s Finds', () => {
+describe('My words’ Finds', () => {
   it('spell the Name, a Find per capital from left to right', () => {
     expect(spellFinds('Sam', seeded(1)).map((f) => f.letter)).toEqual(['S', 'A', 'M']);
     expect(spellFinds('Anna', seeded(1)).map((f) => f.letter)).toEqual(['A', 'N', 'N', 'A']);

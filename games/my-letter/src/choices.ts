@@ -57,7 +57,7 @@ function lay(asks: readonly { letter: string; tiers: readonly (readonly string[]
   });
 }
 
-/** My name's Level: the Name spelt, a Find per capital left to right, the others from the Name's own letters. */
+/** A My words Level: its word spelt, a Find per capital left to right, the others from the word's own letters. */
 export function spellFinds(name: string, rng: Rng = Math.random): Find[] {
   const mine = nameLetters(name);
   return lay([...nameCapitals(name)].map((letter) => ({ letter, tiers: [mine] })), rng);

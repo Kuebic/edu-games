@@ -2,18 +2,23 @@ import { describe, expect, it } from 'vitest';
 import { ask, fadeLine, foundLine, saysLine, spellAsk } from './asks';
 
 describe('the ask', () => {
-  it('in My name, for the Name’s first capital, is for the Name', () => {
+  it('in My words, for a word’s first capital, is for the word', () => {
     expect(spellAsk('Sam', 0)).toBe('Find the letter S for Sam!');
     expect(spellAsk('Anna', 0)).toBe('Find the letter A for Anna!');
   });
 
-  it('in My name, for its other capitals, is in the Name, even a letter that was first too', () => {
+  it('in My words, for its other capitals, is in the word, even a letter that was first too', () => {
     expect(spellAsk('Sam', 1)).toBe('Find the letter A in Sam!');
     expect(spellAsk('Anna', 2)).toBe('Find the letter N in Anna!');
     expect(spellAsk('Anna', 3)).toBe('Find the letter A in Anna!');
     // The Name as typed, accents and all; the letters from its capitals.
     expect(spellAsk('Zoë', 0)).toBe('Find the letter Z for Zoë!');
     expect(spellAsk('Zoë', 2)).toBe('Find the letter E in Zoë!');
+  });
+
+  it('in My words, is the same for a Word as for the Name', () => {
+    expect(spellAsk('Mama', 0)).toBe('Find the letter M for Mama!');
+    expect(spellAsk('Mama', 1)).toBe('Find the letter A in Mama!');
   });
 
   it('in New letters, is the letter alone', () => {

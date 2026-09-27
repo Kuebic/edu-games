@@ -1,6 +1,6 @@
 # My Letter
 
-A touch game that teaches a three-year-old letter names and sounds, starting from spelling their own name. The Voice asks for a letter, the child picks it from three, and the letter says its sound.
+A touch game that teaches a three-year-old letter names and sounds, starting from spelling their own name and the words a grown-up adds. The Voice asks for a letter, the child picks it from three, and the letter says its sound.
 
 ## Language
 
@@ -10,12 +10,20 @@ A touch game that teaches a three-year-old letter names and sounds, starting fro
 The child's first name, typed by a grown-up in the Grown-up Corner. Only its letters A to Z count, shown in capitals, up to ten; the Voice says it as it was typed.
 _Avoid_: Username, child name, profile
 
+**Word**:
+A word a grown-up adds after the Name in the Grown-up Corner, for the child to spell: Mama, Dada, a sibling's or a friend's name, spelt however the family says it. Up to ten, typed in one box between commas. Its letters count as the Name's do, and the Voice says it as typed.
+_Avoid_: Extra word, custom word, vocabulary
+
+**My words** (the words):
+The Name, then the Words, each a Level of the My words Group. One with no letters, or spelt the same as one before it, is left out.
+_Avoid_: Word list, family words
+
 **Name letters**:
 The different letters in the Name, in the order they first appear: SAM is S, A, M; ANNA is A, N.
 _Avoid_: Initials, name part
 
 **Spell**:
-What My name's Level does: a Find for each capital of the Name, left to right, so ANNA is A, N, N, A.
+What a My words Level does: a Find for each capital of its word, left to right, so ANNA is A, N, N, A.
 _Avoid_: Type, write
 
 **New letters**:
@@ -27,7 +35,7 @@ One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks
 _Avoid_: Question, turn, trial
 
 **Choices**:
-The three big letter buttons. One is the letter asked for; the other two never Look alike it. In a Spell they're the Name letters when there are enough.
+The three big letter buttons. One is the letter asked for; the other two never Look alike it. In a Spell they're the word's own letters when there are enough.
 _Avoid_: Options, answers
 
 **Looks alike**:
@@ -35,11 +43,11 @@ Two capitals a three-year-old mixes up, kept apart as Choices: B P R D, C G O Q,
 _Avoid_: Similar, confusable
 
 **Met letter**:
-A letter met before a New letters Level: the Name letters, then the New letters before it. Two Finds of each New letters Level ask for one, and the other Choices are Met letters when they don't Look alike, so old letters come back.
+A letter met before a New letters Level: the letters of My words, then the New letters before it. Two Finds of each New letters Level ask for one, and the other Choices are Met letters when they don't Look alike, so old letters come back.
 _Avoid_: Learned, known, mastered
 
 **Name line**:
-The Name drawn big above the Choices during a Spell: a blank for every capital, the letter faint in it to match, the one being asked for outlined. A find fills its blank.
+The word being spelt, drawn big above the Choices during a Spell: a blank for every capital, the letter faint in it to match, the one being asked for outlined. A find fills its blank.
 _Avoid_: Title, header, word
 
 **Letter sound**:
@@ -57,12 +65,12 @@ _Avoid_: Keyboard, alphabet, soundboard
 ### Progress
 
 **Level**:
-Its Finds, then the cheer and the Next button: My name's is a Spell, and its card is the Name; a New letters Level is its letter, a Met letter, and its letter again with the other Met letter before or after, and its card is its letter.
+Its Finds, then the cheer and the Next button: a My words Level is a Spell, and its card is its word; a New letters Level is its letter, a Met letter, and its letter again with the other Met letter before or after, and its card is its letter.
 _Avoid_: Round, lesson, stage
 
-**My name**:
-The first Group: one Level, a Spell of the Name. It isn't shown until there's a Name, and a Name spelt differently starts it fresh.
-_Avoid_: Name group, chapter
+**My words** (the Group):
+The first Group: a Level for each of My words, the Name's first. It isn't shown until there's a Name or a Word. A Word added at the end keeps its Done marks; any other change to the spellings starts it fresh (ADR 0004).
+_Avoid_: My name (its name before Words), name group, chapter
 
 **New letters** (the Group):
 The second Group: a Level for each of the eight New letters, always all eight, even one that's also in the Name.

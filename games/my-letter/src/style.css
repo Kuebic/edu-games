@@ -124,12 +124,12 @@ body::before {
   animation: pop-in 380ms cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
 }
 
-/* The Name's capitals, as big as fit the column: ten of them still fit a phone. */
+/* The word's capitals, as big as fit the column: ten of them still fit a phone, wide ones like M too. */
 .name-line {
   display: flex;
   align-items: center;
   gap: 0.06em;
-  font-size: min(26vw, 150px, calc((var(--column) - 60px) / (var(--n) * 0.84)));
+  font-size: min(26vw, 150px, calc((var(--column) - 60px) / (var(--n) * 0.96)));
   font-weight: 900;
   line-height: 1;
 }
@@ -137,13 +137,16 @@ body::before {
 .nl-cell {
   display: grid;
   place-items: center;
+  /* As wide as a narrow capital, and wider for M or W, so the letter stays in its box and filling it doesn't move the line. */
+  box-sizing: border-box;
+  min-width: 0.78em;
+  padding: 0 0.04em;
   height: 0.9em;
   transition: color 200ms;
 }
 
 /* A letter still to find: a box the size of a capital with the letter faint in it, to match a Choice to. */
 .nl-blank {
-  width: 0.78em;
   border-radius: 0.14em;
   color: #f0604d38;
   background: #ffffff99;
@@ -301,7 +304,7 @@ body::before {
   }
 
   .name-line {
-    font-size: min(30vh, calc((var(--column) / 2 - 50px) / (var(--n) * 0.84)));
+    font-size: min(30vh, calc((var(--column) / 2 - 50px) / (var(--n) * 0.96)));
   }
 
   .speaker {
@@ -402,7 +405,7 @@ body::before {
   animation: star-in 900ms cubic-bezier(0.3, 1.5, 0.5, 1) 300ms both;
 }
 
-/* My name's reward: the whole Name, in a pill as wide as it needs. */
+/* A My words reward: the whole word, in a pill as wide as it needs. */
 .reward-letter.reward-name {
   width: auto;
   min-width: min(62vw, 240px);

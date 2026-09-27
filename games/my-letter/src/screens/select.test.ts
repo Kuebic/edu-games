@@ -2,7 +2,7 @@
 import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it, vi } from 'vitest';
 import type { App } from '../app';
-import { MY_NAME, NEW_LETTERS, NEW_LETTER_ORDER } from '../letters';
+import { MY_WORDS, NEW_LETTERS, NEW_LETTER_ORDER } from '../letters';
 import { loadProgress } from '../progress';
 import { GROUP_COLOURS, groupBadge, myLetterSelect } from './select';
 
@@ -19,18 +19,24 @@ function app(save: object): App {
 }
 
 describe("My Letter's level select", () => {
-  it('shows My name with one card, the Name, then New letters, each in its own colour', () => {
-    const groups = myLetterSelect(app({ format: 1, game: { name: 'Anna' } })).groups();
-    expect(groups.map((g) => g.name)).toEqual(['My name', 'New letters']);
-    expect(groups.map((g) => g.labels)).toEqual([['ANNA'], NEW_LETTER_ORDER]);
-    expect(groups.map((g) => g.levels.length)).toEqual([1, 8]);
+  it('shows My words with a card per word, the Name first, then New letters, each in its own colour', () => {
+    const groups = myLetterSelect(app({ format: 1, game: { name: 'Anna', words: ['Mama', 'Dada'] } })).groups();
+    expect(groups.map((g) => g.name)).toEqual(['My words', 'New letters']);
+    expect(groups.map((g) => g.labels)).toEqual([['ANNA', 'MAMA', 'DADA'], NEW_LETTER_ORDER]);
+    expect(groups.map((g) => g.levels.length)).toEqual([3, 8]);
     expect(groups.map((g) => g.colour)).toEqual([...GROUP_COLOURS]);
   });
 
-  it('gives My name no Levels without a Name, so it is left out and New letters stays Group 1', () => {
+  it('gives My words no Levels without a Name or a Word, so it is left out and New letters stays Group 1', () => {
     const groups = myLetterSelect(app({})).groups();
-    expect(groups[MY_NAME]!.levels).toEqual([]);
+    expect(groups[MY_WORDS]!.levels).toEqual([]);
     expect(groups[NEW_LETTERS]!.levels).toHaveLength(8);
+  });
+
+  it('shows My words from the Words alone, badged with the first one', () => {
+    const [mine] = myLetterSelect(app({ format: 1, game: { words: ['Dada'] } })).groups();
+    expect(mine!.labels).toEqual(['DADA']);
+    expect(mine!.badge()).toMatch(/>D<\/text>/);
   });
 
   it('passes Every level open through, and plays the Level tapped', () => {
@@ -40,8 +46,8 @@ describe("My Letter's level select", () => {
     expect(a.play).toHaveBeenCalledWith(NEW_LETTERS, 2);
   });
 
-  it('draws the Name’s first letter on My name’s badge, and a B on New letters’', () => {
-    expect(groupBadge(MY_NAME, 'Zoë')).toMatch(/>Z<\/text>/);
+  it('draws the Name’s first letter on My words’ badge, and a B on New letters’', () => {
+    expect(groupBadge(MY_WORDS, 'Zoë')).toMatch(/>Z<\/text>/);
     expect(groupBadge(NEW_LETTERS, 'Zoë')).toMatch(/>B<\/text>/);
   });
 

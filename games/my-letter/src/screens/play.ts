@@ -4,7 +4,8 @@ import type { App } from '../app';
 import { ask, fadeLine, foundLine, saysLine, spellAsk } from '../asks';
 import { newLetterFinds, spellFinds, type Find } from '../choices';
 import { h, replay, sparkle, wait } from '../dom';
-import { MY_NAME, levelLabels, metLetters, nameCapitals } from '../letters';
+import { MY_WORDS, levelLabels, metLetters, nameCapitals } from '../letters';
+import { myWords } from '../progress';
 import { letterSound, play } from '../sounds';
 import { backIcon, nextIcon, speakerIcon } from './icons';
 
@@ -12,7 +13,7 @@ import { backIcon, nextIcon, speakerIcon } from './icons';
 const FOUND_MS = 800;
 
 /**
- * The Name line: the Name's capitals, every one a blank to start with, the letter faint in it so a child can
+ * The Name line: the word's capitals, every one a blank to start with, the letter faint in it so a child can
  * match it without the Voice. `now(i)` marks the blank being asked for; `fill(i)` puts its letter in.
  */
 function drawNameLine(name: string): { el: HTMLElement; now(i: number): void; fill(i: number): void } {
@@ -31,11 +32,13 @@ function drawNameLine(name: string): { el: HTMLElement; now(i: number): void; fi
 /** One Level of a Group, both counting from 0: its Finds, then the cheer and Next. */
 export function playScreen(app: App, group: number, level: number): () => void {
   let alive = true;
-  const name = app.progress.game.name;
-  const label = levelLabels(name, group)[level];
+  const mine = myWords(app.progress);
+  const label = levelLabels(mine, group)[level];
   if (label === undefined) throw new Error(`My Letter: no Level ${level} in Group ${group}`);
-  const spelling = group === MY_NAME;
-  const finds = spelling ? spellFinds(name) : newLetterFinds(label, metLetters(name, level));
+  const spelling = group === MY_WORDS;
+  /** The word a My words Level spells, as typed, for the Voice. */
+  const name = spelling ? mine[level]! : '';
+  const finds = spelling ? spellFinds(name) : newLetterFinds(label, metLetters(mine, level));
   /** The Find being played, for the ask a tap on the prompt says again. */
   let current = 0;
   const line = (i: number) => (spelling ? spellAsk(name, i) : ask(finds[i]!.letter));
@@ -152,7 +155,7 @@ export function playScreen(app: App, group: number, level: number): () => void {
     showReward();
   }
 
-  /** Confetti and the Level's card, the Name or the letter, then Next: the next Level, on into New letters, or after the very last back to its Group. */
+  /** Confetti and the Level's card, the word or the letter, then Next: the next Level, on into New letters, or after the very last back to its Group. */
   function showReward(): void {
     const next = h('button', { class: 'site-next', label: 'Next', html: nextIcon });
     const back = h('button', { class: 'site-tool', label: 'Back', html: backIcon });

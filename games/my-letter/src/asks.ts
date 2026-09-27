@@ -8,7 +8,7 @@ const theLetter = (letter: string) => `the letter ${letter}`;
 /** A New letters ask. */
 export const ask = (letter: string) => `Find ${theLetter(letter)}!`;
 
-/** A My name ask, for the Name's capital at `index`: "for Sam" on its first, "in Sam" on the rest. `name` is as typed. */
+/** A My words ask, for the capital at `index` of a word (the Name or a Word): "for Sam" on its first, "in Sam" on the rest. `name` is as typed. */
 export function spellAsk(name: string, index: number): string {
   return `Find ${theLetter(nameCapitals(name)[index]!)} ${index === 0 ? 'for' : 'in'} ${name}!`;
 }

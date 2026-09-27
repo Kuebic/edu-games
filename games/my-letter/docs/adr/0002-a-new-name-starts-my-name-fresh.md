@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: accepted, amended by 0004
 ---
 
 # A new Name starts My name fresh, and New letters never move

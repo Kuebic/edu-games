@@ -4,8 +4,8 @@ import type { LevelSelectView } from '@shared/level-select';
 import { unlockVoice } from '@shared/voice';
 import './style.css';
 import type { App } from './app';
-import { MY_NAME } from './letters';
-import { hasName, loadProgress, setName } from './progress';
+import { MY_WORDS, splitWords } from './letters';
+import { hasName, loadProgress, setName, setWords } from './progress';
 import { boardScreen } from './screens/board';
 import { playScreen } from './screens/play';
 import { showSelect } from './screens/select';
@@ -16,10 +16,10 @@ const progress = loadProgress(storage);
 let cleanup: (() => void) | void;
 /** The level select while it's up, so the Grown-up Corner can redraw it. */
 let select: LevelSelectView | undefined;
-/** The Group of the Level being played, so a new Name can take the child out of a My name Level. */
+/** The Group of the Level being played, so a changed word can take the child out of a My words Level. */
 let playing: number | undefined;
-/** The Corner took My name's letters away while it was open. */
-let nameChanged = false;
+/** The Corner changed My words while it was open, so they start fresh. */
+let wordsChanged = false;
 
 function show(screen: () => (() => void) | void): void {
   cleanup?.();
@@ -33,15 +33,20 @@ const corner = grownUpCorner(root, progress, {
   voice: true,
   rows: () => [
     textRow('First name', () => progress.game.name, (typed) => {
-      if (setName(progress, typed)) nameChanged = true;
+      if (setName(progress, typed)) wordsChanged = true;
+    }),
+    textRow('More words, with commas: Mama, Dada, Leo', () => progress.game.words.join(', '), (typed) => {
+      if (setWords(progress, splitWords(typed))) wordsChanged = true;
     }),
   ],
   note:
-    'My name spells the name, a letter at a time from three to pick from: S, then A, then M. It shows once there is a name. ' +
+    'My words spells the name, a letter at a time from three to pick from: S, then A, then M. ' +
+    'Then each of the more words, spelt the same way: family, friends, whatever the child calls them, as you would say it. ' +
+    'It shows once there is a name or a word. ' +
     'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound. Each asks for its letter twice, ' +
     'and twice for a letter met before, from three to pick from. Tapping the name or the speaker asks again, with the letter\'s sound. ' +
     'A letter picked by mistake is named and fades away. A found letter says its sound. ' +
-    'A name spelt differently starts My name again; New letters stays. ' +
+    'Adding a word at the end keeps what is done; changing or taking one away starts My words again. New letters stays. ' +
     'Levels open in order, and Next goes on to the next one. ' +
     'The ABC button on the first screen opens the Letter board: every letter, the name\'s in their own colour, to tap and hear. Nothing there is saved.',
   closed: () => {
@@ -50,9 +55,9 @@ const corner = grownUpCorner(root, progress, {
       progress.game.skipped = true;
       progress.save();
     }
-    // A My name Level about the old Name's letters stops, unfinished, and the child picks again.
-    const leave = nameChanged && playing === MY_NAME;
-    nameChanged = false;
+    // A My words Level spelling a word that changed stops, unfinished, and the child picks again.
+    const leave = wordsChanged && playing === MY_WORDS;
+    wordsChanged = false;
     if (leave) app.groups();
     else select?.redraw();
   },
