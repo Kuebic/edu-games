@@ -90,7 +90,7 @@ The two screens a Game with Levels opens on, drawn the same in every Game: the G
 _Avoid_: level picker, map, menu
 
 **Practice**:
-The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. A Topic may have Skin chips too. The Game saves the picks. Find It and Which Way? are Practice Games.
+The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. A Topic may have Skin chips too. The Game saves the picks. Find It, Tidy Up and Which Way? are Practice Games.
 _Avoid_: mode, free play, endless
 
 **Topic**:
@@ -98,7 +98,7 @@ One kind of thing a Practice Game teaches, a tab on Practice with its own Scope 
 _Avoid_: mode, category (a Shelf word)
 
 **Scope**:
-Which items of a Topic come up in Practice, as a grown-up turned them on: any mix, such as A to E, or A, M and Z. Each one comes up once before any comes again.
+Which items of a Topic come up in Practice, as a grown-up turned them on: any mix, such as A to E, or A, M and Z. Each one comes up once before any comes again. Play waits while it's empty, or shorter than the Topic needs (Tidy Up sorts into two Bins at least).
 _Avoid_: set, selection, filter
 
 **Range**:
@@ -116,7 +116,7 @@ A mark for doing a Level especially well: in the fewest Moves (Way Out) or with 
 _Avoid_: star, bonus, score
 
 **Skin**:
-A picture set a child picks from the chips on the Group list, or on a Topic of Practice, drawn the same in both (`@shared/skins`). It changes looks and sounds, never the Levels or the Finds. Find It (the beans on its Trays), Hop Race (its Hopper), Robot Path, Way Out and Which Way? (its Mover) have Skins.
+A picture set a child picks from the chips on the Group list, or on a Topic of Practice, drawn the same in both (`@shared/skins`). It changes looks and sounds, never the Levels or the Finds. Find It (the beans on its Trays), Hop Race (its Hopper), Robot Path, Tidy Up (its Bins), Way Out and Which Way? (its Mover) have Skins.
 _Avoid_: theme
 
 **Voice**:

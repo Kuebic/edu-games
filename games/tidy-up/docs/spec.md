@@ -1,6 +1,6 @@
 # Tidy Up
 
-Status: draft, written 2026-09-28 from the pitch "a sorting game for shapes and colors, for 2 to 3-year-olds", after the research in [toddler-sorting-game.md](../research/toddler-sorting-game.md). It moves to `games/tidy-up/docs/spec.md` when the Game's folder is made; `catalog.test.ts` fails a folder in `games/` without a `game.json`.
+Status: built 2026-09-28, from the pitch "a sorting game for shapes and colors, for 2 to 3-year-olds", after the research in [toddler-sorting-game.md](../../../docs/research/toddler-sorting-game.md). Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr).
 
 ## The problem
 
@@ -38,11 +38,11 @@ Two Topics, Colors and Shapes, as tabs. A child never meets both rules in one Ro
 
 Each Way holds the other dimensions still first and then varies them, which is the order the research gives. Parents move from one to the next when the child is ready; the user's child outgrows scaffolds fast, so nothing waits for a score.
 
-An empty Scope, or a Scope of one, leaves Play waiting, since sorting needs two Bins.
+An empty Scope, or a Scope of one, leaves Play waiting, since sorting needs two Bins: Practice's `fewest` on a Topic, added for this.
 
 ## A Round
 
-**The Bins.** A Round has as many Bins as the Scope has items, up to 3. Which ones: each Scope item once, shuffled, before any comes again, so a Scope of all seven colors goes round them. Blue/green and red/green are never the only pair in a Round. The Bins sit side by side along the bottom, as wide as the screen allows.
+**The Bins.** A Round has as many Bins as the Scope has items, up to 3. Which ones: each Scope item once, shuffled, before any comes again, so a Scope of all seven colors goes round them. So two Bins happen only when a grown-up picks exactly two colors; the new save's red and blue, and the first Range's yellow, are told apart by a red-green color-blind child too. The Bins sit side by side along the bottom, as wide as the screen allows.
 
 - Colors, Buckets: a bucket painted its color. Trucks: a dump truck with a bed painted its color.
 - Shapes: a shape-sorter Box, its lid cut with the Bin's shape.
@@ -71,25 +71,25 @@ Practice goes on until Back, as in every Practice Game. The research suggested s
 
 **Blocks.** One drawn toy block, filled with the Bin's color. **Plain and Colorful shapes**, drawn: the Bin's shape with a soft edge.
 
-**Things** are emoji of everyday objects mainly one color, in realistic art where the emoji set has it. Realistic pictures carry over to real objects better than cartoons (Ganea et al. 2008). A first list, to check on Apple and Noto emoji before it's kept:
+**Things** are emoji of everyday objects mainly one color, in realistic art where the emoji set has it. Realistic pictures carry over to real objects better than cartoons (Ganea et al. 2008). Checked on Noto emoji (Linux, Android); still to check on Apple emoji. Noto draws 🦋 as an orange monarch and 🩰 tan, so they are out:
 
 | Color | Things |
 | --- | --- |
 | red | 🍎 🍓 🍅 🚒 🌹 |
-| blue | 🫐 🐳 🧢 👖 🦋 |
+| blue | 🫐 🐳 🧢 👖 🐬 |
 | yellow | 🍌 🌻 🐤 🧀 🍋 |
 | green | 🥦 🐸 🥒 🌲 🍏 |
 | orange | 🍊 🥕 🎃 🏀 🦊 |
-| purple | 🍇 🍆 ☂️ 🔮 |
-| pink | 🌸 🐷 🦩 🎀 🩰 |
+| purple | 🍇 🍆 🔮 🪻 ☂️ |
+| pink | 🌸 🐷 🦩 🎀 🌷 |
 
 A test checks each Thing sits under exactly one color.
 
-**Colors** are one palette in the Game (site ADR 0007: the Game's own colors), chosen so each has a clearly different lightness. With the research's advice, red/blue and yellow/blue are the first pairs, and the default Scope never pairs red with green.
+**Colors** are one palette in the Game (site ADR 0007: the Game's own colors), chosen so each has a clearly different lightness. With the research's advice, red/blue and yellow/blue are the first pairs.
 
 ## Words
 
-One short Word clip per Scope item: red, blue, yellow, green, orange, purple, pink, circle, square, triangle, star, heart. They're free recordings from Wikimedia Commons. **Lingua Libre** has one speaker, Grendelkhan, in CC0, with red, blue, yellow, green, orange, pink, circle, square, star and heart; Commons' `En-us-*.ogg` Wiktionary files (CC BY-SA 3.0) fill the gaps, including purple and triangle. One voice for all 12 is better if a search at build time finds one.
+One short Word clip per Scope item: red, blue, yellow, green, orange, purple, pink, circle, square, triangle, star, heart. They're free recordings from Wikimedia Commons (ADR 0002). Ten are one speaker, Grendelkhan, on **Lingua Libre**, in CC0. Purple and triangle, which Grendelkhan never recorded on their own, are one Wiktionary speaker's `En-us-*.ogg`, CC BY-SA 3.0. Each was checked by speech recognition: all twelve transcribe as their word.
 
 A Game task `npm run game tidy-up words` fetches them and makes the clips as My Letter's `sounds` task does: trim silence, level loudness, fade the ends, mono MP3. `docs/word-credits.md` lists source, speaker and licence, and CC BY-SA clips stay CC BY-SA. A test fails a Scope item with no clip.
 
@@ -101,7 +101,7 @@ Portrait, top to bottom: the play header (Back, the gear), the Pile, the Spot, t
 
 ## Grown-up Corner
 
-The site's switches (Sound). The Game's row: **Patterns**, off to start with. On, each color also carries a pattern on its Things and its Bin (stripes, dots, zig-zags), for a color-blind child. It's a setting, kept in the slot. A note in words: name the color or shape with your child as each Thing goes in, and look for the Round's color around the house after.
+The site's switches (Sound; no Voice switch, since there's no Voice). The Game's row: **Patterns**, off to start with. On, each color also carries a pattern on its Things and its Bin (stripes, dots, checks), for a color-blind child. It's a setting, kept in the slot. A note in words: name the color or shape with your child as each Thing goes in, and look for the Round's color around the house after.
 
 ## Tests
 

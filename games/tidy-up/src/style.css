@@ -1,0 +1,500 @@
+:root {
+  --cream: #fff6ea;
+  --cream-2: #fdebd3;
+  --floor: #f1d9b8;
+  --ink: #2b3445;
+  --sun: #ffce4f;
+  --site-lip: #0000001a;
+  --site-ring: #ff8a3d;
+  --site-focus: #d9651c;
+
+  /* A Thing on the Spot: about 20 mm across on a phone. */
+  --thing: min(125px, 30vw, 22vh);
+  --emoji: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow: hidden;
+  background: var(--cream);
+  color: var(--ink);
+  touch-action: none;
+}
+
+#app {
+  height: 100%;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 12% 10%, #ffe3cf 0 80px, transparent 81px),
+    radial-gradient(circle at 90% 20%, #dcefff 0 64px, transparent 65px),
+    linear-gradient(var(--cream), var(--cream-2));
+}
+
+/* A site-screen, kept narrow and with a margin even where there's no notch. */
+.screen {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: max(12px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right))
+    max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+}
+
+/* ---------- Play ---------- */
+
+.play {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.play-top {
+  display: grid;
+  grid-template-columns: var(--site-tool) 1fr var(--site-tool);
+  align-items: center;
+  gap: 8px;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin-top: 8px;
+  touch-action: none;
+}
+
+/* The floor the Bins stand on. */
+.stage::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  height: 16%;
+  border-radius: 24px 24px 0 0;
+  background: var(--floor);
+}
+
+/* ---------- The Pile and the Spot ---------- */
+
+.pile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: min(64px, 10vh);
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  padding-left: 18px;
+}
+
+.pile-thing {
+  width: min(56px, 9vh);
+  aspect-ratio: 1;
+  margin-left: -18px;
+  display: grid;
+  place-items: center;
+  container-type: size;
+  filter: drop-shadow(0 2px 0 #0000001f);
+}
+
+.pile-thing:nth-child(odd) {
+  rotate: -9deg;
+  translate: 0 -4px;
+}
+
+.pile-thing:nth-child(3n) {
+  rotate: 11deg;
+}
+
+.pile-thing .emoji {
+  font-size: 80cqmin;
+}
+
+.spot {
+  position: absolute;
+  left: 50%;
+  top: 32%;
+  width: calc(var(--thing) * 1.2);
+  height: calc(var(--thing) * 1.2);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: #ffffffa6;
+  box-shadow: inset 0 0 0 4px #0000000f;
+}
+
+/* ---------- A Thing ---------- */
+
+.thing {
+  position: absolute;
+  z-index: 3;
+  width: var(--thing);
+  height: var(--thing);
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  container-type: size;
+  filter: drop-shadow(0 4px 0 #0000001f);
+  transition: scale 160ms ease-out;
+}
+
+.thing.held {
+  scale: 1.12;
+  filter: drop-shadow(0 14px 10px #00000030);
+}
+
+.thing.gliding {
+  transition:
+    left 380ms ease-in-out,
+    top 380ms ease-in-out,
+    scale 380ms ease-in;
+}
+
+.thing.going-in {
+  scale: 0.55;
+}
+
+.look-box .thing.going-in {
+  scale: 0.15;
+}
+
+.art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.emoji {
+  font-family: var(--emoji);
+  font-size: 84cqmin;
+  line-height: 1;
+}
+
+.tag {
+  position: absolute;
+  right: -4%;
+  bottom: -4%;
+  width: 40%;
+  height: 40%;
+}
+
+/* ---------- The Bins ---------- */
+
+.bins {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42%;
+  display: grid;
+  grid-template-columns: repeat(var(--bins, 2), 1fr);
+  gap: 8px;
+  align-items: end;
+}
+
+.bin {
+  height: 100%;
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.bin-body {
+  position: relative;
+  width: min(100%, 170px, 26vh);
+  aspect-ratio: 1;
+  display: block;
+}
+
+.look-trucks .bin-body {
+  width: min(100%, 190px, 30vh);
+  aspect-ratio: 120 / 90;
+}
+
+.bin-art {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.bin.glow .bin-art {
+  filter: drop-shadow(0 0 10px #ffce4f) drop-shadow(0 0 4px #ffb020);
+  animation: glow 1.2s ease-in-out 3;
+}
+
+.bin.got .bin-body {
+  animation: got 420ms ease-out;
+}
+
+.bin.nope .bin-body {
+  animation: nope 360ms ease-in-out;
+}
+
+/* Landed Things peek over the rim or the truck's bed, behind its front. */
+.load {
+  position: absolute;
+  z-index: 0;
+  left: 10%;
+  right: 10%;
+  bottom: 58%;
+  height: 44%;
+}
+
+.look-trucks .load {
+  left: 0;
+  right: 28%;
+  bottom: 52%;
+  height: 60%;
+}
+
+.look-box .load {
+  display: none;
+}
+
+.landed {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--n) * 17%);
+  width: 50%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  container-type: size;
+  rotate: calc((var(--n) - 1.5) * 9deg);
+  animation: land 300ms ease-out;
+}
+
+.landed .emoji {
+  font-size: 84cqmin;
+}
+
+/* ---------- Tidy: the Round's end ---------- */
+
+.look-buckets .bin.tidy .bin-body {
+  animation: wobble 500ms ease-in-out 2;
+}
+
+.bin.tidy .landed {
+  animation: bounce 420ms ease-in-out 3;
+}
+
+.bin.tidy .landed:nth-child(even) {
+  animation-delay: 120ms;
+}
+
+.look-trucks .bin.tidy .bin-body {
+  animation: drive-off 1.1s ease-in 200ms forwards;
+}
+
+.look-box .bin.tidy .bin-body {
+  animation: rattle 120ms linear 6;
+}
+
+.cheer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 24px;
+  background: #ffffffb3;
+  animation: fade-in 200ms ease-out;
+}
+
+.card,
+.cheer .site-next {
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 340px;
+  padding: 14px 18px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 6px 0 #0000001a;
+  animation: pop-in 420ms cubic-bezier(0.3, 1.6, 0.5, 1) 200ms backwards;
+}
+
+.card-art {
+  flex: none;
+  width: 64px;
+  height: 64px;
+}
+
+.look-for {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti i {
+  position: absolute;
+  top: -20px;
+  width: 12px;
+  height: 18px;
+  border-radius: 3px;
+  animation: fall linear forwards;
+}
+
+/* ---------- Motion on cue ---------- */
+
+.pop {
+  animation: pop-in 380ms cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+}
+
+.nudge .art,
+.nudge > .emoji {
+  animation: nudge 1.4s ease-in-out;
+}
+
+.wiggle .art,
+.wiggle > .emoji {
+  animation: wiggle 400ms ease-in-out;
+}
+
+.fx-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  font-family: var(--emoji);
+  font-size: 26px;
+  translate: -50% -50%;
+  animation: burst 900ms ease-out forwards;
+}
+
+/* Short landscape phones: smaller Things, and the Bins take more of the height. */
+@media (max-height: 500px) {
+  :root {
+    --thing: min(96px, 26vh);
+  }
+
+  .bins {
+    height: 48%;
+  }
+
+  .spot {
+    top: 36%;
+  }
+}
+
+@keyframes pop-in {
+  from { scale: 0; opacity: 0; }
+  to { scale: 1; opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes wiggle {
+  0%, 100% { rotate: 0deg; }
+  25% { rotate: -12deg; }
+  75% { rotate: 12deg; }
+}
+
+@keyframes nudge {
+  0%, 100% { scale: 1; rotate: 0deg; }
+  15%, 45%, 75% { scale: 1.12; rotate: -6deg; }
+  30%, 60%, 90% { scale: 1; rotate: 6deg; }
+}
+
+@keyframes glow {
+  50% { scale: 1.08; }
+}
+
+@keyframes got {
+  40% { translate: 0 -10%; scale: 1.06 0.94; }
+}
+
+@keyframes nope {
+  25% { translate: -6% 0; }
+  75% { translate: 6% 0; }
+}
+
+@keyframes land {
+  from { translate: 0 -60%; opacity: 0; }
+}
+
+@keyframes wobble {
+  25% { rotate: -7deg; }
+  75% { rotate: 7deg; }
+}
+
+@keyframes bounce {
+  50% { translate: 0 -40%; }
+}
+
+@keyframes drive-off {
+  15% { translate: -4% 0; }
+  to { translate: 140vw 0; }
+}
+
+@keyframes rattle {
+  25% { translate: -3% 0; rotate: -2deg; }
+  75% { translate: 3% 0; rotate: 2deg; }
+}
+
+@keyframes burst {
+  from { transform: translate(0, 0) scale(0.4); opacity: 1; }
+  to { transform: translate(var(--dx), var(--dy)) scale(1.1); opacity: 0; }
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(var(--spin)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .thing.gliding {
+    transition-duration: 1ms !important;
+  }
+}
