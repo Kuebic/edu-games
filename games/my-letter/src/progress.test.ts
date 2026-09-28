@@ -86,14 +86,14 @@ describe('the Name', () => {
     first.finish(NEW_LETTERS, 0);
     first.reset();
     const again = loadProgress(storage);
-    expect(again.game).toEqual({ name: 'Sam', words: [], skipped: true });
+    expect(again.game).toEqual({ name: 'Sam', words: [], faint: true, skipped: true });
     expect(done(again.marks(MY_WORDS))).toEqual([false]);
   });
 
   it('starts empty and not skipped, and from a damaged slot', () => {
-    expect(loadProgress(device()).game).toEqual({ name: '', words: [], skipped: false });
-    expect(loadProgress(device({ format: 1, game: { name: 7, words: 'Mama', skipped: 'yes' } })).game).toEqual({ name: '', words: [], skipped: false });
-    expect(loadProgress(device('{"game":')).game).toEqual({ name: '', words: [], skipped: false });
+    expect(loadProgress(device()).game).toEqual({ name: '', words: [], faint: true, skipped: false });
+    expect(loadProgress(device({ format: 1, game: { name: 7, words: 'Mama', skipped: 'yes' } })).game).toEqual({ name: '', words: [], faint: true, skipped: false });
+    expect(loadProgress(device('{"game":')).game).toEqual({ name: '', words: [], faint: true, skipped: false });
   });
 });
 
@@ -155,5 +155,21 @@ describe('the Words', () => {
     expect(progress.game.words).toEqual(['Mama', 'Leo']);
     progress.reset();
     expect(loadProgress(storage).game.words).toEqual(['Mama', 'Leo']);
+  });
+});
+
+describe('Faint letters', () => {
+  it('are on to start with, and from a damaged slot', () => {
+    expect(loadProgress(device()).game.faint).toBe(true);
+    expect(loadProgress(device({ format: 1, game: { faint: 'no' } })).game.faint).toBe(true);
+  });
+
+  it('stay off once a grown-up turns them off, through a reset', () => {
+    const storage = device();
+    const progress = loadProgress(storage);
+    progress.game.faint = false;
+    progress.save();
+    progress.reset();
+    expect(loadProgress(storage).game.faint).toBe(false);
   });
 });

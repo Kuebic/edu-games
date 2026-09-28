@@ -154,6 +154,11 @@ body::before {
   transition: background 200ms, box-shadow 200ms;
 }
 
+/* Faint letters off: an empty box, spelt from the Voice alone. */
+.no-faint .nl-blank {
+  color: transparent;
+}
+
 .nl-blank.nl-now {
   background: #fff;
   box-shadow: inset 0 0 0 0.06em var(--coral);

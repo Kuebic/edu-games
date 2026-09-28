@@ -1,5 +1,5 @@
 import { startGame } from '@shared/shell';
-import { grownUpCorner, textRow } from '@shared/grownup';
+import { grownUpCorner, switchRow, textRow } from '@shared/grownup';
 import type { LevelSelectView } from '@shared/level-select';
 import { unlockVoice } from '@shared/voice';
 import './style.css';
@@ -13,6 +13,9 @@ import { showSelect } from './screens/select';
 // Browsers only start the Voice after a touch.
 const { root, storage } = startGame('my-letter', { unlock: unlockVoice });
 const progress = loadProgress(storage);
+/** Faint letters on or off, on the page, so a Name line being played changes as the switch flips. */
+const paintFaint = () => root.classList.toggle('no-faint', !progress.game.faint);
+paintFaint();
 let cleanup: (() => void) | void;
 /** The level select while it's up, so the Grown-up Corner can redraw it. */
 let select: LevelSelectView | undefined;
@@ -38,11 +41,17 @@ const corner = grownUpCorner(root, progress, {
     textRow('More words, with commas: Mama, Dada, Leo', () => progress.game.words.join(', '), (typed) => {
       if (setWords(progress, splitWords(typed))) wordsChanged = true;
     }),
+    switchRow('Faint letters in the boxes', () => progress.game.faint, (on) => {
+      progress.game.faint = on;
+      progress.save();
+      paintFaint();
+    }),
   ],
   note:
     'My words spells the name, a letter at a time from three to pick from: S, then A, then M. ' +
     'Then each of the more words, spelt the same way: family, friends, whatever the child calls them, as you would say it. ' +
     'It shows once there is a name or a word. ' +
+    'Each letter of the word has a box with the letter faint in it, to match; turn Faint letters off and the boxes are empty, so the child spells from the voice alone. ' +
     'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound. Each asks for its letter twice, ' +
     'and twice for a letter met before, from three to pick from. Tapping the name or the speaker asks again, with the letter\'s sound. ' +
     'A letter picked by mistake is named and fades away. A found letter says its sound. ' +

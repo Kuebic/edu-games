@@ -14,7 +14,7 @@ const FOUND_MS = 800;
 
 /**
  * The Name line: the word's capitals, every one a blank to start with, the letter faint in it so a child can
- * match it without the Voice. `now(i)` marks the blank being asked for; `fill(i)` puts its letter in.
+ * match it without the Voice (unless Faint letters is off: the page's `no-faint`). `now(i)` marks the blank being asked for; `fill(i)` puts its letter in.
  */
 function drawNameLine(name: string): { el: HTMLElement; now(i: number): void; fill(i: number): void } {
   const capitals = [...nameCapitals(name)];

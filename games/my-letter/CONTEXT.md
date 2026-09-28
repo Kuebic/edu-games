@@ -47,8 +47,12 @@ A letter met before a New letters Level: the letters of My words, then the New l
 _Avoid_: Learned, known, mastered
 
 **Name line**:
-The word being spelt, drawn big above the Choices during a Spell: a blank for every capital, the letter faint in it to match, the one being asked for outlined. A find fills its blank.
+The word being spelt, drawn big above the Choices during a Spell: a blank for every capital, the letter faint in it to match unless Faint letters is off, the one being asked for outlined. A find fills its blank.
 _Avoid_: Title, header, word
+
+**Faint letters**:
+A switch in the Grown-up Corner, on to start with: the Name line's blanks show their letter faint. Off, the blanks are empty and the child spells from the Voice alone. A setting, so a reset leaves it.
+_Avoid_: Ghost letters, hints
 
 **Letter sound**:
 The one sound a letter says: short vowels, hard C and G, X as /ks/, Q as /kw/. A clip too short to hear, a stop like /b/, is said twice, "b … b". A recorded clip, never the browser's speech. A find ends with the letter saying it: "S says /s/".

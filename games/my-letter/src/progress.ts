@@ -1,5 +1,6 @@
 // What My Letter remembers, on the site's Saved progress (ADR 0012): which Levels of each Group are done,
-// and its own slot: the Name and the Words a grown-up typed, and whether they closed the Corner without a Name.
+// and its own slot: the Name and the Words a grown-up typed, whether the Name line shows Faint letters, and
+// whether they closed the Corner without a Name.
 
 import { openProgress, type Progress as SiteProgress } from '@shared/progress';
 import type { GameStorage } from '@shared/storage';
@@ -11,6 +12,8 @@ export interface Save {
   name: string;
   /** The Words a grown-up added after the Name (Mama, Dada, a sibling), each as typed, trimmed. */
   words: string[];
+  /** The Name line's blanks show their letter faint, to match a Choice to. On unless a grown-up turns it off. */
+  faint: boolean;
   /** A grown-up closed the Corner without a Name, so it doesn't open by itself again. */
   skipped: boolean;
 }
@@ -32,6 +35,7 @@ export function loadProgress(storage: GameStorage): Progress {
         return {
           name: typeof r.name === 'string' ? r.name.trim() : '',
           words: Array.isArray(r.words) ? r.words.filter((w): w is string => typeof w === 'string').map((w) => w.trim()) : [],
+          faint: r.faint !== false,
           skipped: r.skipped === true,
         };
       },
