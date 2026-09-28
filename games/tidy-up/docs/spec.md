@@ -19,7 +19,7 @@ A Colors Topic in Find It stays possible later, for older children who already k
 
 ## The Game
 
-- Slug `tidy-up`, name "Tidy Up", Category `math` (sorting is classifying, and shapes are early geometry), Shelf status Hidden until it's been tried on a phone. A Tile picture of its own, drawn with shapes: a red block falling into a red bucket beside a blue one.
+- Slug `tidy-up`, name "Tidy Up", Category `math` (sorting is classifying, and shapes are early geometry), Shelf status On (Hidden until the user tried it, 2026-09-28). A Tile picture of its own, drawn with shapes: a red block falling into a red bucket beside a blue one.
 - One folder `games/tidy-up/` like the other Games (site ADR 0003).
 - Built on the shared platform: the shell, `showPractice` with a Topic's Skins (site ADRs 0014, 0015), `@shared/progress`, `@shared/grownup` (`levels: false`), `@shared/sound` (clips, notes, the cheer). `catalog.test.ts` and `look.test.ts` must pass.
 - **No Voice.** Every word the child needs is a recorded Word clip (see Words). Browser speech is silent on the user's Linux machine and stalls each line there, and a 2-year-old needs the word more than the sentence. The grown-up says the sentences.
