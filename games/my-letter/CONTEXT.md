@@ -1,6 +1,6 @@
 # My Letter
 
-A touch game that teaches a three-year-old letter names and sounds, starting from spelling their own name and the words a grown-up adds. The Voice asks for a letter, the child picks it from three, and the letter says its sound.
+A touch game that teaches a three-year-old letter names and sounds, starting from spelling their own name and the words a grown-up adds. The Voice asks for a letter, the child picks it from three, or from all the letters of the word being spelt, and the letter says its sound.
 
 ## Language
 
@@ -23,7 +23,7 @@ The different letters in the Name, in the order they first appear: SAM is S, A, 
 _Avoid_: Initials, name part
 
 **Spell**:
-What a My words Level does: a Find for each capital of its word, left to right, so ANNA is A, N, N, A.
+What a My words Level does: every capital of its word as a Tile, in a jumble, and a Find for each from left to right, so ANNA is A, N, N, A.
 _Avoid_: Type, write
 
 **New letters**:
@@ -31,12 +31,16 @@ B, D, K, P, T, V, Z and J: letters whose name starts with their sound, so saying
 _Avoid_: Other letters, extra letters, bonus
 
 **Find**:
-One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from three Choices. Tapping the Name line or the speaker asks again, and that ask ends with the letter's Letter sound; the Find's own ask doesn't, so the sound isn't heard on every Find.
+One ask: the Voice asks for a letter ("Find the S for Sam!") and the child picks it from three Choices, or in a Spell from the Tiles. Tapping the Name line or the speaker asks again, and that ask ends with the letter's Letter sound; the Find's own ask doesn't, so the sound isn't heard on every Find.
 _Avoid_: Question, turn, trial
 
 **Choices**:
-The three big letter buttons. One is the letter asked for; the other two never Look alike it. In a Spell they're the word's own letters when there are enough.
+The three big letter buttons of a New letters Find. One is the letter asked for; the other two never Look alike it.
 _Avoid_: Options, answers
+
+**Tile**:
+One capital of a Spell's word on a big button, every one of them there, in a jumble under the Name line, never in the word's order. A found Tile goes into its box and leaves its place empty. They take a tap as soon as they show, even while the Voice is talking, and the tap cuts it off, so a child who knows the next letter needn't wait (ADR 0006).
+_Avoid_: Card, key, block, Choice (three, in New letters)
 
 **Looks alike**:
 Two capitals a three-year-old mixes up, kept apart as Choices: B P R D, C G O Q, E F, M N W, U V Y, I L T J, K X.
@@ -47,7 +51,7 @@ A letter met before a New letters Level: the letters of My words, then the New l
 _Avoid_: Learned, known, mastered
 
 **Name line**:
-The word being spelt, drawn big above the Choices during a Spell: a blank for every capital, the letter faint in it to match unless Faint letters is off, the one being asked for outlined. A find fills its blank.
+The word being spelt, drawn big above the Tiles during a Spell: a blank for every capital, the letter faint in it to match unless Faint letters is off, the one being asked for outlined. A find fills its blank.
 _Avoid_: Title, header, word
 
 **Faint letters**:
@@ -59,7 +63,7 @@ The one sound a letter says: short vowels, hard C and G, X as /ks/, Q as /kw/. A
 _Avoid_: Phoneme (in UI copy), Sound (the site's word for every noise), phonics
 
 **Fade**:
-What a wrong pick does: the letter wobbles, the Voice says its name ("That's M."), and it fades away, leaving fewer to pick from. The ask isn't said again. There's no failing.
+What a wrong pick does in New letters: the letter wobbles, the Voice says its name ("That's M."), and it fades away, leaving fewer to pick from. The ask isn't said again. There's no failing. A wrong Tile in a Spell wobbles and is named but stays, as it's needed later.
 _Avoid_: Wrong, miss, error
 
 **Letter board**:

@@ -1,7 +1,8 @@
-// A Level's Finds: the letter each asks for, and its three Choices, the others never Looking alike it.
+// A New letters Level's Finds: the letter each asks for, and its three Choices, the others never Looking alike
+// it. And a Spell's Tiles.
 // Pure, with the random source passed in, so it's tested as data.
 
-import { looksAlike, nameCapitals, nameLetters } from './letters';
+import { looksAlike, nameCapitals } from './letters';
 
 export type Rng = () => number;
 
@@ -57,10 +58,16 @@ function lay(asks: readonly { letter: string; tiers: readonly (readonly string[]
   });
 }
 
-/** A My words Level: its word spelt, a Find per capital left to right, the others from the word's own letters. */
-export function spellFinds(name: string, rng: Rng = Math.random): Find[] {
-  const mine = nameLetters(name);
-  return lay([...nameCapitals(name)].map((letter) => ({ letter, tiers: [mine] })), rng);
+/**
+ * A My words Level's Tiles: every capital of its word once, ANNA's two Ns too, in a jumble. Never in the word's
+ * own order when there's another, so the Tiles don't spell it for the child.
+ */
+export function spellTiles(name: string, rng: Rng = Math.random): string[] {
+  const capitals = [...nameCapitals(name)];
+  const tiles = shuffle(capitals, rng);
+  if (new Set(capitals).size < 2 || tiles.join('') !== capitals.join('')) return tiles;
+  // Moved along one: only a word of one letter over and over reads the same.
+  return [...tiles.slice(1), tiles[0]!];
 }
 
 /**

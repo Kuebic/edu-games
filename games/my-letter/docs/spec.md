@@ -1,6 +1,6 @@
 # My Letter
 
-Status: agreed 2026-09-25 in a design interview. Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr). Changed on 2026-09-27 after the first play with a child (ADR 0003): My name is one Level that spells the Name, every Find has three Choices, New letters Levels mix in Met letters, and only a tap on the prompt plays the Letter sound with the ask. Changed again on 2026-09-27 (ADR 0004): the Group is My words, a Spell of the Name and then of each Word a grown-up adds. Where this spec says otherwise, CONTEXT.md and the ADRs win.
+Status: agreed 2026-09-25 in a design interview. Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr). Changed on 2026-09-27 after the first play with a child (ADR 0003): My name is one Level that spells the Name, every Find has three Choices, New letters Levels mix in Met letters, and only a tap on the prompt plays the Letter sound with the ask. Changed again on 2026-09-27 (ADR 0004): the Group is My words, a Spell of the Name and then of each Word a grown-up adds. Changed on 2026-09-28 (ADR 0006): a Spell has every letter of its word as a Tile, jumbled, in place of three Choices. Where this spec says otherwise, CONTEXT.md and the ADRs win.
 
 ## The problem
 

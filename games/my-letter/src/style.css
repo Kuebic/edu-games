@@ -254,6 +254,32 @@ body::before {
   animation: dance 900ms ease-in-out;
 }
 
+/* A Spell's Tiles: every capital of the word in a jumble, up to five in a row, as big as the row lets them be. */
+.choices.tiles {
+  --gap: clamp(8px, 2.5vw, 14px);
+  --tile: min(var(--card), calc((var(--column) - 32px - (var(--row) - 1) * var(--gap)) / var(--row)));
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: calc(var(--gap) + 8px) var(--gap);
+  width: calc(var(--row) * var(--tile) + (var(--row) - 1) * var(--gap));
+  max-width: 100%;
+  margin: 0 auto;
+  min-height: calc(var(--tile) + 14px);
+}
+
+.tile {
+  --card: var(--tile);
+}
+
+/* A found Tile leaves its place empty, so the others don't move under a finger. */
+.choice.used {
+  background: transparent;
+  box-shadow: inset 0 0 0 3px #0000001a;
+  color: transparent;
+  animation: none;
+  pointer-events: none;
+}
+
 .wiggle {
   animation: wiggle 400ms ease-in-out !important;
 }
@@ -306,6 +332,12 @@ body::before {
     align-items: center;
     min-height: 0;
     padding: 0;
+  }
+
+  .choices.tiles {
+    --tile: min(var(--card), calc((var(--column) / 2 - 40px - (var(--row) - 1) * var(--gap)) / var(--row)));
+    align-content: center;
+    align-self: center;
   }
 
   .name-line {

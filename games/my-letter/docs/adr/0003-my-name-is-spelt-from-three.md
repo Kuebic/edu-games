@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: accepted (its Spell of three Choices replaced by ADR 0006)
 ---
 
 # My name is spelt, from three Choices, and the ask's Letter sound waits for a tap

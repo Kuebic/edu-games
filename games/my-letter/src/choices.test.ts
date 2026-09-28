@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHOICES, NEW_LETTER_FINDS, newLetterFinds, otherChoices, spellFinds, type Find } from './choices';
+import { CHOICES, NEW_LETTER_FINDS, newLetterFinds, otherChoices, spellTiles, type Find } from './choices';
 import { looksAlike } from './letters';
 
 /** A seeded random source (mulberry32), so a run can be played again. */
@@ -46,27 +46,30 @@ describe('the other Choices', () => {
   });
 });
 
-describe('My words’ Finds', () => {
-  it('spell the Name, a Find per capital from left to right', () => {
-    expect(spellFinds('Sam', seeded(1)).map((f) => f.letter)).toEqual(['S', 'A', 'M']);
-    expect(spellFinds('Anna', seeded(1)).map((f) => f.letter)).toEqual(['A', 'N', 'N', 'A']);
-    expect(spellFinds('Zoë', seeded(1)).map((f) => f.letter)).toEqual(['Z', 'O', 'E']);
-    expect(spellFinds('', seeded(1))).toEqual([]);
+describe('a Spell’s Tiles', () => {
+  it('are every capital of the word once, in a jumble', () => {
+    const sorted = (tiles: string[]) => [...tiles].sort().join('');
+    const orders = new Set<string>();
+    for (let seed = 0; seed < 40; seed++) {
+      expect(sorted(spellTiles('Sam', seeded(seed)))).toBe('AMS');
+      expect(sorted(spellTiles('Anna', seeded(seed)))).toBe('AANN');
+      expect(sorted(spellTiles('Zoë', seeded(seed)))).toBe('EOZ');
+      orders.add(spellTiles('Kaia', seeded(seed)).join(''));
+    }
+    expect(orders.size).toBeGreaterThan(3);
+    expect(spellTiles('', seeded(1))).toEqual([]);
   });
 
-  it('offer the Name’s own letters, and are fair', () => {
-    for (let seed = 0; seed < 20; seed++) {
-      for (const find of spellFinds('Sam', seeded(seed))) {
-        expectFair(find);
-        expect([...find.choices].sort().join('')).toBe('AMS');
-      }
-      for (const find of spellFinds('Olivia', seeded(seed))) expectFair(find);
-      // A Name of two letters: the third is from the rest of the alphabet.
-      for (const find of spellFinds('Anna', seeded(seed))) {
-        expectFair(find);
-        expect(find.choices).toContain(find.letter === 'A' ? 'N' : 'A');
-      }
+  it('never spell the word in its own order', () => {
+    for (let seed = 0; seed < 200; seed++) {
+      expect(spellTiles('Sam', seeded(seed)).join('')).not.toBe('SAM');
+      expect(spellTiles('Anna', seeded(seed)).join('')).not.toBe('ANNA');
+      expect(spellTiles('Al', seeded(seed)).join('')).toBe('LA');
     }
+    // A random source that always leaves them where they are.
+    expect(spellTiles('Sam', () => 0.999).join('')).not.toBe('SAM');
+    expect(spellTiles('A', seeded(1))).toEqual(['A']);
+    expect(spellTiles('Aa', seeded(1))).toEqual(['A', 'A']);
   });
 });
 
@@ -117,17 +120,17 @@ describe('the letter’s slot', () => {
   it('is random, but never the same slot a third time running', () => {
     const slots = new Set<number>();
     for (let seed = 0; seed < 200; seed++) {
-      const run = spellFinds('Alexandria', seeded(seed)).map(slot);
+      const run = newLetterFinds('K', ['S', 'A', 'M', 'B', 'D'], seeded(seed)).map(slot);
       for (let i = 2; i < run.length; i++) expect(run[i - 2] === run[i - 1] && run[i - 1] === run[i], run.join('')).toBe(false);
       run.forEach((s) => slots.add(s));
     }
     expect(slots).toEqual(new Set([0, 1, 2]));
     // Always the first slot from the source: still moved on the third.
-    expect(spellFinds('Sam', () => 0).map(slot)).toEqual([0, 0, 1]);
+    expect(newLetterFinds('K', ['S', 'A', 'M'], () => 0).map(slot)).toEqual([0, 0, 1, 0]);
   });
 
   it('is the same from the same random source', () => {
     expect(newLetterFinds('K', ['S', 'A', 'M', 'B'], seeded(7))).toEqual(newLetterFinds('K', ['S', 'A', 'M', 'B'], seeded(7)));
-    expect(spellFinds('Sam', seeded(7))).toEqual(spellFinds('Sam', seeded(7)));
+    expect(spellTiles('Kaia', seeded(7))).toEqual(spellTiles('Kaia', seeded(7)));
   });
 });

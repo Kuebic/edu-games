@@ -48,13 +48,14 @@ const corner = grownUpCorner(root, progress, {
     }),
   ],
   note:
-    'My words spells the name, a letter at a time from three to pick from: S, then A, then M. ' +
+    'My words spells the name: all its letters are jumbled under it, and the child taps them in order, S, then A, then M. ' +
+    'A child who knows the next letter can tap it straight away; the tap cuts the voice off. A letter tapped out of turn is named and stays. ' +
     'Then each of the more words, spelt the same way: family, friends, whatever the child calls them, as you would say it. ' +
     'It shows once there is a name or a word. ' +
     'Each letter of the word has a box with the letter faint in it, to match; turn Faint letters off and the boxes are empty, so the child spells from the voice alone. ' +
     'New letters has B, D, K, P, T, V, Z and J, whose names start with their sound. Each asks for its letter twice, ' +
     'and twice for a letter met before, from three to pick from. Tapping the name or the speaker asks again, with the letter\'s sound. ' +
-    'A letter picked by mistake is named and fades away. A found letter says its sound. ' +
+    'In New letters a letter picked by mistake is named and fades away. A found letter says its sound. ' +
     'Adding a word at the end keeps what is done; changing or taking one away starts My words again. New letters stays. ' +
     'Levels open in order, and Next goes on to the next one. ' +
     'The ABC button on the first screen opens the Letter board: every letter, the name\'s in their own colour, to tap and hear, and a button that sings the ABC song as each letter shakes. Nothing there is saved.',
