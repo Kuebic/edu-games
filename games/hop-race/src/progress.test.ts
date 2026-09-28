@@ -1,6 +1,6 @@
 import { gameStorage, memoryStorage } from '@shared/storage';
 import { describe, expect, it } from 'vitest';
-import { loadProgress, setHopper } from './progress';
+import { loadProgress, setHopper, setPlayers } from './progress';
 
 /** A device holding this raw save under its real key, or nothing. */
 const device = (initial?: object | string) =>
@@ -23,21 +23,22 @@ describe('Races', () => {
   });
 });
 
-describe('the Hopper', () => {
-  it('is Bunny to start with, and from a damaged slot', () => {
-    expect(loadProgress(device()).game).toEqual({ hopper: 'bunny' });
-    expect(loadProgress(device({ format: 1, game: { hopper: 'dragon' } })).game).toEqual({ hopper: 'bunny' });
-    expect(loadProgress(device('{"game":')).game).toEqual({ hopper: 'bunny' });
+describe('the Hopper and the Players', () => {
+  it('are Bunny and One to start with, and from a damaged slot', () => {
+    expect(loadProgress(device()).game).toEqual({ hopper: 'bunny', players: 1 });
+    expect(loadProgress(device({ format: 1, game: { hopper: 'dragon', players: 3 } })).game).toEqual({ hopper: 'bunny', players: 1 });
+    expect(loadProgress(device('{"game":')).game).toEqual({ hopper: 'bunny', players: 1 });
   });
 
-  it('round-trips through the device, and outlasts a reset', () => {
+  it('round-trip through the device, and outlast a reset', () => {
     const storage = device();
     const first = loadProgress(storage);
     setHopper(first, 'bear');
+    setPlayers(first, 2);
     first.finish(0, 0);
     first.reset();
     const again = loadProgress(storage);
-    expect(again.game.hopper).toBe('bear');
+    expect(again.game).toEqual({ hopper: 'bear', players: 2 });
     expect(again.mark(0, 0).done).toBe(false);
   });
 });

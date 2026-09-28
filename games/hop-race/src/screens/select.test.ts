@@ -43,6 +43,18 @@ describe("Hop Race's level select", () => {
     expect(a.progress.game.hopper).toBe('kitty');
   });
 
+  it('has a chip for One and Two players under the Tracks, and a chip picked is saved', () => {
+    const a = app();
+    const redraw = vi.fn();
+    const row = hopRaceSelect(a, redraw).underList!()!;
+    const chips = [...row.querySelectorAll<HTMLElement>('[role="radio"]')];
+    expect(chips.map((c) => c.getAttribute('aria-label'))).toEqual(['One player', 'Two players']);
+    expect(chips.map((c) => c.getAttribute('aria-checked'))).toEqual(['true', 'false']);
+    chips[1]!.click();
+    expect(a.progress.game.players).toBe(2);
+    expect(redraw).toHaveBeenCalled();
+  });
+
   it('passes Every level open through, and plays the Race tapped', () => {
     const a = app({ format: 1, settings: { everyLevelOpen: true } });
     expect(hopRaceSelect(a).everyLevelOpen!()).toBe(true);

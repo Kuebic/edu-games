@@ -26,18 +26,22 @@ The child's own animal: Bunny, Puppy, Kitty or Bear, picked from the chips on th
 _Avoid_: Player, token, piece
 
 **Friend**:
-The other animal in a Race, a different one each Race of a Track. It spins and hops by itself, and never wins.
+The other animal in a Race, a different one each Race of a Track. With One player it spins and hops by itself, and never wins. With Two players a second child taps its turns.
 _Avoid_: Rival, opponent, computer
+
+**Players**:
+One or Two, picked from the chips under the Tracks. One is the child against a Friend that moves itself. Two is two children taking turns on one phone, the second playing the Friend: the Voice says whose turn it is, the big button shows that animal, and the Race goes on until both are Home (ADR 0003). Saved in the Game's slot, and a reset keeps it.
+_Avoid_: Mode, multiplayer, versus
 
 **Spinner**:
 The round button that says how far to hop: the left half with one dot is 1, the right half with two is 2.
 _Avoid_: Die, dice, wheel
 
 **Turn**:
-One spin and its Hops, the Hopper's or the Friend's. They alternate, the Hopper first; a Friend at Home is skipped.
+One spin and its Hops, the Hopper's or the Friend's. They alternate, the Hopper first; an animal at Home is skipped.
 
 **Hop**:
-One move onto the next Square. The Voice says the Square's number. On the Hopper's turn, each Hop is a tap on the big Hopper button.
+One move onto the next Square. The Voice says the Square's number. On a tapped turn, each Hop is a tap on the big animal button.
 _Avoid_: Step, move, jump
 
 **Who's ahead?**:
@@ -50,5 +54,5 @@ After 6 seconds with no tap on the child's turn, the glowing button wiggles and 
 ### Progress
 
 **Race**:
-The Game's Level: from Start until the Hopper is Home, then the cheer and the Next button.
+The Game's Level: from Start until the Hopper is Home (with Two players, both animals), then the cheer and the Next button.
 _Avoid_: Game, round, match

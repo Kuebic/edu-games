@@ -369,9 +369,12 @@ body::before {
   line-height: 1;
 }
 
-.reward-number .face {
+/* The Hopper on top of the ring, and with Two players the Friend beside it. */
+.reward-number .faces {
   position: absolute;
   top: -22%;
+  display: flex;
+  gap: 4px;
   font-size: min(18vw, 72px);
 }
 
@@ -454,7 +457,7 @@ body::before {
     font-size: min(24vh, 100px);
   }
 
-  .reward-number .face {
+  .reward-number .faces {
     font-size: min(14vh, 56px);
   }
 
@@ -529,5 +532,17 @@ body::before {
   *::after {
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+/* One or Two players under the Tracks: smaller on a short landscape phone, so the Tracks keep the room. */
+@media (max-height: 500px) {
+  .players {
+    padding: 2px 14px 4px;
+  }
+
+  .player-chip {
+    max-width: 72px;
+    height: 44px;
   }
 }

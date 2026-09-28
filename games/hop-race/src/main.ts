@@ -30,7 +30,8 @@ const corner = grownUpCorner(root, progress, {
     'got better at counting and at telling which number is bigger. ' +
     'To 5 is a short track to learn spinning and hopping. To 10 is the whole track. Who\'s ahead asks which animal is further along between turns. ' +
     'Nobody loses: the race ends when your child\'s animal is home. Races open in order, and Next goes on to the next one. ' +
-    'Your child picks their animal on the first screen.',
+    'Your child picks their animal on the first screen. ' +
+    'Under the tracks, pick one player or two. With two, a second child plays the friend and taps its turns, and the race goes on until both are home.',
   closed: () => select?.redraw(),
 });
 

@@ -12,9 +12,11 @@ export const spunLine = (spin: Spin) => (spin === 1 ? 'One hop!' : 'Two hops!');
 /** A Hop lands: the Square's number, the way the study had children say it. */
 export const squareLine = (square: number) => String(square);
 
-export const friendTurnLine = (friend: string) => `${friend}'s turn.`;
+/** Whose turn: the Friend's, and with Two players the Hopper's too. */
+export const turnLine = (name: string) => `${name}'s turn.`;
 
-export const friendHomeLine = (friend: string) => `${friend} is home! Keep hopping!`;
+/** One animal Home while the other hops on: the Friend, or with Two players either. */
+export const homeLine = (name: string) => `${name} is home! Keep hopping!`;
 
 export const AHEAD = 'Who is ahead?';
 
@@ -25,3 +27,6 @@ export const aheadRightLine = (name: string, at: number, other: number) => `Yes!
 export const aheadFadeLine = (name: string, at: number) => `${name} is on ${at}.`;
 
 export const HOME = "You're home! Well done!";
+
+/** Two players, both Home. */
+export const BOTH_HOME = 'Everybody is home! Well done!';

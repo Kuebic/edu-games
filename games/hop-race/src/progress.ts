@@ -1,14 +1,15 @@
 // What Hop Race remembers, on the site's Saved progress (ADR 0012): which Races of each Track are done,
-// and in its own slot the Hopper the child picked.
+// and in its own slot the Hopper the child picked and whether they race One or Two players.
 
 import { openProgress, type Progress as SiteProgress } from '@shared/progress';
 import type { GameStorage } from '@shared/storage';
 import { isHopper, type HopperId } from './animals';
-import { TRACKS } from './race';
+import { TRACKS, type Players } from './race';
 
-/** What only Hop Race saves. The Hopper is a Skin, so a reset leaves it. */
+/** What only Hop Race saves. Both are picks on the first screen, so a reset leaves them. */
 export interface Save {
   hopper: HopperId;
+  players: Players;
 }
 
 export type Progress = SiteProgress<Save>;
@@ -23,8 +24,8 @@ export function loadProgress(storage: GameStorage): Progress {
     sizes: TRACKS.map((t) => t.races),
     game: {
       read(raw) {
-        const hopper = isRecord(raw) ? raw.hopper : undefined;
-        return { hopper: isHopper(hopper) ? hopper : 'bunny' };
+        const r = isRecord(raw) ? raw : {};
+        return { hopper: isHopper(r.hopper) ? r.hopper : 'bunny', players: r.players === 2 ? 2 : 1 };
       },
     },
   });
@@ -33,5 +34,11 @@ export function loadProgress(storage: GameStorage): Progress {
 /** Saves the Hopper a child picked from the chips. */
 export function setHopper(progress: Progress, hopper: HopperId): void {
   progress.game.hopper = hopper;
+  progress.save();
+}
+
+/** Saves One or Two players, picked under the Tracks. */
+export function setPlayers(progress: Progress, players: Players): void {
+  progress.game.players = players;
   progress.save();
 }

@@ -5,16 +5,17 @@ import type { App } from '../app';
 import { h, replay, sparkle, wait } from '../dom';
 import {
   AHEAD,
+  BOTH_HOME,
   HOME,
   HOP,
   SPIN,
   aheadFadeLine,
   aheadRightLine,
-  friendHomeLine,
-  friendTurnLine,
+  homeLine,
   spunLine,
   squareLine,
   startLine,
+  turnLine,
 } from '../lines';
 import { TRACKS, aheadOf, createRace, friendFor, type Mover, type Spin } from '../race';
 import { hopNote, play, whirr } from '../sounds';
@@ -32,7 +33,10 @@ const SQUARE_COLOURS = ['#ff9d8a', '#ffc94a', '#9be07a', '#7fd1e8', '#b8a2f5', '
 /** A face on a Track or a button. */
 const face = (animal: Animal) => h('span', { class: 'face', text: animal.face });
 
-/** One Race of a Track, both counting from 0: turns until the Hopper is Home, then the cheer and Next. */
+/**
+ * One Race of a Track, both counting from 0: turns until the Hopper is Home, then the cheer and Next. With Two
+ * players the Friend's turns are tapped too, and the Race goes on until both are Home.
+ */
 export function playScreen(app: App, trackIndex: number, raceIndex: number): () => void {
   let alive = true;
   const track = TRACKS[trackIndex];
@@ -40,8 +44,11 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
   const { home } = track;
   const hopper = HOPPERS[app.progress.game.hopper];
   const friend = FRIENDS[friendFor(trackIndex, raceIndex, FRIENDS.length)]!;
-  const race = createRace(home);
+  const { players } = app.progress.game;
+  const race = createRace(home, Math.random, players);
   const animals: Record<Mover, Animal> = { hopper, friend };
+  /** Whose turns are tapped: the Hopper's, and with Two players the Friend's too. */
+  const tapped = (mover: Mover) => mover === 'hopper' || players === 2;
 
   // ---- Layout ------------------------------------------------------------
   const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
@@ -70,12 +77,21 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
   place('hopper', 0);
   place('friend', 0);
 
-  // The controls: the Spinner and the big Hopper button, one glowing at a time.
+  // The controls: the Spinner and the big animal button, one glowing at a time. The button is the Hopper's,
+  // and with Two players it turns into the Friend's on the Friend's turn.
   const arrow = h('span', { class: 'arrow', html: spinnerArrow });
   const spinnerBtn = h('button', { class: 'spinner', label: 'Spinner' }, h('span', { class: 'spinner-face', html: spinnerFace }), arrow);
   const hopDots = h('span', { class: 'hop-dots' });
-  const hopperBtn = h('button', { class: 'big-animal', label: `Hop ${hopper.name}` }, face(hopper), hopDots);
-  hopperBtn.style.setProperty('--animal', hopper.colour);
+  const hopperFace = face(hopper);
+  const hopperBtn = h('button', { class: 'big-animal' }, hopperFace, hopDots);
+  /** Puts `mover` on the big button. */
+  function onButton(mover: Mover): void {
+    const animal = animals[mover];
+    hopperFace.textContent = animal.face;
+    hopperBtn.setAttribute('aria-label', `Hop ${animal.name}`);
+    hopperBtn.style.setProperty('--animal', animal.colour);
+  }
+  onButton('hopper');
   const controls = h('div', { class: 'controls' }, spinnerBtn, hopperBtn);
   /** Who's ahead? takes the controls' place while it's asked. */
   const aheadEl = h('div', { class: 'controls ahead' });
@@ -98,7 +114,7 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
   let waiting: { buttons: HTMLElement[]; pick(b: HTMLElement): void } | null = null;
   let nudge: ReturnType<typeof setInterval> | undefined;
 
-  function tapped(b: HTMLElement): void {
+  function took(b: HTMLElement): void {
     if (!waiting?.buttons.includes(b) || b.classList.contains('gone')) return;
     const { pick } = waiting;
     waiting = null;
@@ -107,8 +123,8 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
     hush();
     pick(b);
   }
-  spinnerBtn.addEventListener('click', () => tapped(spinnerBtn));
-  hopperBtn.addEventListener('click', () => tapped(hopperBtn));
+  spinnerBtn.addEventListener('click', () => took(spinnerBtn));
+  hopperBtn.addEventListener('click', () => took(hopperBtn));
 
   /** Waits for a tap on one of `buttons`. With `nudgeLine`, a long wait wiggles the first and says the line again. */
   function tapOn(buttons: HTMLElement[], nudgeLine?: string): Promise<HTMLElement> {
@@ -160,7 +176,7 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
     if (!alive) return;
     replay(squares[square]!, 'lit');
     hopNote(square);
-    if (mover === 'hopper') buzz(20);
+    if (tapped(mover)) buzz(20);
     await Promise.all([say(squareLine(square)), wait(350)]);
   }
 
@@ -169,9 +185,11 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
     hopDots.replaceChildren(...Array.from({ length: hops }, (_, i) => h('i', { class: i < hops - left ? 'used' : '' })));
   }
 
-  async function hopperTurn(): Promise<void> {
+  /** A tapped turn: the Hopper's, or with Two players either's. With Two players the Voice says whose turn it is. */
+  async function tappedTurn(mover: Mover): Promise<void> {
+    onButton(mover);
     glow(spinnerBtn);
-    await askFor(SPIN, [spinnerBtn], SPIN);
+    await askFor(players === 2 ? `${turnLine(animals[mover].name)} ${SPIN}` : SPIN, [spinnerBtn], SPIN);
     glow(null);
     const turn = race.turn();
     await spinTo(turn.spin);
@@ -185,14 +203,17 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
       glow(null);
       replay(hopperBtn, 'bounce');
       showHops(turn.squares.length, turn.squares.length - i - 1);
-      await hopTo('hopper', square);
+      await hopTo(mover, square);
     }
     hopDots.replaceChildren();
+    // With Two players, the first one Home waits while the other hops on.
+    if (alive && players === 2 && race.at(mover) === home && race.next()) await say(homeLine(animals[mover].name));
   }
 
+  /** The Friend's turn by itself, with One player. */
   async function friendTurn(): Promise<void> {
     screen.classList.add('friend-turn');
-    await say(friendTurnLine(friend.name));
+    await say(turnLine(friend.name));
     if (!alive) return;
     const turn = race.turn();
     await spinTo(turn.spin);
@@ -203,7 +224,7 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
       await hopTo('friend', square);
     }
     screen.classList.remove('friend-turn');
-    if (alive && race.at('friend') === home) await say(friendHomeLine(friend.name));
+    if (alive && race.at('friend') === home) await say(homeLine(friend.name));
   }
 
   /** Who's ahead? The two animals as big buttons, in either order; a wrong pick fades, as in My Letter. */
@@ -215,7 +236,7 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
     const buttons = order.map((mover) => {
       const b = h('button', { class: 'big-animal', label: animals[mover].name }, face(animals[mover]));
       b.style.setProperty('--animal', animals[mover].colour);
-      b.addEventListener('click', () => tapped(b));
+      b.addEventListener('click', () => took(b));
       return b;
     });
     aheadEl.replaceChildren(...buttons);
@@ -253,7 +274,7 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
     await wait(300);
     await say(startLine(hopper.name, friend.name, home));
     for (let who = race.next(); who && alive; who = race.next()) {
-      if (who === 'hopper') await hopperTurn();
+      if (tapped(who)) await tappedTurn(who);
       else await friendTurn();
       if (!alive || race.next() === undefined) break;
       // A round ends after the Friend's turn, or after the Hopper's once the Friend is Home.
@@ -282,7 +303,8 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
     }
     const beans = h('div', { class: 'beans', label: `${home} beans` });
     for (let five = 0; five < home / 5; five++) beans.append(h('span', { class: 'five' }, ...Array.from({ length: 5 }, () => h('i'))));
-    const badge = h('div', { class: 'reward-number' }, face(hopper), h('b', { text: String(home) }));
+    const faces = h('span', { class: 'faces' }, face(hopper), players === 2 && face(friend));
+    const badge = h('div', { class: 'reward-number' }, faces, h('b', { text: String(home) }));
     screen.replaceChildren(h('div', { class: 'reward' }, confetti, badge, beans, h('div', { class: 'reward-actions' }, back, next)));
     next.addEventListener('click', () => {
       const to = app.progress.after(trackIndex, raceIndex);
@@ -292,7 +314,7 @@ export function playScreen(app: App, trackIndex: number, raceIndex: number): () 
     back.addEventListener('click', () => app.groups(trackIndex));
     cheer();
     buzz(80);
-    void say(HOME);
+    void say(players === 2 ? BOTH_HOME : HOME);
   }
 
   void runRace();

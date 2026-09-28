@@ -4,6 +4,9 @@
 /** Who's moving: the child's animal, or the Race's other one. */
 export type Mover = 'hopper' | 'friend';
 
+/** One Player, the child against a Friend who moves itself, or Two, the Friend moved by a second child's taps. */
+export type Players = 1 | 2;
+
 /** A spin: one hop or two. */
 export type Spin = 1 | 2;
 
@@ -48,7 +51,7 @@ export interface Race {
   readonly home: number;
   /** Where an animal is: 0 is Start, `home` is Home. */
   at(mover: Mover): number;
-  /** Whose turn it is, or undefined once the Hopper is Home and the Race is done. */
+  /** Whose turn it is, or undefined once the Race is done: the Hopper Home, or with Two players both of them. */
   next(): Mover | undefined;
   /** Spins for whoever's turn it is and moves them. Throws when the Race is done. */
   turn(): Turn;
@@ -59,7 +62,7 @@ export interface Race {
   askAhead(): boolean;
 }
 
-export function createRace(home: number, random: () => number = Math.random): Race {
+export function createRace(home: number, random: () => number = Math.random, players: Players = 1): Race {
   const at: Record<Mover, number> = { hopper: 0, friend: 0 };
   /** Each animal's last two spins, so neither gets the same one three times running. */
   const spins: Record<Mover, Spin[]> = { hopper: [], friend: [] };
@@ -73,7 +76,8 @@ export function createRace(home: number, random: () => number = Math.random): Ra
     return spun;
   }
 
-  const next = () => (at.hopper >= home ? undefined : mover);
+  const done = () => at.hopper >= home && (players === 1 || at.friend >= home);
+  const next = () => (done() ? undefined : mover);
 
   return {
     home,
@@ -85,8 +89,9 @@ export function createRace(home: number, random: () => number = Math.random): Ra
       const spun = spin(who);
       const squares = hopsFrom(at[who], spun, home);
       at[who] = squares.at(-1)!;
-      // The Friend goes next, unless it's Home.
-      mover = who === 'hopper' && at.friend < home ? 'friend' : 'hopper';
+      // The other one goes next, unless it's Home.
+      const other: Mover = who === 'hopper' ? 'friend' : 'hopper';
+      mover = at[other] < home ? other : who;
       return { mover: who, spin: spun, squares };
     },
     askAhead() {

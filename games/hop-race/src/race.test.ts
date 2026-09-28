@@ -75,6 +75,21 @@ describe('a Race', () => {
     expect(race.at('hopper')).toBe(5);
   });
 
+  it('with Two players, ends only when both are Home, skipping whoever got there first', () => {
+    // The Hopper spins 2s where it can, the Friend 1s: the Hopper is Home first.
+    const race = createRace(5, fixed(TWO, ONE), 2);
+    const turns = playOut(race);
+    const hopperHome = turns.findIndex((t) => t.mover === 'hopper' && t.squares.at(-1) === 5);
+    expect(hopperHome).toBeGreaterThan(-1);
+    expect(hopperHome).toBeLessThan(turns.length - 1);
+    expect(turns.slice(hopperHome + 1).every((t) => t.mover === 'friend')).toBe(true);
+    expect([race.at('hopper'), race.at('friend')]).toEqual([5, 5]);
+    expect(race.next()).toBeUndefined();
+    // One player: the same spins end the Race as soon as the Hopper is Home.
+    const alone = createRace(5, fixed(TWO, ONE));
+    expect(playOut(alone)).toHaveLength(hopperHome + 1);
+  });
+
   it('spins 1 or 2, never the same three times running for one animal', () => {
     const race = createRace(10, fixed(ONE));
     const spins = playOut(race)

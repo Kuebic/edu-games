@@ -1,9 +1,11 @@
-// The level select: the Tracks as Groups, and the Hoppers as Skin chips, so a child picks their animal.
+// The level select: the Tracks as Groups, the Hoppers as Skin chips, so a child picks their animal, and under
+// the Tracks One or Two players.
 
 import { showLevelSelect, type LevelSelectGame, type LevelSelectView } from '@shared/level-select';
+import { skinChips } from '@shared/skins';
 import { HOPPERS, HOPPER_IDS, isHopper } from '../animals';
 import type { App } from '../app';
-import { setHopper } from '../progress';
+import { setHopper, setPlayers } from '../progress';
 import { TRACKS } from '../race';
 import { play } from '../sounds';
 
@@ -24,8 +26,39 @@ export function trackBadge(track: number): string {
   return `<svg viewBox="0 0 48 48" aria-hidden="true">${t.ahead ? AHEAD : HOP_ARC + number(t.home)}</svg>`;
 }
 
-/** Hop Race as the level select sees it: Groups and Levels count from 0 there, as here. */
-export function hopRaceSelect(app: App): LevelSelectGame {
+/** A child, drawn in ink: one on the One player chip, two side by side on Two players. */
+const person = (x: number, scale: number) =>
+  `<g transform="translate(${x} 0) scale(${scale})" fill="#2b3445"><circle cx="0" cy="15" r="7"/><path d="M-12 40a12 12 0 0 1 24 0Z"/></g>`;
+const ONE_PLAYER = `<svg viewBox="0 0 48 48" aria-hidden="true">${person(24, 1)}</svg>`;
+const TWO_PLAYERS = `<svg viewBox="0 0 48 48" aria-hidden="true">${person(13, 0.85)}${person(35, 0.85)}</svg>`;
+
+/**
+ * One or Two players, as chips drawn like the Skins' under the Tracks: a grown-up picks it each time someone
+ * joins in, so it's one tap on the first screen. `chose` redraws.
+ */
+function playerChips(app: App, chose: () => void): HTMLElement {
+  const row = skinChips(
+    {
+      chips: [
+        { id: '1', label: 'One player', picture: ONE_PLAYER, colour: '#fff3c4' },
+        { id: '2', label: 'Two players', picture: TWO_PLAYERS, colour: '#d7ecff' },
+      ],
+      current: () => String(app.progress.game.players),
+      choose(id) {
+        play('pop');
+        setPlayers(app.progress, id === '2' ? 2 : 1);
+      },
+    },
+    chose,
+  );
+  row.classList.add('players');
+  for (const chip of row.children) chip.classList.add('player-chip');
+  row.setAttribute('aria-label', 'Players');
+  return row;
+}
+
+/** Hop Race as the level select sees it: Groups and Levels count from 0 there, as here. `redraw` draws it again. */
+export function hopRaceSelect(app: App, redraw: () => void = () => {}): LevelSelectGame {
   return {
     title: 'Hop Race',
     groups: () =>
@@ -52,11 +85,13 @@ export function hopRaceSelect(app: App): LevelSelectGame {
         setHopper(app.progress, id);
       },
     },
+    underList: () => playerChips(app, redraw),
     play: (g, race) => app.play(g, race),
   };
 }
 
 /** The Track list, or with `track` that Track's Races. */
 export function showSelect(app: App, track?: number): LevelSelectView {
-  return showLevelSelect(app.root, hopRaceSelect(app), track);
+  const view: LevelSelectView = showLevelSelect(app.root, hopRaceSelect(app, () => view.redraw()), track);
+  return view;
 }

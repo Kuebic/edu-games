@@ -71,4 +71,4 @@ The site's switches (Sound, Voice, Every level open) and reset. A note: say the 
 
 ## Out of scope
 
-A Track past 10, a spinner with 3, the child moving the Friend, a two-player mode, recorded number clips.
+A Track past 10, a spinner with 3, recorded number clips. (A two-player mode came later, on 2026-09-28: ADR 0003.)

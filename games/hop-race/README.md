@@ -24,4 +24,4 @@ There are three tracks. To 5 is a short one to learn spinning and hopping. To 10
 
 On their turn the spinner glows: your child taps it, and it lands on one dot or two. Then their animal's button glows, and each tap is one hop. The friend spins and hops by itself. Nobody loses: the race ends when your child's animal gets home, and a friend who gets there first waits. Leave it for 6 seconds and the glowing button wiggles and the Voice asks again.
 
-Your child picks their animal, Bunny, Puppy, Kitty or Bear, on the first screen. Reset progress keeps it.
+Your child picks their animal, Bunny, Puppy, Kitty or Bear, on the first screen. Under the tracks, pick one player or two. With two, a second child (or you) plays the friend: the voice says whose turn it is, the big button shows that animal, and each taps the spinner and hops on their own turn. The race goes on until both animals are home, and whoever gets there first waits. Reset progress keeps the animal and the players.
