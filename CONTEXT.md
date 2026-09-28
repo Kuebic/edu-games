@@ -90,11 +90,11 @@ The two screens a Game with Levels opens on, drawn the same in every Game: the G
 _Avoid_: level picker, map, menu
 
 **Practice**:
-The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. A Topic may have Skin chips too. The Game saves the picks. Find It is a Practice Game.
+The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. A Topic may have Skin chips too. The Game saves the picks. Find It and Which Way? are Practice Games.
 _Avoid_: mode, free play, endless
 
 **Topic**:
-One kind of thing a Practice Game teaches, a tab on Practice with its own Scope and Way: Find It's Numbers and Letters.
+One kind of thing a Practice Game teaches, a tab on Practice with its own Scope and Way: Find It's Numbers and Letters. A Game with one Topic shows no tabs.
 _Avoid_: mode, category (a Shelf word)
 
 **Scope**:
@@ -116,11 +116,11 @@ A mark for doing a Level especially well: in the fewest Moves (Way Out) or with 
 _Avoid_: star, bonus, score
 
 **Skin**:
-A picture set a child picks from the chips on the Group list, or on a Topic of Practice, drawn the same in both (`@shared/skins`). It changes looks and sounds, never the Levels or the Finds. Find It (the beans on its Trays), Hop Race (its Hopper), Robot Path and Way Out have Skins.
+A picture set a child picks from the chips on the Group list, or on a Topic of Practice, drawn the same in both (`@shared/skins`). It changes looks and sounds, never the Levels or the Finds. Find It (the beans on its Trays), Hop Race (its Hopper), Robot Path, Way Out and Which Way? (its Mover) have Skins.
 _Avoid_: theme
 
 **Voice**:
-What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Find It, Hop Race, My Letter, Robot Path, Snack Math and Way Out have a Voice.
+What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Find It, Hop Race, My Letter, Robot Path, Snack Math, Way Out and Which Way? have a Voice.
 _Avoid_: speech, TTS, narration
 
 **Sound**:
