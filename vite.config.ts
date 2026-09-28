@@ -23,7 +23,7 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         // A new asset file type (mp3, webp, woff2) must be added here, or it isn't precached.
-        globPatterns: ['**/*.{js,css,html,png,svg,ogg,mp3,webmanifest}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,ogg,mp3,webp,webmanifest}'],
         // Each game has its own index.html; never answer a game URL with the hub page.
         navigateFallback: null,
       },
