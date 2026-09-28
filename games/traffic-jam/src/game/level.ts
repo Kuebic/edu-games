@@ -107,6 +107,11 @@ export function inIntersection(level: Level, vehicle: Vehicle): boolean {
   return cellsOf(vehicle).some((cell) => isIntersection(level, cell));
 }
 
+/** Whether any part of the Vehicle sits on the board's outer edge. */
+export function atEdge(level: Pick<Level, 'w' | 'h'>, vehicle: Vehicle): boolean {
+  return cellsOf(vehicle).some(({ x, y }) => x === 0 || y === 0 || x === level.w - 1 || y === level.h - 1);
+}
+
 /**
  * The column (v) or row (h) a Vehicle heading `dir` drives in on this Street.
  * Single-lane Streets have one Lane for both directions; two-lane Streets keep right.

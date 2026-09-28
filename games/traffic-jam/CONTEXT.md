@@ -25,7 +25,7 @@ _Avoid_: Dead end (a T-junction is not one)
 ### Vehicles
 
 **Vehicle**:
-Anything the child taps: a car (1 cell), truck (2 cells) or bus (3 cells). Its position is its front cell; the rest trails behind.
+Anything the child taps: a car (1 cell), truck (2 cells) or bus (3 cells). Its position is its front cell; the rest trails behind. No part starts on the board's edge.
 _Avoid_: Piece, token, block
 
 **Arrow**:
