@@ -155,6 +155,16 @@ describe('Practice', () => {
     expect(play).toHaveBeenCalledWith(1);
   });
 
+  it('waits while the Scope is short of the Topic’s fewest', () => {
+    const { game, play } = testGame({ topics: [topics[0]!, { ...topics[1]!, fewest: 2 }] });
+    showPractice(root, game);
+    byLabel('B').click();
+    expect(byLabel('Play').disabled).toBe(true);
+    byLabel('C').click();
+    byLabel('Play').click();
+    expect(play).toHaveBeenCalledWith(1);
+  });
+
   it('draws nothing more once it has left', () => {
     const { game } = testGame();
     const view = showPractice(root, game);

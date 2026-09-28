@@ -36,6 +36,8 @@ export interface PracticeTopic {
   ways: readonly PracticeWay[];
   /** Skin chips under its Ways (Find It's beans, ladybugs or stars). Leave out in a Topic without Skins. */
   skins?: SkinPicker;
+  /** How many items the Scope needs before Play will go: 1 if left out. Tidy Up sorts into two Bins at least. */
+  fewest?: number;
 }
 
 /** Everything Practice needs from a Game. Read again on every draw, never cached. */
@@ -49,7 +51,7 @@ export interface PracticeGame {
   chooseTopic(topic: number): void;
   /** A Topic's Scope: the items that come up, in the Topic's order. */
   scope(topic: number): readonly string[];
-  /** Save a Topic's Scope, always given in the Topic's order. It may be empty; then Play waits. */
+  /** Save a Topic's Scope, always given in the Topic's order. It may be empty, or short of `fewest`; then Play waits. */
   setScope(topic: number, items: readonly string[]): void;
   /** A Topic's Way, by id. */
   way(topic: number): string;
@@ -196,7 +198,7 @@ export function showPractice(root: HTMLElement, game: PracticeGame): PracticeVie
       game.play(t);
     });
     play.innerHTML = PLAY;
-    play.disabled = scope.size === 0;
+    play.disabled = scope.size < (topic.fewest ?? 1);
 
     const go = document.createElement('div');
     go.className = 'site-practice-go';
