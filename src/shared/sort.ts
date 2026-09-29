@@ -353,8 +353,11 @@ export interface SortGame<T, K> {
   opening?(bins: readonly BinView[], keys: readonly K[]): Promise<void>;
   /** A Thing lifted. */
   lifted?(thing: T): void;
-  /** A Thing in its own Bin: its sound and Word. The next Thing waits for it. */
-  landed(thing: T): Promise<void>;
+  /**
+   * A Thing in its own Bin: its sound, and its Word only if `first`, the first into that Bin this Round. A
+   * right drop never says again what the child has just heard (site ADR 0016). The next Thing waits for it.
+   */
+  landed(thing: T, first: boolean): Promise<void>;
   /** A wrong Bin, as it bumps. */
   missed(thing: T): void;
   /** Back on the Spot after a first Miss, its own Bin glowing: its Word. */
@@ -386,6 +389,8 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
   let current: { thing: T; el: HTMLElement; misses: number } | null = null;
   /** While a Thing glides, goes in, or the Round opens or ends, fingers do nothing. */
   let busy = true;
+  /** The Bins something has gone into this Round. */
+  const filled = new Set<BinView>();
 
   const spotPoint = () => s.centreOf(spot);
   const ownBin = (thing: T) => bins[round.bins.indexOf(game.binOf(thing))]!;
@@ -401,6 +406,7 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
   async function startRound(): Promise<void> {
     round = game.next();
     served = 0;
+    filled.clear();
     bins = round.bins.map((key) => {
       const bin = game.bin(key);
       bin.el.classList.add('site-sort-bin');
@@ -466,6 +472,8 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
 
   async function into(bin: BinView): Promise<void> {
     const cur = current!;
+    const first = !filled.has(bin);
+    filled.add(bin);
     cur.el.classList.add('site-sort-going-in');
     await s.glide(cur.el, mouthOf(bin));
     if (!alive) return;
@@ -476,7 +484,7 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
     replay(bin.el, 'site-sort-got');
     buzz(30);
     s.sparkleAt(bin.el);
-    await game.landed(cur.thing);
+    await game.landed(cur.thing, first);
     if (!alive) return;
     await wait(150);
     if (alive) serve();

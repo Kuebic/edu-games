@@ -1,6 +1,6 @@
 # Piggy Bank
 
-A phone-first touch game that teaches two to four-year-olds the names of money: the penny, nickel, dime, quarter and the dollar bill. Real photos of each lie at their true sizes. The child drags each one into the piggy bank wearing its picture, or finds the one a pig asks for by name, and a recorded voice says its name as it clinks in.
+A phone-first touch game that teaches two to four-year-olds the names of money: the penny, nickel, dime, quarter and the dollar bill. Real photos of each lie at their true sizes. The child drags each one into the piggy bank wearing its picture, or finds the one a pig asks for by name, and a recorded voice says its name as the first of each kind clinks in.
 
 It teaches names, never values: most children can compare what coins are worth only at about six. From the research in [docs/research/toddler-coin-game.md](../../docs/research/toddler-coin-game.md). Vocabulary lives in [CONTEXT.md](./CONTEXT.md); design decisions in [docs/adr](./docs/adr); the spec it was built from in [docs/spec.md](./docs/spec.md).
 

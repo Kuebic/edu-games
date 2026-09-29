@@ -53,7 +53,7 @@ An empty Scope, or a Scope of one, leaves Play waiting, since sorting needs two 
 
 1. The next Thing hops off the Pile to the **Spot**, above the middle of the screen, at least 20 mm across (about 125 CSS px).
 2. The child drags it. The Thing lifts above the fingertip so the finger doesn't hide it, and a soft pick-up note plays.
-3. **Right Bin.** Releasing anywhere over a Bin's column in the lower half drops it into that Bin. It snaps in, the Bin wiggles, a bright note plays, then the Word clip says its color or shape ("red"). The object is on screen first and the word comes last, the word order that taught 2-year-olds colors (Ramscar et al. 2010). The next Thing hops out as the word ends.
+3. **Right Bin.** Releasing anywhere over a Bin's column in the lower half drops it into that Bin. It snaps in, the Bin wiggles, a bright note plays, then, for the first Thing into that Bin this Round, the Word clip says its color or shape ("red"); later ones are the note only (ADR 0004, 2026-09-29). The object is on screen first and the word comes last, the word order that taught 2-year-olds colors (Ramscar et al. 2010). The next Thing hops out as the word ends.
 4. **Wrong Bin.** A soft low bump, no buzzer. The Thing slides back to the Spot, its Word clip plays ("blue") and its own Bin glows. A second wrong Bin for the same Thing: it glides into its own Bin by itself, with its word. Nothing is counted.
 5. **Let go in the top half.** The Thing stays where it was dropped, and the child can grab it again.
 6. **A tap on a Bin** sends the Thing there, right or wrong as above. It's for a child who can't drag yet, and needs no setting.

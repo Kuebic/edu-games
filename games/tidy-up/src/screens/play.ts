@@ -78,9 +78,9 @@ function sortScreen(app: App, topic: SortTopic): () => void {
       load.append(landed);
     },
     lifted: () => pickUp(),
-    async landed(thing) {
+    async landed(thing, first) {
       drop();
-      await word(thing.sort)?.();
+      if (first) await word(thing.sort)?.();
     },
     missed: () => bump(),
     helped: (thing) => say(thing.sort),

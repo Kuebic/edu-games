@@ -30,9 +30,9 @@ export function sortScreen(app: App): () => void {
     piled: (money) => moneyPiece(money),
     land: (bin, money) => fillBelly(bellies.get(bin.el)!, money),
     lifted: () => pickUp(),
-    async landed(money) {
+    async landed(money, first) {
       clink(money === 'dollar');
-      await word(money)?.();
+      if (first) await word(money)?.();
     },
     missed: () => bump(),
     helped: (money) => void word(money)?.(),

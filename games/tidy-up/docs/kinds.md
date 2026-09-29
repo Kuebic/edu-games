@@ -85,13 +85,13 @@ A test checks that within each Step no Thing sits under two of its groups (🍎 
 
 ### Words
 
-The group's plural or mass word: "Animals", "Vehicles", "Plants", "Toys", "Clothes", "Food", "Birds", "Fish", "Fruit", "Vegetables", "Mammals". Plural, as in the study, where even plural words the children didn't know helped. Each crate says it as the Round starts, and it plays when a Thing lands in its Bin.
+The group's plural or mass word: "Animals", "Vehicles", "Plants", "Toys", "Clothes", "Food", "Birds", "Fish", "Fruit", "Vegetables", "Mammals". Plural, as in the study, where even plural words the children didn't know helped. Each crate says it as the Round starts. A Thing landing in its crate is only a sound: the user found the crate saying its name again on every right drop annoying (ADR 0004).
 
 **Each Thing's own name** is a clip too ("dog", "penguin"). Parents teach group words by tying them to the everyday name ("a dog is an animal"; Callanan 1985), and naming an odd member's group is what lifted 2-year-olds on it (Gelman & Coley 1990). So:
 
 - **A tap on a Thing** says its name ("Penguin").
 - **After a Miss**, its name, then its own group's word ("Penguin" … "Birds"), and its own crate glows. Never the wrong crate's word.
-- **Landing** says only the group's word, so a Round doesn't say two words for every Thing.
+- **Landing** says nothing: the crate said its name as the Round opened.
 
 A Thing with no clean recording of its name is left out of the pools: `sounds.test.ts` fails a Thing with no name clip. The name clips are one speaker where possible, and each is checked by speech recognition like the rest.
 

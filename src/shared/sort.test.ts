@@ -63,8 +63,8 @@ function game(log: string[]): SortGame<string, string> {
     async opening(bins) {
       log.push(`open ${bins.length}`);
     },
-    async landed(t) {
-      log.push(`landed ${t}`);
+    async landed(t, first) {
+      log.push(`landed ${t}${first ? ' first' : ''}`);
     },
     missed: (t) => log.push(`missed ${t}`),
     helped: (t) => log.push(`helped ${t}`),
@@ -111,7 +111,7 @@ describe('the sorting screen', () => {
     await vi.advanceTimersByTimeAsync(500);
     press(bin('a'));
     await vi.advanceTimersByTimeAsync(600);
-    expect(log).toContain('landed a');
+    expect(log).toContain('landed a first');
     expect(bin('a').textContent).toBe('a');
     expect(thing()!.dataset.t).toBe('b');
   });
@@ -124,9 +124,18 @@ describe('the sorting screen', () => {
     expect(bin('a').classList.contains('site-sort-glow')).toBe(true);
     press(bin('b'));
     await vi.advanceTimersByTimeAsync(1000);
-    expect(log.slice(3)).toEqual(['missed a', 'landed a']);
+    expect(log.slice(3)).toEqual(['missed a', 'landed a first']);
     expect(bin('a').textContent).toBe('a');
     expect(bin('b').textContent).toBe('');
+  });
+
+  it('tells the Game only the first Thing into each Bin a Round is the first', async () => {
+    await vi.advanceTimersByTimeAsync(500);
+    for (let i = 0; i < 4; i++) {
+      press(bin(thing()!.dataset.t!));
+      await vi.advanceTimersByTimeAsync(600);
+    }
+    expect(log.filter((l) => l.startsWith('landed')).sort()).toEqual(['landed a', 'landed a first', 'landed b', 'landed b first']);
   });
 
   it('nudges after being still, three times at most', async () => {
