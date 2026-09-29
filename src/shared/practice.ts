@@ -38,6 +38,8 @@ export interface PracticeTopic {
   skins?: SkinPicker;
   /** How many items the Scope needs before Play will go: 1 if left out. Tidy Up sorts into two Bins at least. */
   fewest?: number;
+  /** Items to a row: 7 if left out. Fewer for wide items, like Tidy Up's Steps of two or three pictures. */
+  columns?: number;
 }
 
 /** Everything Practice needs from a Game. Read again on every draw, never cached. */
@@ -181,6 +183,7 @@ export function showPractice(root: HTMLElement, game: PracticeGame): PracticeVie
     picks.append(ranges);
 
     const items = row('site-scope', 'Scope');
+    if (topic.columns) items.style.setProperty('--site-scope-columns', String(topic.columns));
     for (const item of topic.items) {
       const chip = button('site-item', item, () => {
         const next = scope.has(item) ? [...scope].filter((i) => i !== item) : [...scope, item];

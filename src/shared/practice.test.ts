@@ -165,6 +165,15 @@ describe('Practice', () => {
     expect(play).toHaveBeenCalledWith(1);
   });
 
+  it('lays a Topic’s items out in its own number of columns', () => {
+    const { game } = testGame({ topics: [topics[0]!, { ...topics[1]!, columns: 3 }] });
+    showPractice(root, game);
+    expect(root.querySelector<HTMLElement>('.site-scope')!.style.getPropertyValue('--site-scope-columns')).toBe('3');
+    game.chooseTopic(0);
+    showPractice(root, game);
+    expect(root.querySelector<HTMLElement>('.site-scope')!.style.getPropertyValue('--site-scope-columns')).toBe('');
+  });
+
   it('draws nothing more once it has left', () => {
     const { game } = testGame();
     const view = showPractice(root, game);
