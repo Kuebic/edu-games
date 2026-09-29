@@ -69,7 +69,7 @@ describe('a Round', () => {
     press(bin(a, other));
     await vi.advanceTimersByTimeAsync(600);
     expect(landed(a, other)).toBe(0);
-    expect(bin(a, own).classList.contains('glow')).toBe(true);
+    expect(bin(a, own).classList.contains('site-sort-glow')).toBe(true);
     expect(pile(a)).toBe(7);
 
     press(bin(a, other));
@@ -84,9 +84,9 @@ describe('a Round', () => {
     leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(500);
     const { own } = sorts(a);
-    expect(bin(a, own).classList.contains('glow')).toBe(false);
+    expect(bin(a, own).classList.contains('site-sort-glow')).toBe(false);
     await vi.advanceTimersByTimeAsync(IDLE_MS);
-    expect(bin(a, own).classList.contains('glow')).toBe(true);
+    expect(bin(a, own).classList.contains('site-sort-glow')).toBe(true);
   });
 
   it('tidies when the Pile is empty, with a card for the grown-up and Next to a new Round', async () => {
@@ -99,10 +99,10 @@ describe('a Round', () => {
     }
     expect(a.root.querySelectorAll('.bin.tidy')).toHaveLength(2);
     await vi.advanceTimersByTimeAsync(1400);
-    expect(a.root.querySelector('.look-for')!.textContent).toMatch(/^🔍 Find something (red|blue) at home!$/);
+    expect(a.root.querySelector('.site-sort-look-for')!.textContent).toMatch(/^🔍 Find something (red|blue) at home!$/);
     a.root.querySelector<HTMLButtonElement>('.site-next')!.click();
     await vi.advanceTimersByTimeAsync(500);
-    expect(a.root.querySelector('.cheer')).toBeNull();
+    expect(a.root.querySelector('.site-sort-cheer')).toBeNull();
     expect(pile(a)).toBe(7);
     expect(landed(a, 'red') + landed(a, 'blue')).toBe(0);
   });
@@ -111,7 +111,7 @@ describe('a Round', () => {
     const a = app({ topic: 'shapes', shapes: ['circle', 'square', 'triangle', 'star'] });
     leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(500);
-    expect(a.root.querySelector('.stage')!.classList.contains('look-box')).toBe(true);
+    expect(a.root.querySelector('.site-sort-stage')!.classList.contains('look-box')).toBe(true);
     expect(binLabels(a)).toHaveLength(3);
     expect(pile(a)).toBe(8);
     a.root.querySelector<HTMLButtonElement>('[aria-label="Back"]')!.click();

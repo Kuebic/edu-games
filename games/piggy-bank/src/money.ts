@@ -2,7 +2,7 @@
 // it's tested as data. It teaches names and looks, never values: nothing here knows a dime is worth more
 // than a nickel (docs/spec.md).
 
-export type Rng = () => number;
+import { binsFrom, pileOf, PER_BIN, type Rng } from '@shared/sort';
 
 export type Money = 'penny' | 'nickel' | 'dime' | 'quarter' | 'dollar';
 /** Every kind in Scope order. Each is also its Word. */
@@ -31,10 +31,6 @@ export const RANGES: readonly (readonly Money[])[] = [
 export type Way = 'sort' | 'find';
 export const WAYS: readonly Way[] = ['sort', 'find'];
 
-/** The most kinds in a Round: Banks side by side on a phone, or coins on the table in Find. */
-export const MOST_KINDS = 3;
-/** How many pieces each Bank gets in Sort: 8 in all with 2 Banks, 9 with 3. */
-export const PER_BANK: Readonly<Record<number, number>> = { 2: 4, 3: 3 };
 /** Asks in a Find Round. */
 export const ASKS = 6;
 
@@ -51,43 +47,10 @@ export interface FindRound {
   asks: Money[];
 }
 
-export function shuffle<T>(items: readonly T[], rng: Rng = Math.random): T[] {
-  const out = [...items];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [out[i], out[j]] = [out[j]!, out[i]!];
-  }
-  return out;
-}
-
-/** True when no three in a row are the same. */
-const noThreeInARow = (list: readonly Money[]) => list.every((m, i) => i < 2 || m !== list[i - 1] || m !== list[i - 2]);
-
-/** Shuffles until no kind comes three times in a row, which with this few takes a few tries at most. */
-function order(list: readonly Money[], rng: Rng): Money[] {
-  let out = shuffle(list, rng);
-  for (let tries = 0; tries < 200 && !noThreeInARow(out); tries++) out = shuffle(list, rng);
-  return out;
-}
-
-/**
- * Picks each Round's kinds from the Scope: as many as it has, up to three, taken from a bag so each
- * kind comes up once before any comes again.
- */
+/** Each Round's kinds from the Scope: as many as it has, up to three, each once before any comes again. */
 function kindsOf(scope: readonly Money[], rng: Rng): () => Money[] {
   if (scope.length < 2) throw new Error('Piggy Bank: a Round needs a Scope of two at least');
-  const size = Math.min(scope.length, MOST_KINDS);
-  let bag: Money[] = [];
-  const draw = (taken: readonly Money[]): Money => {
-    if (bag.every((m) => taken.includes(m))) bag = [...bag, ...shuffle(scope, rng)];
-    const i = bag.findIndex((m) => !taken.includes(m));
-    return bag.splice(i, 1)[0]!;
-  };
-  return () => {
-    const kinds: Money[] = [];
-    while (kinds.length < size) kinds.push(draw(kinds));
-    return kinds;
-  };
+  return binsFrom(scope, rng);
 }
 
 /** Sort's Rounds, one per call, for as long as it's played. */
@@ -95,8 +58,8 @@ export function sortRounds(scope: readonly Money[], rng: Rng = Math.random): () 
   const next = kindsOf(scope, rng);
   return () => {
     const banks = next();
-    const each = PER_BANK[banks.length]!;
-    return { banks, purse: order(banks.flatMap((m) => Array<Money>(each).fill(m)), rng) };
+    const each = PER_BIN[banks.length]!;
+    return { banks, purse: pileOf(banks.flatMap((m) => Array<Money>(each).fill(m)), (m) => m, rng) };
   };
 }
 
@@ -106,22 +69,9 @@ export function findRounds(scope: readonly Money[], rng: Rng = Math.random): () 
   return () => {
     const kinds = next();
     const asks = Array.from({ length: ASKS }, (_, i) => kinds[i % kinds.length]!);
-    return { kinds, asks: order(asks, rng) };
+    return { kinds, asks: pileOf(asks, (m) => m, rng) };
   };
 }
-
-/**
- * Which Bank a finger let go over, counting from the left, or undefined over the top half, where a
- * piece just stays. The Banks share the width of the play area evenly.
- */
-export function bankAt(point: { x: number; y: number }, area: { left: number; top: number; width: number; height: number }, banks: number): number | undefined {
-  if (point.y < area.top + area.height / 2) return undefined;
-  const i = Math.floor(((point.x - area.left) / area.width) * banks);
-  return Math.min(Math.max(i, 0), banks - 1);
-}
-
-/** Misses on one piece, or one Ask, before the right one goes in by itself. */
-export const MISSES_BEFORE_HELP = 2;
 
 /** The grown-up's card after a Round. Real coins are a choking risk, so real-coin play is the grown-up's. */
 export const lookFor = (money: Money): string => `Find a ${money} with a grown-up!`;

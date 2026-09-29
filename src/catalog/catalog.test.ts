@@ -119,6 +119,13 @@ describe('Catalog', () => {
       }
     });
 
+    // ADR 0016: a Game that sorts uses the site's sorting screen, and keeps no finger or drop rules of its own.
+    it('sorts only through the sorting screen', () => {
+      for (const f of scripts) {
+        expect(source(f), relative(dir, f)).not.toMatch(/\b(?:function|const)\s+(?:binAt|bankAt|fingers)\b|\bMISSES_BEFORE_HELP\s*=/);
+      }
+    });
+
     // Every Game opens on the level select (ADR 0008) or Practice (ADR 0014), which draw the House button; look.test.ts checks the rest.
     it('has a House button back to the Hub', () => {
       expect(scripts.some((f) => /\bshow(?:LevelSelect|Practice)\(/.test(source(f)))).toBe(true);

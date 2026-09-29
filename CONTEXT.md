@@ -119,6 +119,10 @@ _Avoid_: star, bonus, score
 A picture set a child picks from the chips on the Group list, or on a Topic of Practice, drawn the same in both (`@shared/skins`). It changes looks and sounds, never the Levels or the Finds. Find It (the beans on its Trays), Hop Race (its Hopper), Robot Path, Tidy Up (its Bins), Way Out and Which Way? (its Mover) have Skins.
 _Avoid_: theme
 
+**Sorting screen**:
+A Game's play screen where a child sorts (`@shared/sort`): a **Pile** of Things at the top, the **Spot** where the next one waits, and two or three **Bins** along the bottom. She drags a Thing into a Bin, or taps the Bin. A **Miss** glides back and lights the right Bin; after two, the Thing goes in by itself. Tidy Up and Piggy Bank's Sort play on it.
+_Avoid_: drag game, drop zone
+
 **Voice**:
 What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Find It, Hop Race, My Letter, Robot Path, Snack Math, Way Out and Which Way? have a Voice.
 _Avoid_: speech, TTS, narration

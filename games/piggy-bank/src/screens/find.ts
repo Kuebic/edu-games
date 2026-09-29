@@ -3,14 +3,15 @@
 // only name she hears is the one asked for, once an Ask and again after a Miss, never the one she picked
 // (ADR 0004). Six Asks fill the pig; then the site's cheer, a card for the grown-up, and Next.
 
+import { fingers, GLIDE_MS, IDLE_MS, MAX_NUDGES, MISSES_BEFORE_HELP, replay, shuffle, wait, type Point } from '@shared/sort';
 import { buzz } from '@shared/sound';
 import type { App } from '../app';
-import { h, replay, wait } from '../dom';
-import { findRounds, MISSES_BEFORE_HELP, shuffle, type FindRound, type Money } from '../money';
+import { h } from '../dom';
+import { findRounds, type FindRound, type Money } from '../money';
 import { picture } from '../pictures';
 import { ask as askNote, bump, clink, hushWords, jingle, pickUp, word } from '../sounds';
 import { speakerIcon } from './icons';
-import { fillBelly, fingers, GLIDE_MS, IDLE_MS, makeStage, MAX_NUDGES, moneyPiece, pig, type Point } from './stage';
+import { card, fillBelly, fullPigs, makeStage, moneyPiece, pig, slotOf } from './stage';
 
 /** Where the coins lie, as fractions of the stage, for two kinds and for three. */
 const SEATS: Readonly<Record<number, readonly Point[]>> = {
@@ -72,6 +73,7 @@ export function findScreen(app: App): () => void {
     for (const p of pieces) p.remove();
     pieces = round.kinds.map((money) => {
       const el = moneyPiece(money, 'button');
+      el.classList.add('site-sort-thing');
       // A press from a keyboard or switch; fingers come through the stage's pointer events.
       el.addEventListener('click', (e) => {
         if (e.detail === 0) void choose(el);
@@ -81,7 +83,7 @@ export function findScreen(app: App): () => void {
     reseat();
     for (const p of pieces) {
       s.moveTo(p, seatOf(p));
-      p.classList.add('pop');
+      p.classList.add('site-sort-pop');
       s.stage.append(p);
     }
     await wait(450);
@@ -135,7 +137,7 @@ export function findScreen(app: App): () => void {
 
     misses++;
     bump();
-    replay(pigEl, 'nope');
+    replay(pigEl, 'site-sort-nope');
     await s.glide(el, seatOf(el));
     if (!alive) return;
     if (misses >= MISSES_BEFORE_HELP) {
@@ -153,13 +155,13 @@ export function findScreen(app: App): () => void {
   async function into(el: HTMLElement): Promise<void> {
     const money = el.dataset.money as Money;
     glow(null);
-    el.classList.add('going-in');
-    await s.glide(el, s.slotOf(pigEl));
+    el.classList.add('site-sort-going-in');
+    await s.glide(el, slotOf(s, pigEl));
     if (!alive) return;
     el.classList.add('gone');
-    el.classList.remove('going-in');
+    el.classList.remove('site-sort-going-in');
     fillBelly(belly, money);
-    replay(pigEl, 'got');
+    replay(pigEl, 'site-sort-got');
     clink(money === 'dollar');
     buzz(30);
     s.sparkleAt(pigEl);
@@ -169,7 +171,7 @@ export function findScreen(app: App): () => void {
     // A new one of the same kind lies on the table again.
     s.moveTo(el, seatOf(el));
     el.classList.remove('gone');
-    replay(el, 'pop');
+    replay(el, 'site-sort-pop');
     await wait(200);
     if (!alive) return;
     asked++;
@@ -181,7 +183,8 @@ export function findScreen(app: App): () => void {
     clearIdle();
     bubble.classList.remove('up');
     jingle();
-    await s.end(round.kinds[Math.floor(Math.random() * round.kinds.length)]!, () => void startRound());
+    await fullPigs(s);
+    if (alive) s.end(card(round.kinds[Math.floor(Math.random() * round.kinds.length)]!), () => void startRound());
   }
 
   // ---- Nudges when she's been still ---------------------------------------
@@ -223,12 +226,13 @@ export function findScreen(app: App): () => void {
     pressed() {
       if (!busy) sayAsk();
     },
+    pressable: '.pig',
   });
 
   // A phone turned on its side moves the table; the pieces go with it.
   const onResize = () => {
     if (busy) return;
-    for (const p of pieces) if (!p.classList.contains('held')) s.moveTo(p, seatOf(p));
+    for (const p of pieces) if (!p.classList.contains('site-sort-held')) s.moveTo(p, seatOf(p));
   };
   window.addEventListener('resize', onResize);
 

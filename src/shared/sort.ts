@@ -1,0 +1,552 @@
+// Sorting (site ADR 0016): a Pile of Things at the top, Bins along the bottom, and a child who drags each
+// Thing, or taps a Bin, to put it where it belongs. The screen, the fingers, the Miss rule, the nudges and
+// the end of a Round are the same in every Game that sorts; a Game gives its Rounds, its drawings and its
+// sounds. Tidy Up and Piggy Bank's Sort use all of it; Piggy Bank's Find uses the stage and the fingers.
+
+import './sort.css';
+import { buzz, cheer } from './sound';
+
+export type Point = { x: number; y: number };
+export type Rng = () => number;
+
+/** How long a Thing takes to glide back to the Spot or into a Bin. */
+export const GLIDE_MS = 380;
+/** Before the first nudge, and between nudges. */
+export const IDLE_MS = 7000;
+export const MAX_NUDGES = 3;
+/** Misses on one Thing before it goes into its own Bin by itself. */
+export const MISSES_BEFORE_HELP = 2;
+/** The most Bins a Round has, side by side on a phone. */
+export const MOST_BINS = 3;
+/** How many Things each Bin gets: 8 in all with 2 Bins, 9 with 3. */
+export const PER_BIN: Readonly<Record<number, number>> = { 2: 4, 3: 3 };
+
+/** How far a finger may move and still tap, and how long a press may last. */
+const TAP_SLOP = 12;
+const TAP_MS = 5000;
+/** A grab reaches this far past a Thing's edge, about 10 mm. */
+const REACH = 60;
+/** How far above the fingertip a held Thing rides, so the finger doesn't hide it. */
+const LIFT = 36;
+
+// ---- Rounds, as data ---------------------------------------------------------------------------------
+
+export function shuffle<T>(items: readonly T[], rng: Rng = Math.random): T[] {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}
+
+/**
+ * The Bins of each Round from a Scope, one set per call: as many as the Scope has, up to `most`, taken
+ * from a bag so each item comes up once before any comes again, never twice in one Round.
+ */
+export function binsFrom<K>(scope: readonly K[], rng: Rng = Math.random, most = MOST_BINS): () => K[] {
+  if (scope.length === 0) throw new Error('Game Shelf: sorting needs a Scope');
+  const size = Math.min(scope.length, most);
+  let bag: K[] = [];
+  const draw = (taken: readonly K[]): K => {
+    if (bag.every((s) => taken.includes(s))) bag = [...bag, ...shuffle(scope, rng)];
+    return bag.splice(
+      bag.findIndex((s) => !taken.includes(s)),
+      1,
+    )[0]!;
+  };
+  return () => {
+    const bins: K[] = [];
+    while (bins.length < size) bins.push(draw(bins));
+    return bins;
+  };
+}
+
+/** Shuffles a Pile until no Bin gets three in a row, which with 3 or 4 each takes a few tries at most. */
+export function pileOf<T>(things: readonly T[], binOf: (thing: T) => unknown, rng: Rng = Math.random): T[] {
+  const ok = (pile: readonly T[]) => pile.every((t, i) => i < 2 || binOf(t) !== binOf(pile[i - 1]!) || binOf(t) !== binOf(pile[i - 2]!));
+  let out = shuffle(things, rng);
+  for (let tries = 0; tries < 200 && !ok(out); tries++) out = shuffle(things, rng);
+  return out;
+}
+
+/**
+ * Which Bin a finger let go over, counting from the left, or undefined over the top half, where a Thing
+ * just stays. The Bins share the width of the play area evenly.
+ */
+export function binAt(point: Point, area: { left: number; top: number; width: number; height: number }, bins: number): number | undefined {
+  if (point.y < area.top + area.height / 2) return undefined;
+  const i = Math.floor(((point.x - area.left) / area.width) * bins);
+  return Math.min(Math.max(i, 0), bins - 1);
+}
+
+// ---- The stage ---------------------------------------------------------------------------------------
+
+const BACK =
+  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5 7 12l7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const NEXT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4.5 19 12 8 19.5Z" fill="currentColor"/></svg>';
+
+function el<K extends keyof HTMLElementTagNameMap>(tag: K, className: string, label?: string): HTMLElementTagNameMap[K] {
+  const e = document.createElement(tag);
+  e.className = className;
+  if (label) e.setAttribute('aria-label', label);
+  if (tag === 'button') e.setAttribute('type', 'button');
+  return e;
+}
+
+export const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** Runs a one-shot animation class again, even if it's still on. */
+export function replay(target: Element, className: string): void {
+  target.classList.remove(className);
+  void (target as HTMLElement).offsetWidth;
+  target.classList.add(className);
+}
+
+/** What the Round's end shows the grown-up: a picture and a line to read aloud. */
+export interface Card {
+  art: Node;
+  text: string;
+}
+
+export interface StageSpec {
+  /** Classes of the Game's own on the stage, for its CSS ("look-box", "way-find"). */
+  className?: string;
+  back(): void;
+  /** Header buttons at the right: the gear. */
+  tools: HTMLElement[];
+  /** What falls at the end: colours for paper, or glyphs. */
+  confetti: { colours?: readonly string[]; glyphs?: readonly string[] };
+  /** What bursts where a Thing lands. */
+  sparkles?: readonly string[];
+}
+
+export interface PlayStage {
+  screen: HTMLElement;
+  stage: HTMLElement;
+  /** A point on the page, as the stage measures it. */
+  local(x: number, y: number): Point;
+  centreOf(target: Element): Point;
+  moveTo(target: HTMLElement, at: Point): void;
+  /** Glides a Thing somewhere, taking GLIDE_MS. */
+  glide(target: HTMLElement, to: Point): Promise<void>;
+  sparkleAt(target: Element): void;
+  /** The cheer, confetti, the grown-up's card, and Next. */
+  end(card: Card, next: () => void): void;
+  /** The screen is going: nothing still waiting shows. */
+  leave(): void;
+  left(): boolean;
+}
+
+/** The play screen: Back, the Game's tools, and a stage to sort on. Appended to `root`. */
+export function playStage(root: HTMLElement, spec: StageSpec): PlayStage {
+  const back = el('button', 'site-tool', 'Back');
+  back.innerHTML = BACK;
+  back.addEventListener('click', () => spec.back());
+  const header = el('header', 'site-sort-top');
+  header.append(back, el('div', ''), ...spec.tools);
+  const stage = el('main', `site-sort-stage ${spec.className ?? ''}`.trim());
+  const fx = el('div', 'site-sort-fx');
+  const screen = el('div', 'site-screen site-sort-screen');
+  screen.append(header, stage, fx);
+  root.append(screen);
+  let gone = false;
+
+  const local = (x: number, y: number): Point => {
+    const r = stage.getBoundingClientRect();
+    return { x: x - r.left, y: y - r.top };
+  };
+  const centreOf = (target: Element): Point => {
+    const r = target.getBoundingClientRect();
+    return local(r.left + r.width / 2, r.top + r.height / 2);
+  };
+  const moveTo = (target: HTMLElement, at: Point) => {
+    target.style.left = `${at.x}px`;
+    target.style.top = `${at.y}px`;
+  };
+
+  return {
+    screen,
+    stage,
+    local,
+    centreOf,
+    moveTo,
+    async glide(target, to) {
+      target.classList.add('site-sort-gliding');
+      moveTo(target, to);
+      await wait(GLIDE_MS);
+      target.classList.remove('site-sort-gliding');
+    },
+    sparkleAt(target) {
+      const at = centreOf(target);
+      const s = stage.getBoundingClientRect(), f = fx.getBoundingClientRect();
+      const glyphs = spec.sparkles ?? ['✨', '💛', '⭐'];
+      for (let i = 0; i < 8; i++) {
+        const spark = el('span', 'site-sort-sparkle');
+        spark.textContent = glyphs[i % glyphs.length]!;
+        const angle = (Math.PI * 2 * i) / 8 + Math.random() * 0.4;
+        const dist = 50 + Math.random() * 40;
+        spark.style.left = `${at.x + s.left - f.left}px`;
+        spark.style.top = `${at.y + s.top - f.top}px`;
+        spark.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+        spark.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+        fx.append(spark);
+        setTimeout(() => spark.remove(), 1000);
+      }
+    },
+    end(card, next) {
+      if (gone) return;
+      const confetti = el('div', 'site-sort-confetti');
+      const { colours, glyphs } = spec.confetti;
+      for (let i = 0; i < 36; i++) {
+        const c = el('i', '');
+        if (glyphs) c.textContent = glyphs[i % glyphs.length]!;
+        else if (colours) c.style.background = colours[i % colours.length]!;
+        c.style.left = `${Math.random() * 100}%`;
+        c.style.animationDelay = `${Math.random() * 0.5}s`;
+        c.style.animationDuration = `${1.6 + Math.random()}s`;
+        c.style.setProperty('--spin', `${Math.random() * 720 - 360}deg`);
+        confetti.append(c);
+      }
+      const art = el('span', 'site-sort-card-art');
+      art.append(card.art);
+      const text = el('p', 'site-grownup site-sort-look-for');
+      text.textContent = `🔍 ${card.text}`;
+      const box = el('div', 'site-sort-card');
+      box.append(art, text);
+      const nextBtn = el('button', 'site-next', 'Next');
+      nextBtn.innerHTML = NEXT;
+      const layer = el('div', 'site-sort-cheer');
+      layer.append(confetti, box, nextBtn);
+      screen.append(layer);
+      cheer();
+      buzz(80);
+      nextBtn.addEventListener('click', () => {
+        layer.remove();
+        next();
+      });
+    },
+    leave: () => (gone = true),
+    left: () => gone,
+  };
+}
+
+// ---- Fingers -----------------------------------------------------------------------------------------
+
+export interface Fingers {
+  /** The Things a finger may take now; none while something moves. */
+  grabbable(): HTMLElement[];
+  /** Any finger down: the child is here, so the nudges start over. */
+  touched(): void;
+  lifted(thing: HTMLElement): void;
+  tapped(thing: HTMLElement): void;
+  /** Let go after a drag, at a point on the page; NaN when the browser took the finger away. */
+  dropped(thing: HTMLElement, at: Point): void;
+  /** A press on something matching `pressable`, away from the Things: a Bin. */
+  pressed(target: HTMLElement): void;
+  /** What a press can land on. The Bins, if left out. */
+  pressable?: string;
+}
+
+/**
+ * Fingers on the stage: the first on a Thing drags it, riding above the fingertip; a still press is a
+ * tap; a press on a Bin away from the Things presses it. Other fingers and a palm are ignored until the
+ * first lifts.
+ */
+export function fingers(s: PlayStage, spec: Fingers): void {
+  const { stage } = s;
+  const pressable = spec.pressable ?? '.site-sort-bin';
+  let drag: { id: number; thing: HTMLElement; from: Point; at: number; moved: boolean } | null = null;
+  let press: { id: number; target: HTMLElement } | null = null;
+
+  const near = (p: Point, target: HTMLElement, reach: number) => {
+    const r = target.getBoundingClientRect();
+    const c = s.centreOf(target);
+    return Math.abs(p.x - c.x) <= r.width / 2 + reach && Math.abs(p.y - c.y) <= r.height / 2 + reach;
+  };
+
+  stage.addEventListener('pointerdown', (e) => {
+    spec.touched();
+    if (drag || press) return;
+    const p = s.local(e.clientX, e.clientY);
+    const things = spec.grabbable();
+    if (things.length === 0) return;
+    const target = (e.target as Element).closest<HTMLElement>(pressable);
+    if (target && !things.some((thing) => near(p, thing, 0))) {
+      press = { id: e.pointerId, target };
+      return;
+    }
+    // The nearest Thing in reach, so a finger between two takes the closer.
+    const dist = (t: HTMLElement) => Math.hypot(p.x - s.centreOf(t).x, p.y - s.centreOf(t).y);
+    const thing = things.filter((t) => near(p, t, REACH)).sort((a, b) => dist(a) - dist(b))[0];
+    if (!thing) return;
+    e.preventDefault();
+    drag = { id: e.pointerId, thing, from: p, at: e.timeStamp, moved: false };
+    stage.setPointerCapture?.(e.pointerId);
+  });
+
+  stage.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const p = s.local(e.clientX, e.clientY);
+    if (!drag.moved && Math.hypot(p.x - drag.from.x, p.y - drag.from.y) < TAP_SLOP) return;
+    if (!drag.moved) {
+      drag.moved = true;
+      drag.thing.classList.add('site-sort-held');
+      spec.lifted(drag.thing);
+    }
+    s.moveTo(drag.thing, { x: p.x, y: p.y - LIFT });
+  });
+
+  const letGo = (e: PointerEvent) => {
+    if (press && e.pointerId === press.id) {
+      const { target } = press;
+      press = null;
+      if (e.type === 'pointerup' && near(s.local(e.clientX, e.clientY), target, 0)) spec.pressed(target);
+      return;
+    }
+    if (!drag || e.pointerId !== drag.id) return;
+    const { thing, moved, at } = drag;
+    drag = null;
+    thing.classList.remove('site-sort-held');
+    if (e.type !== 'pointerup') {
+      if (moved) spec.dropped(thing, { x: NaN, y: NaN });
+      return;
+    }
+    if (!moved) {
+      if (e.timeStamp - at <= TAP_MS) spec.tapped(thing);
+      return;
+    }
+    spec.dropped(thing, { x: e.clientX, y: e.clientY });
+  };
+  stage.addEventListener('pointerup', letGo);
+  stage.addEventListener('pointercancel', letGo);
+}
+
+// ---- A sorting Round, turn by turn ---------------------------------------------------------------------
+
+export interface SortRound<T, K> {
+  bins: readonly K[];
+  /** In the order they come off the Pile. */
+  pile: readonly T[];
+}
+
+/** A Bin as the Game draws it: the button, and where in it a Thing lands. */
+export interface BinView {
+  el: HTMLElement;
+  /** Just above the opening a Thing goes in by, on the stage. The top quarter of the Bin, if left out. */
+  mouth?(): Point;
+}
+
+/** What a Game gives the sorting screen. The screen owns the turns; the Game owns how they look and sound. */
+export interface SortGame<T, K> {
+  next(): SortRound<T, K>;
+  binOf(thing: T): K;
+  /** A Bin's button, drawn fresh for each Round. The screen adds its class and keyboard press. */
+  bin(key: K): BinView;
+  /** A Thing on the Spot. */
+  thing(thing: T): HTMLElement;
+  /** A Thing small on the Pile. */
+  piled(thing: T): HTMLElement;
+  /** Shows a Thing gone into its Bin. */
+  land(bin: BinView, thing: T): void;
+  /** Before the first Thing of a Round hops out, e.g. each Bin saying its name. */
+  opening?(bins: readonly BinView[], keys: readonly K[]): Promise<void>;
+  /** A Thing lifted. */
+  lifted?(thing: T): void;
+  /** A Thing in its own Bin: its sound and Word. The next Thing waits for it. */
+  landed(thing: T): Promise<void>;
+  /** A wrong Bin, as it bumps. */
+  missed(thing: T): void;
+  /** Back on the Spot after a first Miss, its own Bin glowing: its Word. */
+  helped(thing: T): void;
+  /** A tap on the Thing: its own motion (replay 'site-sort-wiggle', or a flip) and its Word. */
+  tapped(thing: T, el: HTMLElement): void | Promise<void>;
+  /** The nudge after 7 seconds still; `n` counts them, from 1. */
+  nudged(thing: T, n: number): void;
+  /** Stops any Word playing, for a new grab or a Bin. */
+  hush(): void;
+  /** The Pile is empty: the Bins' own motion and sound, before the card. */
+  finish(bins: readonly BinView[]): Promise<void>;
+  /** The grown-up's card for this Round. */
+  card(round: SortRound<T, K>): Card;
+}
+
+/** Plays Rounds on the stage, one after another, until the screen goes. Returns the leave function. */
+export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void {
+  let alive = true;
+  const pileEl = el('div', 'site-sort-pile');
+  const spot = el('div', 'site-sort-spot');
+  const binsEl = el('div', 'site-sort-bins');
+  s.stage.append(pileEl, spot, binsEl);
+
+  let round: SortRound<T, K>;
+  let served = 0;
+  let bins: BinView[] = [];
+  /** The Thing on the Spot, or held, or left lying, waiting to go into a Bin. */
+  let current: { thing: T; el: HTMLElement; misses: number } | null = null;
+  /** While a Thing glides, goes in, or the Round opens or ends, fingers do nothing. */
+  let busy = true;
+
+  const spotPoint = () => s.centreOf(spot);
+  const ownBin = (thing: T) => bins[round.bins.indexOf(game.binOf(thing))]!;
+  const mouthOf = (bin: BinView): Point => {
+    if (bin.mouth) return bin.mouth();
+    const c = s.centreOf(bin.el);
+    return { x: c.x, y: c.y - bin.el.getBoundingClientRect().height * 0.25 };
+  };
+  const glow = (bin: BinView | null) => {
+    for (const b of bins) b.el.classList.toggle('site-sort-glow', b === bin);
+  };
+
+  async function startRound(): Promise<void> {
+    round = game.next();
+    served = 0;
+    bins = round.bins.map((key) => {
+      const bin = game.bin(key);
+      bin.el.classList.add('site-sort-bin');
+      // A press from a keyboard or switch; fingers come through the stage's pointer events.
+      bin.el.addEventListener('click', (e) => {
+        if (e.detail === 0) void place(bins.indexOf(bin));
+      });
+      return bin;
+    });
+    binsEl.style.setProperty('--site-sort-bins', String(bins.length));
+    binsEl.replaceChildren(...bins.map((b) => b.el));
+    pileEl.replaceChildren(...round.pile.map((t) => game.piled(t)));
+    busy = true;
+    await wait(450);
+    if (!alive) return;
+    if (game.opening) await game.opening(bins, round.bins);
+    if (alive) serve();
+  }
+
+  /** The next Thing hops off the Pile onto the Spot, or the Round is over. */
+  function serve(): void {
+    if (served === round.pile.length) {
+      void finish();
+      return;
+    }
+    const thing = round.pile[served]!;
+    served++;
+    pileEl.firstElementChild?.remove();
+    const view = game.thing(thing);
+    view.classList.add('site-sort-thing', 'site-sort-pop');
+    s.moveTo(view, spotPoint());
+    s.stage.append(view);
+    current = { thing, el: view, misses: 0 };
+    busy = false;
+    armIdle();
+  }
+
+  /** The Thing into Bin `i`: right, or a Miss, and after MISSES_BEFORE_HELP into its own by itself. */
+  async function place(i: number): Promise<void> {
+    if (!current || busy || i < 0) return;
+    const cur = current;
+    busy = true;
+    clearIdle();
+    game.hush();
+    const bin = bins[i]!;
+    if (round.bins[i] === game.binOf(cur.thing)) return into(bin);
+
+    cur.misses++;
+    game.missed(cur.thing);
+    replay(bin.el, 'site-sort-nope');
+    if (cur.misses >= MISSES_BEFORE_HELP) {
+      await s.glide(cur.el, mouthOf(ownBin(cur.thing)));
+      if (!alive) return;
+      return into(ownBin(cur.thing));
+    }
+    await s.glide(cur.el, spotPoint());
+    if (!alive) return;
+    glow(ownBin(cur.thing));
+    game.helped(cur.thing);
+    busy = false;
+    armIdle();
+  }
+
+  async function into(bin: BinView): Promise<void> {
+    const cur = current!;
+    cur.el.classList.add('site-sort-going-in');
+    await s.glide(cur.el, mouthOf(bin));
+    if (!alive) return;
+    cur.el.remove();
+    current = null;
+    glow(null);
+    game.land(bin, cur.thing);
+    replay(bin.el, 'site-sort-got');
+    buzz(30);
+    s.sparkleAt(bin.el);
+    await game.landed(cur.thing);
+    if (!alive) return;
+    await wait(150);
+    if (alive) serve();
+  }
+
+  async function finish(): Promise<void> {
+    busy = true;
+    clearIdle();
+    await game.finish(bins);
+    if (alive) s.end(game.card(round), () => void startRound());
+  }
+
+  // ---- Nudges when she's been still ---------------------------------------
+  let idleTimer: ReturnType<typeof setTimeout> | undefined;
+  let nudges = 0;
+  function clearIdle(): void {
+    clearTimeout(idleTimer);
+  }
+  function armIdle(): void {
+    clearIdle();
+    idleTimer = setTimeout(() => {
+      if (!alive || !current || busy) return;
+      if (nudges < MAX_NUDGES) {
+        nudges++;
+        replay(current.el, 'site-sort-nudge');
+        glow(ownBin(current.thing));
+        game.nudged(current.thing, nudges);
+      }
+      armIdle();
+    }, IDLE_MS);
+  }
+
+  fingers(s, {
+    grabbable: () => (current && !busy ? [current.el] : []),
+    touched() {
+      nudges = 0;
+      if (current && !busy) armIdle();
+    },
+    lifted() {
+      game.hush();
+      if (current) game.lifted?.(current.thing);
+    },
+    tapped(view) {
+      if (!current || current.el !== view) return;
+      game.hush();
+      void game.tapped(current.thing, view);
+    },
+    dropped(_view, at) {
+      if (!Number.isFinite(at.x)) return;
+      const i = binAt(at, s.stage.getBoundingClientRect(), bins.length);
+      if (i !== undefined) void place(i);
+    },
+    pressed(target) {
+      void place(bins.findIndex((b) => b.el === target));
+    },
+  });
+
+  // A phone turned on its side moves the Spot; a waiting Thing goes with it.
+  const onResize = () => {
+    if (current && !busy && !current.el.classList.contains('site-sort-held')) s.moveTo(current.el, spotPoint());
+  };
+  window.addEventListener('resize', onResize);
+
+  void startRound();
+
+  return () => {
+    alive = false;
+    s.leave();
+    clearIdle();
+    game.hush();
+    window.removeEventListener('resize', onResize);
+  };
+}

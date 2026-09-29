@@ -49,53 +49,10 @@ body::before {
     linear-gradient(var(--cream), var(--cream-2));
 }
 
-/* A site-screen, kept narrow and with a margin even where there's no notch. */
-.screen {
-  width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
-  padding: max(12px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right))
-    max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
-}
-
-/* ---------- Play ---------- */
-
-.play {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.play-top {
-  display: grid;
-  grid-template-columns: var(--site-tool) 1fr var(--site-tool);
-  align-items: center;
-  gap: 8px;
-}
-
-.stage {
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  margin-top: 8px;
-  touch-action: none;
-}
-
-/* The floor the pigs stand on. */
-.stage::before {
-  content: '';
-  position: absolute;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  height: 16%;
-  border-radius: 24px 24px 0 0;
-  background: var(--floor);
-}
-
 /* ---------- Money ---------- */
 
 .piece {
+  --site-sort-in: 0.35;
   position: absolute;
   z-index: 3;
   width: calc(var(--d) * var(--mm));
@@ -129,22 +86,6 @@ body::before {
   animation: flip 240ms ease-in-out;
 }
 
-.piece.held {
-  scale: 1.12;
-  filter: drop-shadow(0 14px 10px #00000030);
-}
-
-.piece.gliding {
-  transition:
-    left 380ms ease-in-out,
-    top 380ms ease-in-out,
-    scale 380ms ease-in;
-}
-
-.piece.going-in {
-  scale: 0.35;
-}
-
 .piece.gone {
   visibility: hidden;
 }
@@ -157,59 +98,16 @@ body::before {
   animation: glow 1.2s ease-in-out 3;
 }
 
-/* ---------- Sort: the Purse, the Spot, the Banks ---------- */
+/* ---------- Sort: the Purse and the Spot ---------- */
 
-.purse {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: min(64px, 10vh);
-  display: flex;
-  justify-content: center;
-  align-items: end;
-  padding-left: 16px;
-}
-
-.purse .piece {
+.site-sort-pile .piece {
   --mm: min(2.3px, 0.4vh);
   position: relative;
   translate: none;
-  margin-left: -16px;
-  flex: none;
 }
 
-.purse .piece:nth-child(odd) {
-  rotate: -9deg;
-  translate: 0 -4px;
-}
-
-.purse .piece:nth-child(3n) {
-  rotate: 11deg;
-}
-
-.spot {
-  position: absolute;
-  left: 50%;
-  top: 34%;
-  width: calc(30 * var(--mm));
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: #ffffffa6;
-  box-shadow: inset 0 0 0 4px #0000000f;
-}
-
-.banks {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 42%;
-  display: grid;
-  grid-template-columns: repeat(var(--banks, 2), 1fr);
-  gap: 8px;
-  align-items: end;
+.way-sort {
+  --site-sort-spot: calc(30 * var(--mm));
 }
 
 /* ---------- A pig ---------- */
@@ -277,19 +175,6 @@ body::before {
 .tag.bill {
   width: 54%;
   border-radius: 3px;
-}
-
-.pig.glow .pig-body {
-  filter: drop-shadow(0 0 10px #ffce4f) drop-shadow(0 0 4px #ffb020);
-  animation: glow 1.2s ease-in-out 3;
-}
-
-.pig.got .pig-body {
-  animation: got 420ms ease-out;
-}
-
-.pig.nope .pig-body {
-  animation: nope 360ms ease-in-out;
 }
 
 .pig.full .pig-body {
@@ -375,91 +260,11 @@ body::before {
 
 /* ---------- The end of a Round ---------- */
 
-.cheer {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  padding: 24px;
-  background: #ffffffb3;
-  animation: fade-in 200ms ease-out;
-}
-
-.card,
-.cheer .site-next {
-  position: relative;
-  z-index: 1;
-}
-
-.card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  max-width: 340px;
-  padding: 14px 18px;
-  border-radius: 22px;
-  background: #fff;
-  box-shadow: 0 6px 0 #0000001a;
-  animation: pop-in 420ms cubic-bezier(0.3, 1.6, 0.5, 1) 200ms backwards;
-}
-
-.card .card-art {
+.site-sort-card .card-art {
   --mm: 3px;
   position: static;
   flex: none;
   translate: none;
-}
-
-.look-for {
-  margin: 0;
-  font-size: 1.15rem;
-  line-height: 1.35;
-}
-
-.confetti {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.confetti i {
-  position: absolute;
-  top: -30px;
-  font-family: var(--emoji);
-  font-style: normal;
-  font-size: 22px;
-  animation: fall linear forwards;
-}
-
-/* ---------- Motion on cue ---------- */
-
-.pop {
-  animation: pop-in 380ms cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
-}
-
-.nudge .face {
-  animation: nudge 1.4s ease-in-out;
-}
-
-.fx-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.sparkle {
-  position: absolute;
-  font-family: var(--emoji);
-  font-size: 26px;
-  translate: -50% -50%;
-  animation: burst 900ms ease-out forwards;
 }
 
 /* Short landscape phones: smaller money, and the pigs take more of the height. */
@@ -472,47 +277,10 @@ body::before {
     --mm: min(6px, 0.8vh);
   }
 
-  .banks {
-    height: 48%;
-  }
-
-  .spot {
-    top: 36%;
-  }
-}
-
-@keyframes pop-in {
-  from { scale: 0; opacity: 0; }
-  to { scale: 1; opacity: 1; }
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-}
-
-@keyframes wiggle {
-  0%, 100% { rotate: 0deg; }
-  25% { rotate: -12deg; }
-  75% { rotate: 12deg; }
-}
-
-@keyframes nudge {
-  0%, 100% { scale: 1; rotate: 0deg; }
-  15%, 45%, 75% { scale: 1.12; rotate: -6deg; }
-  30%, 60%, 90% { scale: 1; rotate: 6deg; }
 }
 
 @keyframes glow {
   50% { scale: 1.08; }
-}
-
-@keyframes got {
-  40% { translate: 0 -10%; scale: 1.06 0.94; }
-}
-
-@keyframes nope {
-  25% { translate: -6% 0; }
-  75% { translate: 6% 0; }
 }
 
 @keyframes land {
@@ -537,15 +305,6 @@ body::before {
   60% { scale: 1.12; }
 }
 
-@keyframes burst {
-  from { transform: translate(0, 0) scale(0.4); opacity: 1; }
-  to { transform: translate(var(--dx), var(--dy)) scale(1.1); opacity: 0; }
-}
-
-@keyframes fall {
-  to { transform: translateY(110vh) rotate(var(--spin)); }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -554,7 +313,4 @@ body::before {
     animation-iteration-count: 1 !important;
   }
 
-  .piece.gliding {
-    transition-duration: 1ms !important;
-  }
 }

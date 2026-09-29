@@ -2,7 +2,7 @@
 // source passed in, so it's tested as data. A Round sorts by one rule only, color or shape, because most
 // three-year-olds can't switch rules partway (docs/spec.md).
 
-export type Rng = () => number;
+import { binsFrom, pileOf, shuffle, PER_BIN, type Rng } from '@shared/sort';
 
 export type Topic = 'colors' | 'shapes';
 export const TOPICS: readonly Topic[] = ['colors', 'shapes'];
@@ -71,10 +71,6 @@ export const THINGS: Readonly<Record<Colour, readonly string[]>> = {
   pink: ['🌸', '🐷', '🦩', '🎀', '🌷'],
 };
 
-/** The most Bins a Round has, side by side on a phone. */
-export const MOST_BINS = 3;
-/** How many Things each Bin gets: 8 in all with 2 Bins, 9 with 3. */
-export const PER_BIN: Readonly<Record<number, number>> = { 2: 4, 3: 3 };
 
 /** One Thing on the Pile: the Bin it goes in, and how it's drawn. */
 export type Thing =
@@ -91,25 +87,6 @@ export interface Round {
 
 export const isColour = (sort: Sort): sort is Colour => COLOURS.includes(sort as Colour);
 
-export function shuffle<T>(items: readonly T[], rng: Rng = Math.random): T[] {
-  const out = [...items];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [out[i], out[j]] = [out[j]!, out[i]!];
-  }
-  return out;
-}
-
-/** True when no three in a row go to the same Bin. */
-const noThreeInARow = (pile: readonly Thing[]) => pile.every((t, i) => i < 2 || t.sort !== pile[i - 1]!.sort || t.sort !== pile[i - 2]!.sort);
-
-/** Shuffles the Pile until no Bin gets three in a row, which with 3 or 4 each takes a few tries at most. */
-function order(pile: readonly Thing[], rng: Rng): Thing[] {
-  let out = shuffle(pile, rng);
-  for (let tries = 0; tries < 200 && !noThreeInARow(out); tries++) out = shuffle(pile, rng);
-  return out;
-}
-
 /** The Things for one Bin, drawn by the Way. */
 function thingsFor(sort: Sort, way: Way, count: number, rng: Rng): Thing[] {
   if (isColour(sort)) {
@@ -125,38 +102,17 @@ function thingsFor(sort: Sort, way: Way, count: number, rng: Rng): Thing[] {
 
 /**
  * The Rounds of a Scope, one per call, for as long as it's played. Each Round has as many Bins as the
- * Scope has items, up to three, taken from a bag so each item comes up once before any comes again.
+ * Scope has items, up to three, each item once before any comes again (the site's sorting rules).
  */
 export function rounds(topic: Topic, scope: readonly Sort[], way: Way, rng: Rng = Math.random): () => Round {
   if (scope.length < 2) throw new Error('Tidy Up: sorting needs a Scope of two at least');
-  const size = Math.min(scope.length, MOST_BINS);
-  let bag: Sort[] = [];
-  const draw = (taken: readonly Sort[]): Sort => {
-    if (bag.every((s) => taken.includes(s))) bag = [...bag, ...shuffle(scope, rng)];
-    const i = bag.findIndex((s) => !taken.includes(s));
-    return bag.splice(i, 1)[0]!;
-  };
-
+  const nextBins = binsFrom(scope, rng);
   return () => {
-    const bins: Sort[] = [];
-    while (bins.length < size) bins.push(draw(bins));
-    const count = PER_BIN[size]!;
-    return { topic, bins, pile: order(bins.flatMap((sort) => thingsFor(sort, way, count, rng)), rng) };
+    const bins = nextBins();
+    const count = PER_BIN[bins.length]!;
+    return { topic, bins, pile: pileOf(bins.flatMap((sort) => thingsFor(sort, way, count, rng)), (t) => t.sort, rng) };
   };
 }
-
-/**
- * Which Bin a finger let go over, counting from the left, or undefined over the top half, where a
- * Thing just stays. The Bins share the width of the play area evenly.
- */
-export function binAt(point: { x: number; y: number }, area: { left: number; top: number; width: number; height: number }, bins: number): number | undefined {
-  if (point.y < area.top + area.height / 2) return undefined;
-  const i = Math.floor(((point.x - area.left) / area.width) * bins);
-  return Math.min(Math.max(i, 0), bins - 1);
-}
-
-/** Wrong Bins for one Thing before it goes into its own by itself. */
-export const MISSES_BEFORE_HELP = 2;
 
 /** The grown-up's card after a Round: something to look for at home. */
 export function lookFor(sort: Sort): string {

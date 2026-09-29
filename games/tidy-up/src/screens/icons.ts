@@ -2,13 +2,6 @@
 
 import { PAINT, type Colour, type Shape } from '../sorting';
 
-/** Back to Practice. The house picture means only the Hub. */
-export const backIcon =
-  '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5 7 12l7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-/** The Next button's arrow. */
-export const nextIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4.5 19 12 8 19.5Z" fill="currentColor"/></svg>';
-
 /** A paint made darker by `by` (0 to 1), for edges and lips. */
 export function darker(hex: string, by = 0.25): string {
   const n = parseInt(hex.slice(1), 16);

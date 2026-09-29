@@ -22,7 +22,7 @@ function app(picks: Partial<Save> = {}): App {
 
 /** A keyboard's press: click() with no pointer, detail 0. */
 const press = (el: Element) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 0 }));
-const cheer = (a: App) => a.root.querySelector('.cheer');
+const cheer = (a: App) => a.root.querySelector('.site-sort-cheer');
 
 let leave: () => void;
 beforeEach(() => vi.useFakeTimers());
@@ -32,10 +32,10 @@ afterEach(() => {
 });
 
 describe('Sort', () => {
-  const onSpot = (a: App) => a.root.querySelector<HTMLElement>('.stage > .piece')!.dataset.money!;
+  const onSpot = (a: App) => a.root.querySelector<HTMLElement>('.site-sort-stage > .piece')!.dataset.money!;
   const bank = (a: App, money: string) => a.root.querySelector(`.pig[aria-label="${money}"]`)!;
   const inBelly = (a: App, money: string) => bank(a, money).querySelectorAll('.in-belly').length;
-  const purse = (a: App) => a.root.querySelectorAll('.purse .piece').length;
+  const purse = (a: App) => a.root.querySelectorAll('.site-sort-pile .piece').length;
   const other = (money: string) => (money === 'penny' ? 'quarter' : 'penny');
 
   it('puts a Bank out for the penny and the quarter, each with its picture, and a piece on the Spot', async () => {
@@ -66,7 +66,7 @@ describe('Sort', () => {
     const money = onSpot(a);
     press(bank(a, other(money)));
     await vi.advanceTimersByTimeAsync(500);
-    expect(bank(a, money).classList.contains('glow')).toBe(true);
+    expect(bank(a, money).classList.contains('site-sort-glow')).toBe(true);
     expect(inBelly(a, money)).toBe(0);
     press(bank(a, other(money)));
     await vi.advanceTimersByTimeAsync(1000);
@@ -92,7 +92,7 @@ describe('Sort', () => {
 
 describe('Find', () => {
   const wanted = (a: App) => /wants a (\w+)/.exec(a.root.querySelector('.pig')!.getAttribute('aria-label')!)?.[1];
-  const coin = (a: App, money: string) => a.root.querySelector<HTMLElement>(`.stage > .piece[data-money="${money}"]`)!;
+  const coin = (a: App, money: string) => a.root.querySelector<HTMLElement>(`.site-sort-stage > .piece[data-money="${money}"]`)!;
   const inBelly = (a: App) => a.root.querySelectorAll('.pig .in-belly').length;
   const find = () => app({ way: 'find' });
 
@@ -100,7 +100,7 @@ describe('Find', () => {
     const a = find();
     leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(500);
-    expect([...a.root.querySelectorAll('.stage > .piece')].map((p) => (p as HTMLElement).dataset.money).sort()).toEqual(['penny', 'quarter']);
+    expect([...a.root.querySelectorAll('.site-sort-stage > .piece')].map((p) => (p as HTMLElement).dataset.money).sort()).toEqual(['penny', 'quarter']);
     expect(['penny', 'quarter']).toContain(wanted(a));
     expect(a.root.querySelector('.bubble.up img')).not.toBeNull();
   });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { COLOURS, GREY, PAINT, SHAPES, THINGS, binAt, lookFor, rounds, type Round, type Sort } from './sorting';
+import { COLOURS, GREY, PAINT, SHAPES, THINGS, lookFor, rounds, type Round, type Sort } from './sorting';
 
 /** A seeded random, so a failure can be run again. */
 function seeded(seed: number): () => number {
@@ -74,22 +74,6 @@ describe('Things', () => {
     const all = Object.values(THINGS).flat();
     expect(new Set(all).size).toBe(all.length);
     for (const c of COLOURS) expect(THINGS[c].length).toBeGreaterThanOrEqual(4);
-  });
-});
-
-describe('letting go', () => {
-  const area = { left: 0, top: 100, width: 300, height: 600 };
-
-  it('over the top half is no Bin', () => {
-    expect(binAt({ x: 150, y: 399 }, area, 2)).toBeUndefined();
-  });
-
-  it('over the bottom half is the Bin whose column it is, the edges included', () => {
-    expect(binAt({ x: 149, y: 400 }, area, 2)).toBe(0);
-    expect(binAt({ x: 151, y: 690 }, area, 2)).toBe(1);
-    expect(binAt({ x: 150, y: 500 }, area, 3)).toBe(1);
-    expect(binAt({ x: -20, y: 500 }, area, 3)).toBe(0);
-    expect(binAt({ x: 320, y: 800 }, area, 3)).toBe(2);
   });
 });
 

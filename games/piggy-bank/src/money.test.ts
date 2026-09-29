@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ASKS, bankAt, findRounds, LABELS, MONEY, SIZE_MM, sortRounds, type Money } from './money';
+import { ASKS, findRounds, LABELS, MONEY, SIZE_MM, sortRounds, type Money } from './money';
 
 /** A seeded random, so every run deals the same Rounds. */
 function seeded(seed = 7): () => number {
@@ -57,18 +57,5 @@ describe('Find Rounds', () => {
       for (const k of kinds) expect(count(asks, k)).toBe(2);
       expect(threeInARow(asks)).toBe(false);
     }
-  });
-});
-
-describe('where a finger lets go', () => {
-  const area = { left: 0, top: 0, width: 300, height: 600 };
-  it('is a Bank in the lower half, by column', () => {
-    expect(bankAt({ x: 10, y: 500 }, area, 3)).toBe(0);
-    expect(bankAt({ x: 150, y: 400 }, area, 3)).toBe(1);
-    expect(bankAt({ x: 299, y: 599 }, area, 2)).toBe(1);
-  });
-
-  it('is nothing in the top half, where a piece just stays', () => {
-    expect(bankAt({ x: 150, y: 200 }, area, 2)).toBeUndefined();
   });
 });

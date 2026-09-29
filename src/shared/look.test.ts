@@ -51,7 +51,8 @@ function drift(slug: string): string[] {
       for (const c of SELECT_CLASSES) if (new RegExp(`\\.${c}(?![\\w-])`).test(text)) found.push(`${f}: restyles the site's .${c}`);
     }
   }
-  if (!files.some(({ text }) => text.includes('site-screen'))) found.push("its screens aren't site-screens");
+  // The sorting screen (@shared/sort) draws its own site-screen, as Practice does.
+  if (!files.some(({ text }) => text.includes('site-screen') || /['"]@shared\/sort['"]/.test(text))) found.push("its screens aren't site-screens");
   // Every Game opens on the level select, which draws the House button, the locks and the unlock rule, or on Practice.
   const selects = files.flatMap(({ text }) => text.match(/\bshow(?:LevelSelect|Practice)\(/g) ?? []).length;
   if (selects !== 1) found.push(`one showLevelSelect() or showPractice(), not ${selects}`);
