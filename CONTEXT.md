@@ -90,7 +90,7 @@ The two screens a Game with Levels opens on, drawn the same in every Game: the G
 _Avoid_: level picker, map, menu
 
 **Practice**:
-The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. A Topic may have Skin chips too. The Game saves the picks. Find It, Piggy Bank, Tidy Up and Which Way? are Practice Games.
+The one screen a Game with no Levels opens on (`@shared/practice`), for learning that needs going over and over rather than a path: a grown-up picks the Topic, the Way and the Scope in one tap each, then Play, and it goes on until Back. A Topic may have Skin chips too. The Game saves the picks. Find It, Mailbox, Piggy Bank, Tidy Up and Which Way? are Practice Games.
 _Avoid_: mode, free play, endless
 
 **Topic**:
@@ -120,8 +120,12 @@ A picture set a child picks from the chips on the Group list, or on a Topic of P
 _Avoid_: theme
 
 **Sorting screen**:
-A Game's play screen where a child sorts (`@shared/sort`): a **Pile** of Things at the top, the **Spot** where the next one waits, and two or three **Bins** along the bottom. She drags a Thing into a Bin, or taps the Bin. A **Miss** glides back and lights the right Bin; after two, the Thing goes in by itself. Tidy Up and Piggy Bank's Sort play on it.
+A Game's play screen where a child sorts (`@shared/sort`): a **Pile** of Things at the top, the **Spot** where the next one waits, and two or three **Bins** along the bottom. She drags a Thing into a Bin, or taps the Bin. A **Miss** glides back and lights the right Bin; after two, the Thing goes in by itself. Tidy Up, and Mailbox's and Piggy Bank's Sort, play on it.
 _Avoid_: drag game, drop zone
+
+**Asking screen**:
+The sorting screen turned round (`@shared/sort`, `askRounds`): one **Asker** at the bottom wants one of the two or three Things on the table, and the child drags it in or taps it. A Miss glides back and the Asker asks again; after two, the right one lights up and goes in by itself. The only word said is the one asked for. Mailbox's and Piggy Bank's Find play on it.
+_Avoid_: quiz, question screen
 
 **Voice**:
 What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Find It, Hop Race, My Letter, Robot Path, Snack Math, Way Out and Which Way? have a Voice.
