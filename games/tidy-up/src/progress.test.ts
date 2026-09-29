@@ -9,14 +9,16 @@ const NEW = {
   topic: 'colors',
   colors: ['red', 'blue'],
   shapes: ['circle', 'square'],
+  kinds: ['animals-vehicles'],
   colorsWay: 'blocks',
   shapesWay: 'plain',
+  kindsWay: 'clear',
   skin: 'buckets',
   patterns: false,
 };
 
 describe('the picks', () => {
-  it('start on Colors, red and blue, Blocks, Buckets and no Patterns', () => {
+  it('start on Colors, red and blue, Blocks, Buckets, no Patterns, and Kinds on its first Step, Clear', () => {
     expect(loadProgress(device()).game).toEqual(NEW);
   });
 
@@ -27,8 +29,10 @@ describe('the picks', () => {
       topic: 'shapes',
       colors: ['yellow', 'pink'],
       shapes: ['triangle', 'star', 'heart'],
+      kinds: ['toys-clothes', 'mammals-birds'],
       colorsWay: 'things',
       shapesWay: 'colorful',
+      kindsWay: 'tricky',
       skin: 'trucks',
       patterns: true,
     });

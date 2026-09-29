@@ -59,7 +59,8 @@ body::before {
 }
 
 .look-buckets,
-.look-trucks {
+.look-trucks,
+.look-crates {
   --site-sort-in: 0.55;
 }
 
@@ -155,7 +156,33 @@ body::before {
   font-size: 84cqmin;
 }
 
+/* A Kinds crate's card: three small members of its group, on the crate's front. */
+.crate-card {
+  position: absolute;
+  z-index: 2;
+  left: 18%;
+  right: 18%;
+  top: 42%;
+  height: 32%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 10px;
+  background: #fffdf8;
+  box-shadow: 0 2px 0 #0000002a;
+  container-type: size;
+}
+
+.crate-card .emoji {
+  font-size: min(64cqh, 26cqw);
+}
+
 /* ---------- Tidy: the Round's end ---------- */
+
+.look-crates .bin.tidy .bin-body {
+  animation: wobble 500ms ease-in-out 2;
+}
+
 
 .look-buckets .bin.tidy .bin-body {
   animation: wobble 500ms ease-in-out 2;
@@ -180,6 +207,13 @@ body::before {
 .card-art {
   width: 100%;
   height: 100%;
+}
+
+.card-art .emoji {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 50px;
 }
 
 @keyframes land {

@@ -4,8 +4,11 @@
 
 import { binsFrom, pileOf, shuffle, PER_BIN, type Rng } from '@shared/sort';
 
-export type Topic = 'colors' | 'shapes';
-export const TOPICS: readonly Topic[] = ['colors', 'shapes'];
+/** The Topics this module deals: sorting by color or by shape. Kinds has its own, in kinds.ts. */
+export type SortTopic = 'colors' | 'shapes';
+export type Topic = SortTopic | 'kinds';
+/** The Topics in tab order. */
+export const TOPICS: readonly Topic[] = ['colors', 'shapes', 'kinds'];
 
 export type Colour = 'red' | 'blue' | 'yellow' | 'green' | 'orange' | 'purple' | 'pink';
 export type Shape = 'circle' | 'square' | 'triangle' | 'star' | 'heart';
@@ -15,7 +18,7 @@ export type Sort = Colour | Shape;
 /** Every color in Scope order. The new save's red and blue, and the first Range's yellow, are told apart by a red-green color-blind child too. */
 export const COLOURS: readonly Colour[] = ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'pink'];
 export const SHAPES: readonly Shape[] = ['circle', 'square', 'triangle', 'star', 'heart'];
-export const SORTS: Readonly<Record<Topic, readonly Sort[]>> = { colors: COLOURS, shapes: SHAPES };
+export const SORTS: Readonly<Record<SortTopic, readonly Sort[]>> = { colors: COLOURS, shapes: SHAPES };
 
 /** What a Scope button shows. */
 export const GLYPHS: Readonly<Record<Sort, string>> = {
@@ -48,7 +51,7 @@ export const PAINT: Readonly<Record<Colour, string>> = {
 export const GREY = '#9aa3b2';
 
 /** The Ranges a grown-up turns on in one tap, before All. */
-export const RANGES: Readonly<Record<Topic, readonly Sort[]>> = {
+export const RANGES: Readonly<Record<SortTopic, readonly Sort[]>> = {
   colors: ['red', 'blue', 'yellow'],
   shapes: ['circle', 'square', 'triangle'],
 };
@@ -58,7 +61,7 @@ export type ColourWay = 'blocks' | 'things';
 /** Plain: every shape one grey. Colorful: each a color the child has to look past. */
 export type ShapeWay = 'plain' | 'colorful';
 export type Way = ColourWay | ShapeWay;
-export const WAYS: Readonly<Record<Topic, readonly Way[]>> = { colors: ['blocks', 'things'], shapes: ['plain', 'colorful'] };
+export const WAYS: Readonly<Record<SortTopic, readonly Way[]>> = { colors: ['blocks', 'things'], shapes: ['plain', 'colorful'] };
 
 /** Everyday things mainly one color, as emoji. Each is under one color only. */
 export const THINGS: Readonly<Record<Colour, readonly string[]>> = {
@@ -79,7 +82,7 @@ export type Thing =
   | { sort: Shape; look: 'shape'; paint: string };
 
 export interface Round {
-  topic: Topic;
+  topic: SortTopic;
   bins: Sort[];
   /** In the order they come off the Pile. */
   pile: Thing[];
@@ -104,7 +107,7 @@ function thingsFor(sort: Sort, way: Way, count: number, rng: Rng): Thing[] {
  * The Rounds of a Scope, one per call, for as long as it's played. Each Round has as many Bins as the
  * Scope has items, up to three, each item once before any comes again (the site's sorting rules).
  */
-export function rounds(topic: Topic, scope: readonly Sort[], way: Way, rng: Rng = Math.random): () => Round {
+export function rounds(topic: SortTopic, scope: readonly Sort[], way: Way, rng: Rng = Math.random): () => Round {
   if (scope.length < 2) throw new Error('Tidy Up: sorting needs a Scope of two at least');
   const nextBins = binsFrom(scope, rng);
   return () => {

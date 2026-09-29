@@ -1,6 +1,6 @@
 # Tidy Up: Kinds, and one sorting screen for the shelf
 
-Status: agreed 2026-09-29 (build the shared screen first; Mammals last; group words plus each Thing's name, as the research recommends), written 2026-09-29 from the pitch "separate items into categories: animals, home items, plants, slowly harder like mammals vs birds, food vs non-food", after the research in [toddler-category-sorting.md](../research/toddler-category-sorting.md). Two parts: first the sorting screen Tidy Up and Piggy Bank each copied becomes one shared module; then Tidy Up gets a third Topic, **Kinds**.
+Status: built 2026-09-29 (the shared screen first, site ADR 0016; Mammals last; group words plus each Thing's name, ADR 0003). Written 2026-09-29 from the pitch "separate items into categories: animals, home items, plants, slowly harder like mammals vs birds, food vs non-food", after the research in [toddler-category-sorting.md](../../../docs/research/toddler-category-sorting.md). Two parts: first the sorting screen Tidy Up and Piggy Bank each copied becomes one shared module; then Tidy Up gets a third Topic, **Kinds**.
 
 ## The problem
 
@@ -14,7 +14,7 @@ Tidy Up's play screen and Piggy Bank's Sort are the same screen twice: a Pile or
 
 **What a Game gives it:** the next Round (its Bins and Pile), how to draw a Thing, a Bin and a landed Thing, what each Bin is called, and hooks for its sounds and Words (pick up, land, Miss, a tap on the Thing, the round end's own motion) and the card's text and picture.
 
-Tidy Up and Piggy Bank change to adapters with no change in how they play; their play tests keep passing as they are. A site ADR records it, `catalog.test.ts` fails a Game that keeps its own copy of the finger rules (`binAt`/`bankAt`-style functions or its own `setPointerCapture` sorting loop), and the site CONTEXT.md gets the words Pile, Spot, Bin and Miss.
+Tidy Up and Piggy Bank change to adapters with no change in how they play; their play tests keep passing, with only the shared containers' class names changed (`site-sort-*`). A site ADR records it, `catalog.test.ts` fails a Game that keeps its own copy of the finger rules (`binAt`/`bankAt`-style functions or its own `setPointerCapture` sorting loop), and the site CONTEXT.md gets the words Pile, Spot, Bin and Miss.
 
 Piggy Bank's Find Way is not a sort, and stays its own.
 
@@ -64,20 +64,20 @@ A wooden crate, the same for every group, so the only clue is the kind. On its f
 
 ### Things
 
-Emoji, 8 or 9 a Round as in Colors, drawn from a pool of about 10 to 14 per group so Rounds differ. Full-body animals (🐕 🐄 🐖), not faces (🐶 🐮), because full bodies show legs, feathers and fins. The youngest sort by parts: when animals had wheels and vehicles had legs, 14 to 18-month-olds grouped by the part (Rakison & Butterworth 1998). So in Step 1 animals all have legs and vehicles all have wheels; ✈️ 🚁 ⛵ join in Step 6. Foods are whole, never sliced, which doubled false alarms in a food study (Foinant et al. 2022). First pools, to check on Noto and Apple before they're kept:
+Emoji, 8 or 9 a Round as in Colors, drawn from a pool of about 10 to 14 per group so Rounds differ. Full-body animals (🐕 🐄 🐖), not faces (🐶 🐮), because full bodies show legs, feathers and fins. The youngest sort by parts: when animals had wheels and vehicles had legs, 14 to 18-month-olds grouped by the part (Rakison & Butterworth 1998). So in Step 1 animals all have legs and vehicles all have wheels; ✈️ 🚁 ⛵ join in Step 6. Foods are whole, never sliced, which doubled false alarms in a food study (Foinant et al. 2022). The pools as built, checked on Noto; still to check on Apple. A Thing whose name has no clean recording is left out (see Words), which took out 🧩 🪇 🧣 🧁 🕊️ 🧄 🪴 (never recorded), and 🎲 🪁 🫛 (every recording heard as another word). The shark is a Clear fish, as only four fish emoji exist; 🍕 and the sliced fruit (🍉 🥝) are out because slices confuse (Foinant et al. 2022):
 
 | Group | Clear | Tricky (Tricky Way only) |
 | --- | --- | --- |
 | Animals / Mammals | 🐕 🐈 🐄 🐖 🐑 🐐 🐎 🐇 🐒 🐘 🦒 🐅 🦓 🐁 | 🦇 🐋 🦘 |
-| Vehicles | 🚗 🚕 🚌 🚒 🚑 🚓 🚚 🚜 🚲 ✈️ 🚂 🚁 ⛵ | 🚀 |
-| Plants | 🌳 🌲 🌴 🌻 🌷 🌸 🪴 🌿 🍀 🌹 | 🌵 |
-| Toys | 🪀 🪁 🧩 🎈 🥁 🎲 ⚽ 🪆 🏐 🪇 | |
-| Clothes | 👕 👖 👗 🧦 🧢 👒 🧤 🧣 🩳 👟 🧥 | 🥽 |
-| Food | 🍞 🧀 🍌 🍎 🍪 🥛 🍕 🍝 🥞 🥐 🍓 🧁 🍇 | 🍅 |
-| Birds | 🐦 🐓 🦆 🦉 🦅 🕊️ 🦜 🦢 🦃 🐤 | 🐧 🦩 🦚 |
-| Fish | 🐟 🐠 🐡 | 🦈 |
-| Fruit | 🍎 🍐 🍊 🍋 🍌 🍉 🍇 🍓 🫐 🍒 🍑 🥭 🍍 🥝 | |
-| Vegetables | 🥕 🥦 🥬 🥒 🧅 🧄 🥔 🫛 🍠 | 🍆 |
+| Vehicles | 🚗 🚕 🚌 🚒 🚑 🚓 🚚 🚜 🚲 🚂, and from Step 6 ✈️ 🚁 ⛵ | 🚀 |
+| Plants | 🌳 🌲 🌴 🌻 🌷 🌸 🌿 🍀 🌹 | 🌵 |
+| Toys | 🪀 🎈 🥁 ⚽ 🏀 🪆 | |
+| Clothes | 👕 👖 👗 🧦 🧢 👒 🧤 🩳 👟 🧥 | 🥽 |
+| Food | 🍞 🧀 🍌 🍎 🍪 🥛 🥨 🍝 🥞 🥐 🍓 🍇 | 🍅 |
+| Birds | 🐦 🐓 🦆 🦉 🦅 🦜 🦢 🦃 🐤 | 🐧 🦩 🦚 |
+| Fish | 🐟 🐠 🐡 🦈 | |
+| Fruit | 🍎 🍐 🍊 🍋 🍌 🍇 🍓 🫐 🍒 🍑 🥭 🍍 | |
+| Vegetables | 🥕 🥦 🥬 🥒 🧅 🥔 | 🍆 |
 
 Left out everywhere: people, dinosaurs, dragons and unicorns, insects, 🧸 (an animal and a toy), 🍄, 🥑, 🌽, peppers, eggs, meat and fish dishes, and toy-like vehicles (🏎️ 🛝). No Step pairs Toys with Vehicles, where a car could be a toy car. Fish has only four emoji, so Birds and fish shows every fish each Round.
 

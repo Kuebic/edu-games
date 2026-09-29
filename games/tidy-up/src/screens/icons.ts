@@ -141,14 +141,27 @@ export function boxSvg(shape: Shape, label = ''): string {
 
 // ---- Practice's pictures ------------------------------------------------------------------------------
 
-/** A Topic's badge, drawn white: three dots of color, or a circle, a triangle and a square. */
-export function topicBadge(topic: 'colors' | 'shapes'): string {
+/** A Topic's badge, drawn white: three dots of color, a circle, a triangle and a square, or a crate's planks. */
+export function topicBadge(topic: 'colors' | 'shapes' | 'kinds'): string {
   const body =
     topic === 'colors'
       ? '<circle cx="14" cy="30" r="9"/><circle cx="34" cy="30" r="9"/><circle cx="24" cy="14" r="9"/>'
-      : '<circle cx="13" cy="33" r="9"/><rect x="26" y="24" width="18" height="18" rx="3"/><path d="M24 4 34 20H14Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>';
+      : topic === 'shapes'
+        ? '<circle cx="13" cy="33" r="9"/><rect x="26" y="24" width="18" height="18" rx="3"/><path d="M24 4 34 20H14Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>'
+        : '<rect x="6" y="10" width="36" height="8" rx="2"/><rect x="6" y="20" width="36" height="8" rx="2"/><rect x="6" y="30" width="36" height="8" rx="2"/><rect x="6" y="10" width="5" height="30" rx="2"/><rect x="37" y="10" width="5" height="30" rx="2"/>';
   return `<svg viewBox="0 0 48 48" aria-hidden="true"><g fill="currentColor">${body}</g></svg>`;
 }
+
+/** A wooden crate, the same for every group of Kinds: planks between two posts. The load shows above it. */
+export const crateSvg =
+  '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+  '<rect x="6" y="30" width="88" height="66" rx="6" fill="#a86d36"/>' +
+  '<rect x="10" y="34" width="80" height="18" rx="3" fill="#dba466"/>' +
+  '<rect x="10" y="55" width="80" height="18" rx="3" fill="#dba466"/>' +
+  '<rect x="10" y="76" width="80" height="17" rx="3" fill="#dba466"/>' +
+  '<rect x="6" y="30" width="11" height="66" rx="3" fill="#c98b4e"/>' +
+  '<rect x="83" y="30" width="11" height="66" rx="3" fill="#c98b4e"/>' +
+  '</svg>';
 
 /** A Skin's chip picture: a red bucket, or a truck with a blue bed. */
 export const skinPictures = {

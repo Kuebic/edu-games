@@ -118,3 +118,72 @@ describe('a Round', () => {
     expect(a.start).toHaveBeenCalled();
   });
 });
+
+describe('a Kinds Round', () => {
+  let leave: () => void;
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => {
+    leave();
+    vi.useRealTimers();
+  });
+
+  /** The Thing on the Spot's group: its crate's label, found through the Round's own words. */
+  const crates = (a: App) => [...a.root.querySelectorAll<HTMLElement>('.bin.crate')];
+  const ownCrate = (a: App, group: string) => a.root.querySelector<HTMLElement>(`.bin.crate[aria-label="${group}"]`)!;
+  const loaded = (a: App) => a.root.querySelectorAll('.crate .landed').length;
+  const onSpot = (a: App) => thing(a)!.textContent!;
+  /** Which crate the Thing on the Spot belongs in, by trying each: the right one takes it. */
+  async function sortOne(a: App): Promise<void> {
+    const before = loaded(a);
+    for (const crate of crates(a)) {
+      if (loaded(a) > before) return;
+      const spot = onSpot(a);
+      press(crate);
+      await vi.advanceTimersByTimeAsync(700);
+      if (thing(a)?.textContent !== spot || loaded(a) > before) return;
+    }
+  }
+
+  it('puts out a crate per group of the Step, each with three on its card, and names them before the first Thing', async () => {
+    const a = app({ topic: 'kinds', kinds: ['animals-vehicles'] });
+    leave = playScreen(a);
+    await vi.advanceTimersByTimeAsync(500);
+    expect(crates(a).map((c) => c.getAttribute('aria-label')).sort()).toEqual(['animals', 'vehicles']);
+    for (const c of crates(a)) expect(c.querySelectorAll('.crate-card .emoji')).toHaveLength(3);
+    expect(thing(a)).toBeNull();
+    await vi.advanceTimersByTimeAsync(1500);
+    expect(thing(a)).not.toBeNull();
+    expect(pile(a)).toBe(7);
+  });
+
+  it('takes a Thing into its crate, and after two Misses puts it there by itself', async () => {
+    const a = app({ topic: 'kinds', kinds: ['food-clothes'] });
+    leave = playScreen(a);
+    await vi.advanceTimersByTimeAsync(2000);
+    const first = onSpot(a);
+    press(ownCrate(a, 'food'));
+    await vi.advanceTimersByTimeAsync(700);
+    const wentIn = loaded(a) === 1;
+    if (!wentIn) {
+      // It was clothes: that was one Miss; a second puts it in by itself.
+      expect(onSpot(a)).toBe(first);
+      expect(ownCrate(a, 'clothes').classList.contains('site-sort-glow')).toBe(true);
+      press(ownCrate(a, 'food'));
+      await vi.advanceTimersByTimeAsync(1000);
+      expect(ownCrate(a, 'clothes').querySelectorAll('.landed')).toHaveLength(1);
+    } else {
+      expect(ownCrate(a, 'food').querySelectorAll('.landed')).toHaveLength(1);
+    }
+    expect(pile(a)).toBe(6);
+  });
+
+  it('tidies when the Pile is empty, with something to look for', async () => {
+    const a = app({ topic: 'kinds', kinds: ['birds-fish'] });
+    leave = playScreen(a);
+    await vi.advanceTimersByTimeAsync(2000);
+    for (let i = 0; i < 8; i++) await sortOne(a);
+    await vi.advanceTimersByTimeAsync(1500);
+    expect(a.root.querySelector('.site-sort-look-for')!.textContent).toMatch(/Name another (bird|fish)!/);
+  });
+});
+

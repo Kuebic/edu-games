@@ -34,12 +34,16 @@ const corner = grownUpCorner(root, progress, {
     ),
   ],
   note:
-    'The first screen is for you. Pick Colors or Shapes; a Round never mixes the two. ' +
+    'The first screen is for you. Pick Colors, Shapes or Kinds; a Round never mixes them. ' +
     'On Colors, 🧱 Blocks gives the same block in each color, the easiest; 🧸 Things gives everyday things, a strawberry or a frog, to sort by color alone. ' +
     'On Shapes, ⬜ Plain makes every shape grey; 🌈 Colorful paints them, and your child has to look past the color. ' +
     'Then tap the colors or shapes to sort. Two make two bins, three or more make three a Round, taking turns. Start with red and blue. ' +
     'Your child drags each thing into its bin, or taps the bin. A wrong bin just sends it back, says its color and lights up the right bin; after two, it goes in by itself. ' +
     'Say the color or shape with your child as each one goes in, and after a Round, look for one around the house. ' +
+    'Kinds sorts everyday things into wooden crates by group: animals and vehicles first, then food, clothes and toys, plants, and last birds and fish, fruit and vegetables, mammals and birds. ' +
+    'Turn on a few Steps at a time; Easy is the first four. ✅ Clear uses only the easy members of each group; 🤔 Tricky slips in one odd one a Round, like a penguin or a whale. ' +
+    'Each crate says its name as a Round starts. Tap a thing to hear its name. After a wrong crate your child hears its name, then its group. ' +
+    'Join the words as parents do: "a dog is an animal", "all of these are animals", "a penguin is a bird". For the last Steps, say the one thing that decides: birds have feathers, fish have fins, mammals have fur. ' +
     'Patterns puts stripes, dots and checks on the colors too, for a child who is color blind. Your picks are kept for next time.',
   closed: () => start?.redraw(),
 });

@@ -1,6 +1,6 @@
 # Tidy Up
 
-A touch game that teaches two and three-year-olds colors and shapes. The child sorts a Pile of Things into Bins by color, or by shape.
+A touch game that teaches two to five-year-olds colors, shapes and kinds of things. The child sorts a Pile of Things into Bins by color, by shape, or by what kind of thing each is.
 
 ## Language
 
@@ -27,7 +27,7 @@ Where the next Thing waits, above the middle, until it's dragged.
 _Avoid_: Start, slot
 
 **Word**:
-The recorded name of a color or shape, said as a Thing lands, after a wrong Bin, and when a Thing is tapped. The Game has no Voice; the Words are clips.
+A recorded word: a color, a shape, a group ("animals") or a Thing's own name ("penguin"). The Game has no Voice; the Words are clips.
 _Avoid_: Voice, label, sound
 
 **Miss**:
@@ -42,15 +42,33 @@ _Avoid_: Hint, idle, timeout
 The Round's end: the Things bounce, the buckets wobble, the trucks drive off or the boxes rattle, then the site's cheer, a card for the grown-up ("Find something red at home!") and the Next button.
 _Avoid_: Cheer (Which Way?'s), reward, win, done
 
+### Kinds
+
+**Group**:
+A kind of thing Kinds sorts by: animals, vehicles, plants, toys, clothes, food, birds, fish, fruit, vegetables, mammals. Its Word is its plural ("animals"), or "mammal", which nobody recorded as a plural.
+_Avoid_: Category (a Shelf word), class, type
+
+**Step**:
+A Kinds Scope item: the groups sorted together, from animals and vehicles to mammals and birds. Each Round takes the next Step in the Scope.
+_Avoid_: Level (the site's word for a path), stage
+
+**Crate**:
+A Kinds Bin: a wooden crate, the same for every group, with a card of three small members of its group, none of them on the Pile. It says its group's Word as the Round starts.
+_Avoid_: Box (the shape-sorter)
+
+**Odd one**:
+In the Tricky Way, one atypical member a Round, such as a penguin among birds or a whale among animals.
+_Avoid_: Trick, wrong one
+
 ### Practice
 
 Tidy Up is a Practice Game (the site's word): it has no Levels. Practice, Topic, Scope and Range are the site's words, in the site's CONTEXT.md.
 
 **Topics**:
-Colors (red, blue, yellow, green, orange, purple, pink; the Range 🔴🔵🟡 and All) and Shapes (circle, square, triangle, star, heart; the Range ⚪🟦🔺 and All). Play waits for two items, since sorting needs two Bins.
+Kinds (its Steps; the Range Easy, the first four, and All) and Colors (red, blue, yellow, green, orange, purple, pink; the Range 🔴🔵🟡 and All) and Shapes (circle, square, triangle, star, heart; the Range ⚪🟦🔺 and All). Play waits for two items, since sorting needs two Bins.
 
 **Way**:
-What the Things are. On Colors, **Blocks** (one toy block, only its color differs) or **Things** (everyday things). On Shapes, **Plain** (every shape grey) or **Colorful** (each a color to look past). Each holds the other dimensions still first, then varies them.
+What the Things are. On Kinds, **Clear** (textbook members only) or **Tricky** (one Odd one a Round). On Colors, **Blocks** (one toy block, only its color differs) or **Things** (everyday things). On Shapes, **Plain** (every shape grey) or **Colorful** (each a color to look past). Each holds the other dimensions still first, then varies them.
 _Avoid_: Mode, level
 
 **Skin**:

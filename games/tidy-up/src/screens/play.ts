@@ -7,7 +7,8 @@ import { playStage, replay, sortRounds, wait, type BinView } from '@shared/sort'
 import type { App } from '../app';
 import { h } from '../dom';
 import { bump, drop, hushWords, pickUp, tidy, word } from '../sounds';
-import { PAINT, isColour, lookFor, rounds, type Colour, type Shape, type Sort, type Thing } from '../sorting';
+import { PAINT, isColour, lookFor, rounds, type Colour, type Shape, type Sort, type SortTopic, type Thing } from '../sorting';
+import { kindsScreen } from './kinds';
 import { blockSvg, boxSvg, bucketSvg, patterned, shapeSvg, truckSvg } from './icons';
 
 export { IDLE_MS } from '@shared/sort';
@@ -32,9 +33,14 @@ function thingPicture(thing: Thing, patterns: boolean): HTMLElement {
 /** What a screen reader hears for a Thing: its color or shape. */
 const thingLabel = (thing: Thing) => (thing.look === 'emoji' ? `${thing.emoji} ${thing.sort}` : thing.sort);
 
+/** Rounds of the saved Topic: Colors and Shapes here, Kinds in kinds.ts. */
 export function playScreen(app: App): () => void {
+  const topic = app.progress.game.topic;
+  return topic === 'kinds' ? kindsScreen(app) : sortScreen(app, topic);
+}
+
+function sortScreen(app: App, topic: SortTopic): () => void {
   const g = app.progress.game;
-  const topic = g.topic;
   const scope = topic === 'colors' ? g.colors : g.shapes;
   const look = topic === 'colors' ? g.skin : 'box';
   const patterns = topic === 'colors' && g.patterns;

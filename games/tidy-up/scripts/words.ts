@@ -1,7 +1,8 @@
-// Builds the Word clips: src/assets/words/<word>.mp3, one per color and shape, from free recordings on
-// Wikimedia Commons (credits: docs/word-credits.md): ten from one speaker, and the two they never recorded
-// from another. Each is trimmed of silence, levelled, faded, and starts with LEAD_MS of silence. Each was
-// also run through speech recognition: another speaker's "orange" came out as "all right".
+// Builds the Word clips: src/assets/words/<word>.mp3, the colors, the shapes, Kinds' groups and each Thing's
+// name, from free recordings on Wikimedia Commons (credits: docs/word-credits.md). Grendelkhan's Lingua Libre
+// recordings where they exist, then Wiktionary's, then other Lingua Libre speakers'. Each is trimmed of
+// silence, levelled, faded, and starts with LEAD_MS of silence. Each was also run through speech recognition:
+// another speaker's "orange" came out as "all right", and a word that doesn't come out as itself is replaced.
 // Usage: npm run game tidy-up words [words...]    e.g. `npm run game tidy-up words red blue`
 // Needs ffmpeg. Raw files go in scripts/raw/ (gitignored, not shipped); a missing one is downloaded.
 // Change a source here and in docs/word-credits.md together.
@@ -18,10 +19,13 @@ const FILE_PATH = 'https://commons.wikimedia.org/wiki/Special:FilePath/';
 // Commons asks for a User-Agent that says who's calling.
 const USER_AGENT = 'edu-games-words/1.0 (https://github.com/kuebic/edu-games)';
 
-const grendelkhan = (word: string) => `LL-Q1860 (eng)-Grendelkhan-${word}.wav`;
+const ll = (speaker: string, word: string) => `LL-Q1860 (eng)-${speaker}-${word}.wav`;
+const grendelkhan = (word: string) => ll('Grendelkhan', word);
+const wiktionary = (word: string) => `En-us-${word}.ogg`;
 
-/** Each word's file on Commons. */
+/** Each word's file on Commons, by the word; a word with a space is saved with a hyphen. */
 const SOURCES: Record<string, string> = {
+  // Colors and Shapes. Grendelkhan never recorded purple or triangle on their own; one Wiktionary speaker did both.
   red: grendelkhan('red'),
   blue: grendelkhan('blue'),
   yellow: grendelkhan('yellow'),
@@ -32,9 +36,120 @@ const SOURCES: Record<string, string> = {
   square: grendelkhan('square'),
   star: grendelkhan('star'),
   heart: grendelkhan('heart'),
-  // Grendelkhan never recorded these two on their own; one Wiktionary speaker did both.
-  purple: 'En-us-purple.ogg',
-  triangle: 'En-us-triangle.ogg',
+  purple: wiktionary('purple'),
+  triangle: wiktionary('triangle'),
+  // Kinds: the groups' Words and each Thing's name. Grendelkhan first, then Wiktionary, then other
+  // Lingua Libre speakers. Nobody recorded "mammals", so its crate says "mammal". Dice, kite and peas are
+  // left out: every recording of them came out of speech recognition as another word ("guys", "Kate", "peace").
+  dog: grendelkhan('dog'),
+  cat: grendelkhan('cat'),
+  cow: grendelkhan('cow'),
+  pig: grendelkhan('pig'),
+  sheep: grendelkhan('sheep'),
+  goat: grendelkhan('goat'),
+  horse: grendelkhan('horse'),
+  rabbit: grendelkhan('rabbit'),
+  monkey: grendelkhan('monkey'),
+  elephant: grendelkhan('elephant'),
+  tiger: grendelkhan('tiger'),
+  mouse: grendelkhan('mouse'),
+  bat: grendelkhan('bat'),
+  whale: grendelkhan('whale'),
+  car: grendelkhan('car'),
+  taxi: grendelkhan('taxi'),
+  bus: grendelkhan('bus'),
+  truck: grendelkhan('truck'),
+  ambulance: grendelkhan('ambulance'),
+  train: grendelkhan('train'),
+  plane: grendelkhan('plane'),
+  helicopter: grendelkhan('helicopter'),
+  boat: grendelkhan('boat'),
+  rocket: grendelkhan('rocket'),
+  tree: grendelkhan('tree'),
+  rose: grendelkhan('rose'),
+  flower: grendelkhan('flower'),
+  leaves: grendelkhan('leaves'),
+  ball: grendelkhan('ball'),
+  doll: grendelkhan('doll'),
+  shirt: grendelkhan('shirt'),
+  pants: grendelkhan('pants'),
+  dress: grendelkhan('dress'),
+  socks: grendelkhan('socks'),
+  hat: grendelkhan('hat'),
+  cap: grendelkhan('cap'),
+  gloves: grendelkhan('gloves'),
+  shoes: grendelkhan('shoes'),
+  coat: grendelkhan('coat'),
+  bread: grendelkhan('bread'),
+  cheese: grendelkhan('cheese'),
+  apple: grendelkhan('apple'),
+  milk: grendelkhan('milk'),
+  bird: grendelkhan('bird'),
+  duck: grendelkhan('duck'),
+  turkey: grendelkhan('turkey'),
+  fish: grendelkhan('fish'),
+  shark: grendelkhan('shark'),
+  lemon: grendelkhan('lemon'),
+  animals: grendelkhan('animals'),
+  plants: grendelkhan('plants'),
+  toys: grendelkhan('toys'),
+  clothes: grendelkhan('clothes'),
+  food: grendelkhan('food'),
+  birds: grendelkhan('birds'),
+  fruit: grendelkhan('fruit'),
+  'fire truck': ll('Persent101', 'fire truck'),
+  'police car': ll('Flame, not lame', 'police car'),
+  vehicles: ll('Wodencafe', 'vehicles'),
+  pine: ll('Wodencafe', 'pine'),
+  cookie: ll('Wodencafe', 'cookie'),
+  pancakes: ll('Wodencafe', 'pancakes'),
+  sunflower: ll('Vealhurl', 'sunflower'),
+  clover: ll('Vealhurl', 'clover'),
+  flamingo: ll('Benluks', 'flamingo'),
+  pasta: ll('Vealhurl', 'pasta'),
+  grapes: ll('Samuel Muldoon (Muldoonsamuel55)', 'grapes'),
+  giraffe: wiktionary('giraffe'),
+  zebra: wiktionary('zebra'),
+  kangaroo: wiktionary('kangaroo'),
+  tractor: wiktionary('tractor'),
+  palm: wiktionary('palm'),
+  tulip: wiktionary('tulip'),
+  cactus: wiktionary('cactus'),
+  'yo-yo': wiktionary('yo-yo'),
+  balloon: wiktionary('balloon'),
+  drum: wiktionary('drum'),
+  shorts: wiktionary('shorts'),
+  goggles: wiktionary('goggles'),
+  banana: wiktionary('banana'),
+  pretzel: wiktionary('pretzel'),
+  croissant: wiktionary('croissant'),
+  strawberry: wiktionary('strawberry'),
+  tomato: wiktionary('tomato'),
+  rooster: wiktionary('rooster'),
+  owl: wiktionary('owl'),
+  eagle: wiktionary('eagle'),
+  parrot: wiktionary('parrot'),
+  swan: wiktionary('swan'),
+  penguin: wiktionary('penguin'),
+  peacock: wiktionary('peacock'),
+  pear: wiktionary('pear'),
+  blueberry: wiktionary('blueberry'),
+  cherry: wiktionary('cherry'),
+  peach: wiktionary('peach'),
+  mango: wiktionary('mango'),
+  pineapple: wiktionary('pineapple'),
+  carrot: wiktionary('carrot'),
+  broccoli: wiktionary('broccoli'),
+  lettuce: wiktionary('lettuce'),
+  cucumber: wiktionary('cucumber'),
+  onion: wiktionary('onion'),
+  potato: wiktionary('potato'),
+  eggplant: wiktionary('eggplant'),
+  vegetables: wiktionary('vegetables'),
+  // Grendelkhan's "bike" and "chick" came out of speech recognition as "bye" and "check"; these didn't.
+  bike: wiktionary('bike'),
+  chick: wiktionary('chick'),
+  mammal: wiktionary('mammal'),
 };
 
 const LOUDNESS = -18; // mean dBFS, as My Letter's Letter sounds; the site's cheer is about -15
@@ -46,7 +161,9 @@ const LEAD_MS = 150;
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 const rawDir = here('./raw/');
 const outDir = here('../src/assets/words/');
-const rawFile = (word: string) => join(rawDir, word + extname(SOURCES[word]!));
+/** A word's file name: a space becomes a hyphen ("fire truck" is fire-truck.mp3). */
+const slug = (word: string) => word.replace(/ /g, '-');
+const rawFile = (word: string) => join(rawDir, slug(word) + extname(SOURCES[word]!));
 
 function ffmpeg(args: string[]): string {
   const run = spawnSync('ffmpeg', ['-hide_banner', '-nostdin', '-y', ...args], { encoding: 'utf8' });
@@ -84,17 +201,17 @@ async function download(word: string): Promise<void> {
 }
 
 function build(word: string, work: string): void {
-  const mono = join(work, `${word}-mono.wav`);
+  const mono = join(work, `${slug(word)}-mono.wav`);
   ffmpeg(['-i', rawFile(word), '-af', 'aformat=channel_layouts=mono,aresample=44100,highpass=f=70', mono]);
 
   // Trim the silence at both ends, relative to the clip's own peak, then fade.
   const { max } = levels(mono);
   const trim = 'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.01';
-  const shaped = join(work, `${word}-shaped.wav`);
+  const shaped = join(work, `${slug(word)}-shaped.wav`);
   ffmpeg(['-i', mono, '-af', [`volume=${-max}dB`, trim, 'areverse', trim, `afade=t=in:d=${FADE}`, 'areverse', `afade=t=in:d=${FADE}`].join(','), shaped]);
 
   const { mean } = levels(shaped);
-  const out = join(outDir, `${word}.mp3`);
+  const out = join(outDir, `${slug(word)}.mp3`);
   ffmpeg(['-i', shaped, '-af', `volume=${LOUDNESS - mean}dB,alimiter=limit=${PEAK}:level=false,adelay=${LEAD_MS}`,
     '-ac', '1', '-ar', '44100', '-c:a', 'libmp3lame', '-b:a', '96k', '-map_metadata', '-1', '-id3v2_version', '0', out]);
 }
@@ -119,9 +236,9 @@ const work = mkdtempSync(join(tmpdir(), 'tidy-up-words-'));
 try {
   for (const word of words) {
     build(word, work);
-    const out = join(outDir, `${word}.mp3`);
+    const out = join(outDir, `${slug(word)}.mp3`);
     const { mean, max } = levels(out);
-    console.log(`${word}.mp3  ${duration(out).toFixed(3)} s  mean ${mean} dB  peak ${max} dB`);
+    console.log(`${slug(word)}.mp3  ${duration(out).toFixed(3)} s  mean ${mean} dB  peak ${max} dB`);
   }
 } finally {
   rmSync(work, { recursive: true, force: true });

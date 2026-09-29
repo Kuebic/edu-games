@@ -6,17 +6,17 @@ import { clip, note, type Clip } from '@shared/sound';
 import type { Skin } from './skins';
 import type { Sort } from './sorting';
 
-/** Each Word clip's URL by its word: red.mp3 is red. */
+/** Each Word clip's URL by its file name: red.mp3 is red, fire-truck.mp3 is fire-truck. */
 export function clipsByWord(files: Readonly<Record<string, string>>): Map<string, string> {
-  return new Map(Object.entries(files).map(([path, url]) => [/([a-z]+)\.mp3$/.exec(path)![1]!, url]));
+  return new Map(Object.entries(files).map(([path, url]) => [/([a-z-]+)\.mp3$/.exec(path)![1]!, url]));
 }
 
 // Imported like any file (ADR 0005), so the build hashes each one and ships only what's there.
 const files = import.meta.glob<string>('./assets/words/*.mp3', { eager: true, query: '?url', import: 'default' });
 const words = new Map([...clipsByWord(files)].map(([word, url]) => [word, clip(url)]));
 
-/** A color's or shape's Word clip. */
-export const word = (sort: Sort): Clip | undefined => words.get(sort);
+/** A word's clip: a color, a shape, a group or a Thing's name. A space in it is a hyphen in the file name. */
+export const word = (said: Sort | string): Clip | undefined => words.get(said.replace(/ /g, '-'));
 
 /** Stops every Word, so a new grab or tap never talks over the last one. */
 export function hushWords(): void {

@@ -17,8 +17,8 @@ function app(save: object = {}): App {
 }
 
 describe("Tidy Up's Practice", () => {
-  it('has Colors and Shapes, each with its items in order, a Range and All, two Ways, and needs two items', () => {
-    const [colors, shapes] = tidyUpPractice(app()).topics;
+  it('has Colors, Shapes and Kinds, each with its items in order, a Range and All, two Ways, and Colors and Shapes need two items', () => {
+    const [colors, shapes, kinds] = tidyUpPractice(app()).topics;
     expect(colors!.items).toEqual(['🔴', '🔵', '🟡', '🟢', '🟠', '🟣', '🩷']);
     expect(colors!.ranges.map((r) => r.label)).toEqual(['🔴🔵🟡', 'All']);
     expect(colors!.ways.map((w) => w.id)).toEqual(['blocks', 'things']);
@@ -26,6 +26,12 @@ describe("Tidy Up's Practice", () => {
     expect(shapes!.ways.map((w) => w.id)).toEqual(['plain', 'colorful']);
     expect(colors!.fewest).toBe(2);
     expect(shapes!.fewest).toBe(2);
+    expect(kinds!.name).toBe('Kinds');
+    expect(kinds!.items).toEqual(['🐕🚗', '🍞👕', '🪀👕', '🐕👕🍞', '🐕🌳', '🐕🚗🌳', '🐦🐟', '🍎🥕', '🐕🐦']);
+    expect(kinds!.ranges.map((r) => r.label)).toEqual(['Easy', 'All']);
+    expect(kinds!.ways.map((w) => w.id)).toEqual(['clear', 'tricky']);
+    expect(kinds!.fewest).toBeUndefined();
+    expect(kinds!.skins).toBeUndefined();
   });
 
   it('shows the saved picks, and saves new ones per Topic', () => {
@@ -46,6 +52,11 @@ describe("Tidy Up's Practice", () => {
       shapesWay: 'colorful',
     });
     expect(tidyUpPractice(app({ format: 1, game: { topic: 'shapes' } })).topic()).toBe(1);
+    practice.chooseTopic(2);
+    practice.setScope(2, ['🐦🐟', '🐕🚗']);
+    practice.chooseWay(2, 'tricky');
+    expect(a.progress.game).toMatchObject({ topic: 'kinds', kinds: ['animals-vehicles', 'birds-fish'], kindsWay: 'tricky' });
+    expect(practice.scope(2)).toEqual(['🐕🚗', '🐦🐟']);
   });
 
   it('has Skin chips on Colors only, and saves the one picked', () => {
