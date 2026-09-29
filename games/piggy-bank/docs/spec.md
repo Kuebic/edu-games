@@ -1,6 +1,6 @@
 # Piggy Bank
 
-Status: built 2026-09-28, Hidden until tried, from the pitch "coin recognition (quarter, dime, $1, etc), based on best practices for teaching 2 to 4-year-olds", after the research in [toddler-coin-game.md](../../../docs/research/toddler-coin-game.md). Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr).
+Status: built 2026-09-28, from the pitch "coin recognition (quarter, dime, $1, etc), based on best practices for teaching 2 to 4-year-olds", after the research in [toddler-coin-game.md](../../../docs/research/toddler-coin-game.md). Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr).
 
 ## The problem
 
@@ -8,7 +8,7 @@ Game Shelf has nothing about money. Before 4, children can't compare coin values
 
 ## The Game
 
-- Slug `piggy-bank`, name "Piggy Bank", Category `math`, Shelf status Hidden until the user has tried it. A Tile of its own: a pink pig with a coin going into its slot.
+- Slug `piggy-bank`, name "Piggy Bank", Category `math`, Shelf status On. A Tile of its own: a pink pig with a coin going into its slot.
 - One folder `games/piggy-bank/` (site ADR 0003), on the shared platform: the shell, `showPractice` (site ADR 0014), `@shared/progress`, `@shared/grownup` (`levels: false`), `@shared/sound`. `catalog.test.ts` and `look.test.ts` must pass.
 - **No Voice**, as in Tidy Up: every word is a recorded Word clip (ADR 0002). The grown-up says the sentences.
 - **Names, not values.** Nothing says cents, "worth" or "more", and the child never sees ¢ or $. The grown-up's Scope buttons use them, because a grown-up reads them fastest.

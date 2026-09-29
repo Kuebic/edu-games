@@ -1,6 +1,6 @@
 # Mailbox
 
-Status: built 2026-09-29, Hidden until tried, from the pitch "a game where we match uppercase and lowercase letters", after the research in [letter-case-matching.md](../../../docs/research/letter-case-matching.md). Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr).
+Status: built 2026-09-29, from the pitch "a game where we match uppercase and lowercase letters", after the research in [letter-case-matching.md](../../../docs/research/letter-case-matching.md). Vocabulary is in [CONTEXT.md](../CONTEXT.md); decisions in [adr](./adr).
 
 ## The problem
 
@@ -8,7 +8,7 @@ The shelf teaches capitals (Find It, My Letter), and the user's three-year-old n
 
 ## The Game
 
-- Slug `mailbox`, name "Mailbox", Category `reading`, Shelf status Hidden until the user has tried it. A Tile of its own: a blue mailbox with its flag up and a letter going in.
+- Slug `mailbox`, name "Mailbox", Category `reading`, Shelf status On. A Tile of its own: a blue mailbox with its flag up and a letter going in.
 - One folder `games/mailbox/` (site ADR 0003), on the shared platform: the shell, `showPractice` (site ADR 0014), `sortRounds` and `askRounds` (site ADRs 0016, 0017), `@shared/progress`, `@shared/grownup` (`levels: false`), `@shared/sound`.
 - **No Voice.** The only words are the 26 letter Names, recorded (ADR 0003). Never "capital", "lowercase", "big" or "little".
 - **Letters in their own font**, Andika Bold renamed Mailbox Letters, on one baseline at one size (ADR 0002).
