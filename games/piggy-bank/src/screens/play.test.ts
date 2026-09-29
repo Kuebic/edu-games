@@ -128,11 +128,11 @@ describe('Find', () => {
     expect(wanted(a)).toBe(right);
     expect(bubble.classList.contains('asking')).toBe(true);
     expect(bubble.querySelector('img')!.getAttribute('src')).toBe(coin(a, right).querySelector('img')!.getAttribute('src'));
-    expect(coin(a, right).classList.contains('glow')).toBe(false);
+    expect(coin(a, right).classList.contains('site-sort-glow')).toBe(false);
     expect(inBelly(a)).toBe(0);
     press(coin(a, wrong));
     await vi.advanceTimersByTimeAsync(500);
-    expect(coin(a, right).classList.contains('glow')).toBe(true);
+    expect(coin(a, right).classList.contains('site-sort-glow')).toBe(true);
     await vi.advanceTimersByTimeAsync(1500);
     expect(inBelly(a)).toBe(1);
     expect(a.root.querySelector('.pig .in-belly')!.getAttribute('src')).toBe(coin(a, right).querySelector('img')!.getAttribute('src'));

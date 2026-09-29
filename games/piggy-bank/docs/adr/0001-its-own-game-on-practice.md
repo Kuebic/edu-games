@@ -11,3 +11,5 @@ It's a Practice Game (the site's ADR 0014) with one Topic, because the names are
 Its play screen draws on Tidy Up's (drag with a tap fallback, a Miss that slides back, the second going in by itself, Nudges at 7 seconds) but is its own code: Find has several Pieces to grab at once where Tidy Up has one Thing. If a third Game drags things into places, that's the time to move the fingers into `src/shared/`.
 
 Amended 2026-09-29: that third Game came (Tidy Up's Kinds), so Sort now plays on the site's sorting screen, and Find on its stage and fingers (site ADR 0016).
+
+Amended 2026-09-29 again: Find now plays on the site's asking screen, `askRounds` (site ADR 0017), which Mailbox's Find shares.

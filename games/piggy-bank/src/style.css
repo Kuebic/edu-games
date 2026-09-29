@@ -86,16 +86,8 @@ body::before {
   animation: flip 240ms ease-in-out;
 }
 
-.piece.gone {
-  visibility: hidden;
-}
-
-.piece.glow {
-  filter: drop-shadow(0 0 10px #ffce4f) drop-shadow(0 0 4px #ffb020);
-}
-
-.piece.glow .face {
-  animation: glow 1.2s ease-in-out 3;
+.piece.site-sort-glow {
+  filter: drop-shadow(0 0 10px var(--site-sort-glow)) drop-shadow(0 0 4px #ffb020);
 }
 
 /* ---------- Sort: the Purse and the Spot ---------- */
@@ -277,10 +269,6 @@ body::before {
     --mm: min(6px, 0.8vh);
   }
 
-}
-
-@keyframes glow {
-  50% { scale: 1.08; }
 }
 
 @keyframes land {

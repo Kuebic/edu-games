@@ -119,10 +119,10 @@ describe('Catalog', () => {
       }
     });
 
-    // ADR 0016: a Game that sorts uses the site's sorting screen, and keeps no finger or drop rules of its own.
+    // ADR 0016 and 0017: a Game that sorts or asks uses the site's screens, and keeps no finger, drop or table rules of its own.
     it('sorts only through the sorting screen', () => {
       for (const f of scripts) {
-        expect(source(f), relative(dir, f)).not.toMatch(/\b(?:function|const)\s+(?:binAt|bankAt|fingers)\b|\bMISSES_BEFORE_HELP\s*=/);
+        expect(source(f), relative(dir, f)).not.toMatch(/\b(?:function|const)\s+(?:binAt|bankAt|fingers|SEATS)\b|\bMISSES_BEFORE_HELP\s*=/);
       }
     });
 

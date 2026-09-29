@@ -332,3 +332,27 @@
     transition-duration: 1ms !important;
   }
 }
+
+/* ---------- Asking: one Asker at the bottom, Things on the table ---------- */
+
+.site-sort-asker {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  translate: -50% 0;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.site-sort-asker > * {
+  transform-origin: 50% 100%;
+}
+
+.site-sort-thing.site-sort-glow {
+  filter: drop-shadow(0 0 10px var(--site-sort-glow)) drop-shadow(0 0 4px #ffb020);
+}
+
+.site-sort-thing.site-sort-gone {
+  visibility: hidden;
+}

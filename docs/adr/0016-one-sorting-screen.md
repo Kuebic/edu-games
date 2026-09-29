@@ -9,3 +9,5 @@ Tidy Up sorts blocks into buckets and Piggy Bank sorts coins into pigs, and Pigg
 Piggy Bank's Find isn't a sort, so it keeps its own loop, on the shared stage and fingers. We rejected leaving the two copies, which had already drifted in small ways (one flips a coin on a tap, one wiggles), because the Miss rule and the finger rules are the part a child learns, and they should be the same in every Game. A Game's own motion stays its own: Tidy Up's trucks drive off and Piggy Bank's pigs jingle, in the `finish` hook. `catalog.test.ts` fails a Game that defines its own `binAt`, `bankAt`, `fingers` or `MISSES_BEFORE_HELP`; `look.test.ts` counts a Game on the sorting screen as drawing site-screens.
 
 Amended 2026-09-29: `landed(thing, first)` says whether a Thing is the first into its Bin this Round, so a Game says a Bin's Word once, not on every right drop (Tidy Up's ADR 0004).
+
+Amended by 0017: Piggy Bank's Find, and Mailbox's, play on the shared asking screen, `askRounds`.

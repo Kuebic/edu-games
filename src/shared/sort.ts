@@ -1,7 +1,8 @@
 // Sorting (site ADR 0016): a Pile of Things at the top, Bins along the bottom, and a child who drags each
 // Thing, or taps a Bin, to put it where it belongs. The screen, the fingers, the Miss rule, the nudges and
 // the end of a Round are the same in every Game that sorts; a Game gives its Rounds, its drawings and its
-// sounds. Tidy Up and Piggy Bank's Sort use all of it; Piggy Bank's Find uses the stage and the fingers.
+// sounds. Asking (ADR 0017) is the same stage turned round: one Asker at the bottom wants one of two or
+// three Things on the table. Tidy Up, Piggy Bank and Mailbox sort; Piggy Bank's and Mailbox's Find ask.
 
 import './sort.css';
 import { buzz, cheer } from './sound';
@@ -42,18 +43,26 @@ export function shuffle<T>(items: readonly T[], rng: Rng = Math.random): T[] {
 
 /**
  * The Bins of each Round from a Scope, one set per call: as many as the Scope has, up to `most`, taken
- * from a bag so each item comes up once before any comes again, never twice in one Round.
+ * from a bag so each item comes up once before any comes again, never twice in one Round. Items `apart`
+ * says look alike (b and d) share a Round only when the Scope leaves no other way.
  */
-export function binsFrom<K>(scope: readonly K[], rng: Rng = Math.random, most = MOST_BINS): () => K[] {
+export function binsFrom<K>(
+  scope: readonly K[],
+  rng: Rng = Math.random,
+  most = MOST_BINS,
+  apart: (a: K, b: K) => boolean = () => false,
+): () => K[] {
   if (scope.length === 0) throw new Error('Game Shelf: sorting needs a Scope');
   const size = Math.min(scope.length, most);
   let bag: K[] = [];
   const draw = (taken: readonly K[]): K => {
-    if (bag.every((s) => taken.includes(s))) bag = [...bag, ...shuffle(scope, rng)];
-    return bag.splice(
-      bag.findIndex((s) => !taken.includes(s)),
-      1,
-    )[0]!;
+    const free = (s: K) => !taken.includes(s);
+    const fits = (s: K) => free(s) && !taken.some((t) => apart(s, t));
+    if (!bag.some(free)) bag = [...bag, ...shuffle(scope, rng)];
+    const i = bag.findIndex(fits);
+    if (i >= 0) return bag.splice(i, 1)[0]!;
+    // Only look-alikes left in the bag: something from the Scope that fits, out of turn, if there is one.
+    return shuffle(scope, rng).find(fits) ?? bag.splice(bag.findIndex(free), 1)[0]!;
   };
   return () => {
     const bins: K[] = [];
@@ -545,6 +554,256 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
   // A phone turned on its side moves the Spot; a waiting Thing goes with it.
   const onResize = () => {
     if (current && !busy && !current.el.classList.contains('site-sort-held')) s.moveTo(current.el, spotPoint());
+  };
+  window.addEventListener('resize', onResize);
+
+  void startRound();
+
+  return () => {
+    alive = false;
+    s.leave();
+    clearIdle();
+    game.hush();
+    window.removeEventListener('resize', onResize);
+  };
+}
+
+// ---- An asking Round, Ask by Ask -----------------------------------------------------------------------
+
+/** One of each kind on the table, and what's asked for, in order. */
+export interface AskRound<K> {
+  kinds: readonly K[];
+  asks: readonly K[];
+}
+
+/** Where the Things lie on the table, as fractions of the stage, for two kinds and for three. */
+const SEATS: Readonly<Record<number, readonly Point[]>> = {
+  2: [
+    { x: 0.27, y: 0.28 },
+    { x: 0.73, y: 0.28 },
+  ],
+  3: [
+    { x: 0.26, y: 0.19 },
+    { x: 0.74, y: 0.19 },
+    { x: 0.5, y: 0.45 },
+  ],
+};
+/** A Thing let go below this, as a fraction of the stage's height, is given to the Asker. */
+const ASKER_LINE = 0.55;
+
+/** What a Game gives the asking screen. The screen owns the Asks; the Game owns how they look and sound. */
+export interface AskGame<K> {
+  next(): AskRound<K>;
+  /** The one who asks, at the bottom of the stage, drawn once: a press on it asks again. */
+  asker: BinView;
+  /** A Thing on the table, one per kind, drawn fresh each Round. The screen adds its class and keyboard press. */
+  thing(kind: K): HTMLElement;
+  /**
+   * Shows and says what's wanted: as each Ask starts, after a Miss, when the Asker is pressed, and from the
+   * second nudge. The only Word an asking screen says is the one asked for (Piggy Bank's ADR 0004).
+   */
+  ask(kind: K): void;
+  /** The Ask answered: e.g. a bubble goes down. */
+  answered?(): void;
+  lifted?(kind: K): void;
+  /** The Thing asked for has gone into the Asker: its sound and how the Asker shows it. No Word. */
+  landed(kind: K): void;
+  /** Another Thing given, as the Asker bumps. */
+  missed(kind: K): void;
+  /** The nudge after 7 seconds still, `n` from 1. The screen asks again from the second and lights the Thing from the third. */
+  nudged?(kind: K, n: number): void;
+  /** Stops any Word playing, for a new grab. */
+  hush(): void;
+  /** Every Ask answered: the Asker's own motion and sound, before the card. */
+  finish(): Promise<void>;
+  card(round: AskRound<K>): Card;
+}
+
+/**
+ * Plays asking Rounds on the stage until the screen goes: the Asker wants one of the two or three Things on
+ * the table, and the child drags it in or taps it. Another is a Miss: it glides back and the Asker asks
+ * again, and after MISSES_BEFORE_HELP the right one lights up and goes in by itself. The Things change
+ * places between Asks. Returns the leave function.
+ */
+export function askRounds<K>(s: PlayStage, game: AskGame<K>): () => void {
+  let alive = true;
+  const { asker } = game;
+  asker.el.classList.add('site-sort-asker');
+  s.stage.append(asker.el);
+
+  let round: AskRound<K>;
+  let asked = 0;
+  let things = new Map<K, HTMLElement>();
+  /** Each Thing's place on the table. */
+  let seats = new Map<HTMLElement, Point>();
+  let misses = 0;
+  /** While Things move, or the Round ends, fingers do nothing. */
+  let busy = true;
+
+  const wanted = (): K => round.asks[asked]!;
+  const kindOf = (el: HTMLElement): K => [...things].find(([, t]) => t === el)![0];
+  const seatOf = (el: HTMLElement): Point => {
+    const f = seats.get(el)!;
+    const r = s.stage.getBoundingClientRect();
+    return { x: f.x * r.width, y: f.y * r.height };
+  };
+  const glow = (el: HTMLElement | null) => {
+    for (const t of things.values()) t.classList.toggle('site-sort-glow', t === el);
+  };
+
+  /** New places on the table for every Thing, so the answer is never where it was. */
+  function reseat(): void {
+    const order = shuffle(SEATS[round.kinds.length]!);
+    seats = new Map([...things.values()].map((t, i) => [t, order[i]!]));
+  }
+
+  async function startRound(): Promise<void> {
+    round = game.next();
+    asked = 0;
+    for (const t of things.values()) t.remove();
+    things = new Map(
+      round.kinds.map((kind) => {
+        const el = game.thing(kind);
+        el.classList.add('site-sort-thing');
+        // A press from a keyboard or switch; fingers come through the stage's pointer events.
+        el.addEventListener('click', (e) => {
+          if (e.detail === 0) void choose(el);
+        });
+        return [kind, el];
+      }),
+    );
+    reseat();
+    for (const t of things.values()) {
+      s.moveTo(t, seatOf(t));
+      t.classList.add('site-sort-pop');
+      s.stage.append(t);
+    }
+    await wait(450);
+    if (alive) void nextAsk();
+  }
+
+  async function nextAsk(): Promise<void> {
+    if (asked === round.asks.length) return finish();
+    misses = 0;
+    if (asked > 0) {
+      reseat();
+      for (const t of things.values()) void s.glide(t, seatOf(t));
+      await wait(GLIDE_MS);
+      if (!alive) return;
+    }
+    game.hush();
+    game.ask(wanted());
+    busy = false;
+    armIdle();
+  }
+
+  async function choose(el: HTMLElement): Promise<void> {
+    if (busy) return;
+    busy = true;
+    clearIdle();
+    game.hush();
+    const kind = kindOf(el);
+    if (kind === wanted()) return into(el);
+
+    misses++;
+    game.missed(kind);
+    replay(asker.el, 'site-sort-nope');
+    await s.glide(el, seatOf(el));
+    if (!alive) return;
+    if (misses >= MISSES_BEFORE_HELP) {
+      const right = things.get(wanted())!;
+      glow(right);
+      await wait(700);
+      if (alive) return into(right);
+      return;
+    }
+    game.ask(wanted());
+    busy = false;
+    armIdle();
+  }
+
+  async function into(el: HTMLElement): Promise<void> {
+    const kind = kindOf(el);
+    glow(null);
+    el.classList.add('site-sort-going-in');
+    await s.glide(el, asker.mouth ? asker.mouth() : s.centreOf(asker.el));
+    if (!alive) return;
+    el.classList.add('site-sort-gone');
+    el.classList.remove('site-sort-going-in');
+    game.landed(kind);
+    replay(asker.el, 'site-sort-got');
+    buzz(30);
+    s.sparkleAt(asker.el);
+    game.answered?.();
+    await wait(500);
+    if (!alive) return;
+    // Another of the same kind lies on the table again.
+    s.moveTo(el, seatOf(el));
+    el.classList.remove('site-sort-gone');
+    replay(el, 'site-sort-pop');
+    await wait(200);
+    if (!alive) return;
+    asked++;
+    void nextAsk();
+  }
+
+  async function finish(): Promise<void> {
+    busy = true;
+    clearIdle();
+    game.answered?.();
+    await game.finish();
+    if (alive) s.end(game.card(round), () => void startRound());
+  }
+
+  // ---- Nudges when she's been still ---------------------------------------
+  let idleTimer: ReturnType<typeof setTimeout> | undefined;
+  let nudges = 0;
+  function clearIdle(): void {
+    clearTimeout(idleTimer);
+  }
+  function armIdle(): void {
+    clearIdle();
+    idleTimer = setTimeout(() => {
+      if (!alive || busy) return;
+      if (nudges < MAX_NUDGES) {
+        nudges++;
+        game.nudged?.(wanted(), nudges);
+        if (nudges > 1) game.ask(wanted());
+        if (nudges > 2) glow(things.get(wanted())!);
+      }
+      armIdle();
+    }, IDLE_MS);
+  }
+
+  fingers(s, {
+    grabbable: () => (busy ? [] : [...things.values()]),
+    touched() {
+      nudges = 0;
+      if (!busy) armIdle();
+    },
+    lifted(el) {
+      game.hush();
+      game.lifted?.(kindOf(el));
+    },
+    tapped: (el) => void choose(el),
+    dropped(el, at) {
+      const r = s.stage.getBoundingClientRect();
+      if (Number.isFinite(at.y) && at.y > r.top + r.height * ASKER_LINE) void choose(el);
+      else void s.glide(el, seatOf(el));
+    },
+    pressed() {
+      if (!busy) {
+        game.hush();
+        game.ask(wanted());
+      }
+    },
+    pressable: '.site-sort-asker',
+  });
+
+  // A phone turned on its side moves the table; the Things go with it.
+  const onResize = () => {
+    if (busy) return;
+    for (const t of things.values()) if (!t.classList.contains('site-sort-held')) s.moveTo(t, seatOf(t));
   };
   window.addEventListener('resize', onResize);
 

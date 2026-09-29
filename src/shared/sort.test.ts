@@ -2,7 +2,7 @@
 // The sorting screen with a made-up Game: Bins pressed from a keyboard (click with detail 0), since dragging
 // needs a real layout; where a finger lets go is tested as data.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { binAt, binsFrom, IDLE_MS, pileOf, playStage, sortRounds, type SortGame } from './sort';
+import { askRounds, binAt, binsFrom, IDLE_MS, pileOf, playStage, sortRounds, type AskGame, type SortGame } from './sort';
 
 /** A seeded random, so a failure can be run again. */
 function seeded(seed: number): () => number {
@@ -21,6 +21,17 @@ describe('Rounds as data', () => {
     const all = seen.flat();
     for (const k of 'abcdefg') expect(all.filter((x) => x === k).length).toBe(3);
     expect(binsFrom(['a', 'b'], seeded(1))().sort()).toEqual(['a', 'b']);
+  });
+
+  it('keep look-alikes apart when the Scope leaves another way, and still take each item in turn', () => {
+    const apart = (a: string, b: string) => 'bd'.includes(a) && 'bd'.includes(b);
+    const next = binsFrom([...'bdxy'], seeded(5), 3, apart);
+    const seen = Array.from({ length: 40 }, next);
+    for (const bins of seen) expect(bins.includes('b') && bins.includes('d'), bins.join('')).toBe(false);
+    const all = seen.flat();
+    // x and y are in every Round; b and d take turns in the third Bin.
+    for (const k of 'bd') expect(all.filter((x) => x === k).length, k).toBeGreaterThanOrEqual(15);
+    expect(binsFrom([...'bd'], seeded(1), 3, apart)().sort()).toEqual(['b', 'd']);
   });
 
   it('never deal three in a row for one Bin', () => {
@@ -168,5 +179,93 @@ describe('the sorting screen', () => {
     expect(log.filter((l) => l.startsWith('landed'))).toEqual([]);
     root.querySelector<HTMLButtonElement>('[aria-label="Back"]')!.click();
     expect(back).toHaveBeenCalled();
+  });
+});
+
+/** A Game asking for letters from the table, recording what it was asked to do. */
+function asking(log: string[]): AskGame<string> {
+  const asker = document.createElement('button');
+  asker.setAttribute('aria-label', 'asker');
+  return {
+    next: () => ({ kinds: ['a', 'b'], asks: [...'abab'] }),
+    asker: { el: asker },
+    thing(kind) {
+      const b = document.createElement('button');
+      b.dataset.t = kind;
+      return b;
+    },
+    ask: (kind) => log.push(`ask ${kind}`),
+    landed: (kind) => log.push(`landed ${kind}`),
+    missed: (kind) => log.push(`missed ${kind}`),
+    nudged: (kind, n) => log.push(`nudged ${kind} ${n}`),
+    hush: () => {},
+    async finish() {
+      log.push('finish');
+    },
+    card: () => ({ art: document.createElement('b'), text: 'Find a with a grown-up!' }),
+  };
+}
+
+describe('the asking screen', () => {
+  let root: HTMLElement;
+  let log: string[];
+  let leave: () => void;
+  const press = (el: Element) => el.dispatchEvent(new MouseEvent('click', { bubbles: true, detail: 0 }));
+  const thing = (k: string) => root.querySelector<HTMLElement>(`.site-sort-thing[data-t="${k}"]`)!;
+  const asked = () => log.filter((l) => l.startsWith('ask')).at(-1)!.slice(4);
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    root = document.createElement('div');
+    log = [];
+    const s = playStage(root, { back: () => {}, tools: [], confetti: { colours: ['red'] } });
+    leave = askRounds(s, asking(log));
+  });
+  afterEach(() => {
+    leave();
+    vi.useRealTimers();
+  });
+
+  it('lays one of each kind on the table and asks for the first', async () => {
+    await vi.advanceTimersByTimeAsync(500);
+    expect(root.querySelectorAll('.site-sort-thing')).toHaveLength(2);
+    expect(root.querySelector('.site-sort-asker')).not.toBeNull();
+    expect(log).toEqual(['ask a']);
+  });
+
+  it('takes the Thing asked for, then asks for the next', async () => {
+    await vi.advanceTimersByTimeAsync(500);
+    press(thing('a'));
+    await vi.advanceTimersByTimeAsync(1600);
+    expect(log).toEqual(['ask a', 'landed a', 'ask b']);
+  });
+
+  it('asks again after a Miss, and after the second lights the right one and puts it in', async () => {
+    await vi.advanceTimersByTimeAsync(500);
+    press(thing('b'));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(log).toEqual(['ask a', 'missed b', 'ask a']);
+    press(thing('b'));
+    await vi.advanceTimersByTimeAsync(500);
+    expect(thing('a').classList.contains('site-sort-glow')).toBe(true);
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(log.slice(3)).toEqual(['missed b', 'landed a']);
+  });
+
+  it('nudges, asks again from the second, and lights the Thing from the third', async () => {
+    await vi.advanceTimersByTimeAsync(500);
+    await vi.advanceTimersByTimeAsync(IDLE_MS * 4 + 100);
+    expect(log).toEqual(['ask a', 'nudged a 1', 'nudged a 2', 'ask a', 'nudged a 3', 'ask a']);
+    expect(thing('a').classList.contains('site-sort-glow')).toBe(true);
+  });
+
+  it('ends after the last Ask with the Game’s finish, the card and Next', async () => {
+    await vi.advanceTimersByTimeAsync(500);
+    for (let i = 0; i < 4; i++) {
+      press(thing(asked()));
+      await vi.advanceTimersByTimeAsync(1600);
+    }
+    expect(log.at(-1)).toBe('finish');
+    expect(root.querySelector('.site-sort-cheer')?.textContent).toMatch(/grown-up/);
   });
 });
