@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "edu-games",
+  "account_id": "5e7c03d562a80de198b3edeb8212639c",
   "compatibility_date": "2026-09-24",
   // Static site only: no Worker script. `npm run build` writes dist/.
   "assets": {
