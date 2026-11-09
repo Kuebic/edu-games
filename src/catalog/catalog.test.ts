@@ -126,6 +126,13 @@ describe('Catalog', () => {
       }
     });
 
+    // ADR 0018: the pictures and their Words are the site's; a Game keeps no pools of its own.
+    it('takes its pictures and Words from the site', () => {
+      for (const f of scripts) {
+        expect(source(f), relative(dir, f)).not.toMatch(/\b(?:function|const)\s+(?:GROUP_WORDS|COLOUR_THINGS)\b|import\.meta\.glob\([^)]*words/);
+      }
+    });
+
     // Every Game opens on the level select (ADR 0008) or Practice (ADR 0014), which draw the House button; look.test.ts checks the rest.
     it('has a House button back to the Hub', () => {
       expect(scripts.some((f) => /\bshow(?:LevelSelect|Practice)\(/.test(source(f)))).toBe(true);

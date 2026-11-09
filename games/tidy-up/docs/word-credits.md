@@ -1,6 +1,6 @@
 # Word credits
 
-Every Word clip in `src/assets/words/` is a free recording from [Wikimedia Commons](https://commons.wikimedia.org/): the colors and shapes, Kinds' group words, and each Kinds Thing's name. Most are one speaker's, Grendelkhan, recorded with [Lingua Libre](https://lingualibre.org/) and dedicated to the public domain (CC0). The rest are Wiktionary's recordings (`En-us-*.ogg`) or other Lingua Libre speakers', where Grendelkhan never recorded the word, or where speech recognition heard Grendelkhan's as another word.
+Every Word clip in `src/shared/assets/words/` (the site's, shared with Go Together, site ADR 0018) is a free recording from [Wikimedia Commons](https://commons.wikimedia.org/): the colors and shapes, Kinds' group words, and each Kinds Thing's name. Most are one speaker's, Grendelkhan, recorded with [Lingua Libre](https://lingualibre.org/) and dedicated to the public domain (CC0). The rest are Wiktionary's recordings (`En-us-*.ogg`) or other Lingua Libre speakers', where Grendelkhan never recorded the word, or where speech recognition heard Grendelkhan's as another word.
 
 The Game task `npm run game tidy-up words` downloads the raw files to `scripts/raw/` and makes the clips (ADR 0002, ADR 0003). It trims silence, levels loudness, fades both ends, adds 150 ms of silence in front and saves a mono 96 kbps MP3. The sources are in `scripts/words.ts`; change one there and here together. The licences and authors below were read from each file's Commons page on 2026-09-29.
 

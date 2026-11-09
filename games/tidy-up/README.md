@@ -15,7 +15,7 @@ npm run game tidy-up words           # fetch and trim the Word clips again (need
 npm run build                        # whole site, into dist/
 ```
 
-The page is `index.html`; its icons are in `public/`, served at `/tidy-up/`. The Word clips are in `src/assets/words/`, credited in [docs/word-credits.md](./docs/word-credits.md). Every other noise is a note.
+The page is `index.html`; its icons are in `public/`, served at `/tidy-up/`. The Word clips are the site's, in `src/shared/assets/words/` (site ADR 0018), credited in [docs/word-credits.md](./docs/word-credits.md). Every other noise is a note.
 
 ## For grown-ups
 

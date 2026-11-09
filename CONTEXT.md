@@ -127,6 +127,14 @@ _Avoid_: drag game, drop zone
 The sorting screen turned round (`@shared/sort`, `askRounds`): one **Asker** at the bottom wants one of the two or three Things on the table, and the child drags it in or taps it. A Miss glides back and the Asker asks again; after two, the right one lights up and goes in by itself. The only word said is the one asked for. Mailbox's and Piggy Bank's Find play on it.
 _Avoid_: quiz, question screen
 
+**Pictures**:
+The everyday things every Game can show, as emoji with recorded names, in groups (animals, vehicles, food, clothes, toys, plants, birds, fish, fruit, vegetables, mammals) and in colors, through one module every Game shares (`@shared/kinds`). Tidy Up sorts them, and Go Together finds which go together.
+_Avoid_: emoji (in site talk), assets, pools (in code only)
+
+**Word**:
+A recorded word a Game plays instead of a Voice: a Picture's name ("dog"), its group ("animals") or its color ("red"), from the site's clips. A Game that has Words says one at a time and never a sentence.
+_Avoid_: clip (in site talk), label, Voice
+
 **Voice**:
 What a Game says aloud, in the browser's own speech, through one module every Game shares (`@shared/voice`). A Grown-up Corner switch turns it off; it hides where the browser can't speak. Find It, Hop Race, My Letter, Robot Path, Snack Math, Way Out and Which Way? have a Voice.
 _Avoid_: speech, TTS, narration

@@ -1,90 +1,12 @@
 // What Tidy Up's Kinds Topic asks: Steps of groups sorted together, from animals and vehicles to mammals
-// and birds, and the Things in each group, each with its own name. Pure, with the random source passed in,
-// so it's tested as data (docs/kinds.md; research in docs/research/toddler-category-sorting.md).
+// and birds. The groups and their Things are the site's. Pure, with the random source passed in, so it's
+// tested as data (docs/kinds.md; research in docs/research/toddler-category-sorting.md).
 
+import { POOLS, type Group, type KindThing } from '@shared/kinds';
 import { PER_BIN, pileOf, shuffle, type Rng } from '@shared/sort';
 
-/** A group Things sort into. Each is also the Word its crate says. */
-export type Group = 'animals' | 'vehicles' | 'plants' | 'toys' | 'clothes' | 'food' | 'birds' | 'fish' | 'fruit' | 'vegetables' | 'mammals';
-
-/** The group's Word, its plural or mass noun. Nobody recorded "mammals" alone, so that one says "mammal". */
-export const GROUP_WORDS: Readonly<Record<Group, string>> = {
-  animals: 'animals',
-  vehicles: 'vehicles',
-  plants: 'plants',
-  toys: 'toys',
-  clothes: 'clothes',
-  food: 'food',
-  birds: 'birds',
-  fish: 'fish',
-  fruit: 'fruit',
-  vegetables: 'vegetables',
-  mammals: 'mammal',
-};
-
-/** One Thing to sort: its picture, and its own name, which is also its Word clip. */
-export interface KindThing {
-  emoji: string;
-  name: string;
-}
-
-const t = (emoji: string, name: string): KindThing => ({ emoji, name });
-
-/** Mammals with legs: Animals in the early Steps, Mammals in the last. */
-const MAMMALS = [
-  t('🐕', 'dog'), t('🐈', 'cat'), t('🐄', 'cow'), t('🐖', 'pig'), t('🐑', 'sheep'), t('🐐', 'goat'), t('🐎', 'horse'),
-  t('🐇', 'rabbit'), t('🐒', 'monkey'), t('🐘', 'elephant'), t('🦒', 'giraffe'), t('🐅', 'tiger'), t('🦓', 'zebra'), t('🐁', 'mouse'),
-];
-const ODD_MAMMALS = [t('🦇', 'bat'), t('🐋', 'whale'), t('🦘', 'kangaroo')];
-
-/**
- * Each group's members. `clear` are textbook members. `wide` join from WIDE_FROM on: the youngest sort by
- * parts (legs and wheels), so vehicles without wheels come later. `odd` are the Tricky Way's atypical members.
- */
-export const POOLS: Readonly<Record<Group, { clear: readonly KindThing[]; wide?: readonly KindThing[]; odd?: readonly KindThing[] }>> = {
-  animals: { clear: MAMMALS, odd: ODD_MAMMALS },
-  mammals: { clear: MAMMALS, odd: ODD_MAMMALS },
-  vehicles: {
-    clear: [
-      t('🚗', 'car'), t('🚕', 'taxi'), t('🚌', 'bus'), t('🚒', 'fire truck'), t('🚑', 'ambulance'), t('🚓', 'police car'),
-      t('🚚', 'truck'), t('🚜', 'tractor'), t('🚲', 'bike'), t('🚂', 'train'),
-    ],
-    wide: [t('✈️', 'plane'), t('🚁', 'helicopter'), t('⛵', 'boat')],
-    odd: [t('🚀', 'rocket')],
-  },
-  plants: {
-    clear: [t('🌳', 'tree'), t('🌲', 'pine'), t('🌴', 'palm'), t('🌻', 'sunflower'), t('🌷', 'tulip'), t('🌹', 'rose'), t('🌸', 'flower'), t('🍀', 'clover'), t('🌿', 'leaves')],
-    odd: [t('🌵', 'cactus')],
-  },
-  toys: { clear: [t('🪀', 'yo-yo'), t('🎈', 'balloon'), t('🥁', 'drum'), t('⚽', 'ball'), t('🏀', 'ball'), t('🪆', 'doll')] },
-  clothes: {
-    clear: [t('👕', 'shirt'), t('👖', 'pants'), t('👗', 'dress'), t('🧦', 'socks'), t('🧢', 'cap'), t('👒', 'hat'), t('🧤', 'gloves'), t('🩳', 'shorts'), t('👟', 'shoes'), t('🧥', 'coat')],
-    odd: [t('🥽', 'goggles')],
-  },
-  food: {
-    clear: [
-      t('🍞', 'bread'), t('🧀', 'cheese'), t('🍌', 'banana'), t('🍎', 'apple'), t('🍪', 'cookie'), t('🥛', 'milk'), t('🥨', 'pretzel'),
-      t('🍝', 'pasta'), t('🥞', 'pancakes'), t('🥐', 'croissant'), t('🍓', 'strawberry'), t('🍇', 'grapes'),
-    ],
-    odd: [t('🍅', 'tomato')],
-  },
-  birds: {
-    clear: [t('🐦', 'bird'), t('🐓', 'rooster'), t('🦆', 'duck'), t('🦉', 'owl'), t('🦅', 'eagle'), t('🦜', 'parrot'), t('🦢', 'swan'), t('🦃', 'turkey'), t('🐤', 'chick')],
-    odd: [t('🐧', 'penguin'), t('🦩', 'flamingo'), t('🦚', 'peacock')],
-  },
-  // Only four fish emoji exist, so a Birds and fish Round shows each of them.
-  fish: { clear: [t('🐟', 'fish'), t('🐠', 'fish'), t('🐡', 'fish'), t('🦈', 'shark')] },
-  fruit: {
-    clear: [
-      t('🍎', 'apple'), t('🍐', 'pear'), t('🍊', 'orange'), t('🍋', 'lemon'), t('🍌', 'banana'), t('🍇', 'grapes'), t('🍓', 'strawberry'),
-      t('🫐', 'blueberry'), t('🍒', 'cherry'), t('🍑', 'peach'), t('🥭', 'mango'), t('🍍', 'pineapple'),
-    ],
-  },
-  vegetables: {
-    clear: [t('🥕', 'carrot'), t('🥦', 'broccoli'), t('🥬', 'lettuce'), t('🥒', 'cucumber'), t('🧅', 'onion'), t('🥔', 'potato')],
-    odd: [t('🍆', 'eggplant')],
-  },
-};
+// The groups, their members and their Words are the site's (@shared/kinds, site ADR 0018); Tidy Up adds its Steps.
+export { GROUP_WORDS, POOLS, type Group, type KindThing } from '@shared/kinds';
 
 /** A Kinds Scope item: groups sorted together, easiest first. */
 export type Step = 'animals-vehicles' | 'food-clothes' | 'toys-clothes' | 'animals-clothes-food' | 'animals-plants' | 'animals-vehicles-plants' | 'birds-fish' | 'fruit-vegetables' | 'mammals-birds';

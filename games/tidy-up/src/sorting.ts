@@ -2,6 +2,7 @@
 // source passed in, so it's tested as data. A Round sorts by one rule only, color or shape, because most
 // three-year-olds can't switch rules partway (docs/spec.md).
 
+import { COLOUR_THINGS, COLOURS, type Colour } from '@shared/kinds';
 import { binsFrom, pileOf, shuffle, PER_BIN, type Rng } from '@shared/sort';
 
 /** The Topics this module deals: sorting by color or by shape. Kinds has its own, in kinds.ts. */
@@ -10,13 +11,13 @@ export type Topic = SortTopic | 'kinds';
 /** The Topics in tab order. */
 export const TOPICS: readonly Topic[] = ['colors', 'shapes', 'kinds'];
 
-export type Colour = 'red' | 'blue' | 'yellow' | 'green' | 'orange' | 'purple' | 'pink';
+// The colors and their everyday Things are the site's (@shared/kinds); Tidy Up adds the shapes.
+export { COLOURS, type Colour } from '@shared/kinds';
 export type Shape = 'circle' | 'square' | 'triangle' | 'star' | 'heart';
 /** What a Bin takes: a color on Colors, a shape on Shapes. Each is also its Word. */
 export type Sort = Colour | Shape;
 
-/** Every color in Scope order. The new save's red and blue, and the first Range's yellow, are told apart by a red-green color-blind child too. */
-export const COLOURS: readonly Colour[] = ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'pink'];
+// The new save's red and blue, and the first Range's yellow, are told apart by a red-green color-blind child too.
 export const SHAPES: readonly Shape[] = ['circle', 'square', 'triangle', 'star', 'heart'];
 export const SORTS: Readonly<Record<SortTopic, readonly Sort[]>> = { colors: COLOURS, shapes: SHAPES };
 
@@ -63,17 +64,8 @@ export type ShapeWay = 'plain' | 'colorful';
 export type Way = ColourWay | ShapeWay;
 export const WAYS: Readonly<Record<SortTopic, readonly Way[]>> = { colors: ['blocks', 'things'], shapes: ['plain', 'colorful'] };
 
-/** Everyday things mainly one color, as emoji. Each is under one color only. */
-export const THINGS: Readonly<Record<Colour, readonly string[]>> = {
-  red: ['🍎', '🍓', '🍅', '🚒', '🌹'],
-  blue: ['🫐', '🐳', '🧢', '👖', '🐬'],
-  yellow: ['🍌', '🌻', '🐤', '🧀', '🍋'],
-  green: ['🥦', '🐸', '🥒', '🌲', '🍏'],
-  orange: ['🍊', '🥕', '🎃', '🏀', '🦊'],
-  purple: ['🍇', '🍆', '🔮', '🪻', '☂️'],
-  pink: ['🌸', '🐷', '🦩', '🎀', '🌷'],
-};
-
+/** Everyday things mainly one color, as emoji: the site's. */
+export const THINGS = COLOUR_THINGS;
 
 /** One Thing on the Pile: the Bin it goes in, and how it's drawn. */
 export type Thing =

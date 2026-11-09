@@ -1,4 +1,4 @@
-// Builds the Word clips: src/assets/words/<word>.mp3, the colors, the shapes, Kinds' groups and each Thing's
+// Builds the site's Word clips: src/shared/assets/words/<word>.mp3, the colors, the shapes, Kinds' groups and each Thing's
 // name, from free recordings on Wikimedia Commons (credits: docs/word-credits.md). Grendelkhan's Lingua Libre
 // recordings where they exist, then Wiktionary's, then other Lingua Libre speakers'. Each is trimmed of
 // silence, levelled, faded, and starts with LEAD_MS of silence. Each was also run through speech recognition:
@@ -160,7 +160,8 @@ const LEAD_MS = 150;
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 const rawDir = here('./raw/');
-const outDir = here('../src/assets/words/');
+// The clips are the site's (site ADR 0018): Go Together says them too.
+const outDir = here('../../../src/shared/assets/words/');
 /** A word's file name: a space becomes a hyphen ("fire truck" is fire-truck.mp3). */
 const slug = (word: string) => word.replace(/ /g, '-');
 const rawFile = (word: string) => join(rawDir, slug(word) + extname(SOURCES[word]!));
