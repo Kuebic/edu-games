@@ -19,11 +19,11 @@ Three Topics, tabs with a picture badge:
 
 - **Same** (two-year-olds): groups are identical pictures, 🐕🐕. Scope: which pools the pictures come from: animals, vehicles, food, clothes, toys, plants. Range: All.
 - **Colors**: a group is Things of one color, 🍎🍓🚒 red, from Tidy Up's everyday Things. Scope: the seven colors. Ranges 🔴🔵🟡 and All.
-- **Kinds**: a group is a kind of thing, from Tidy Up's Kinds pools: animals, vehicles, plants, toys, clothes, food, birds, fish, fruit, vegetables. Scope: those groups. Ranges Easy (animals, vehicles, food, clothes) and All. Groups that overlap never share a Board: animals with birds, fish or mammals; food with fruit or vegetables; toys with balls. That is `binsFrom`'s `apart` rule from `@shared/sort`, reused to deal a Board.
+- **Kinds**: a group is a kind of thing, from Tidy Up's Kinds pools: animals, vehicles, plants, toys, clothes, food, birds, fish, fruit, vegetables. Scope: those groups. Ranges Easy (animals, vehicles, food, clothes) and All. Groups that overlap (animals with birds, fish or mammals; food with fruit or vegetables) never share a Board when the Scope has another way: `binsFrom`'s `apart` rule from `@shared/sort`, reused to deal a Board.
 
-**Way** on every Topic is the **Board**, four chips drawn as little grids: **4** (2 groups of 2), **6** (2 of 3), **9** (3 of 3), **16** (4 of 4, the real Connections). Play waits for as many Scope items as the Board has groups (`fewest`: 2, 2, 3, 4).
+**Way** on every Topic is the **Board**, four chips drawn as little grids: **4** (2 groups of 2), **6** (2 of 3), **9** (3 of 3), **16** (4 of 4, the real Connections). On Colors and Kinds, Play waits for as many Scope items as the Board has groups (`fewest`: 2, 2, 3, 4). On Same the groups are pictures, drawn from the Scope's pools in turn, so one pool is enough (`fewest` 1).
 
-**New save**: Kinds, Board 6, the Easy Range. The user's child is three and a half and knows her categories; a two-year-old's grown-up taps Same once.
+**New save**: Kinds, Board 6, the Easy Range; Same holds animals and vehicles, Colors red and blue, for when a grown-up switches tab. The user's child is three and a half and knows her categories; a two-year-old's grown-up taps Same once.
 
 ## The Board
 
@@ -43,7 +43,7 @@ When every Frame is full, the Frames wobble and shine, the site's cheer, and a c
 
 ### Sound
 
-Pop on lift, bump on a Miss, chime on a gather, the group's Word once, the site's cheer. With Sound off the Frame still shows the gathered pictures, so the game plays silent (the user tests on Linux without speech).
+Pop on lift, a lower pop on put-down, bump on a Miss, chime on a gather, the group's Word once (a lift cuts a Word still playing short, so Words never pile up), a shimmer as the Frames shine, the site's cheer. With Sound off the Frame still shows the gathered pictures, so the game plays silent (the user tests on Linux without speech).
 
 ## Shared: pictures and their Words
 

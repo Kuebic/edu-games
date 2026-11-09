@@ -30,7 +30,7 @@ const corner = grownUpCorner(root, progress, {
     'Try the tabs in order. 🟩 Same is for two-year-olds: the groups are the same picture twice. Colors groups things of one color: a strawberry, a fire truck and a rose. Kinds groups kinds of things: animals, vehicles, food, clothes. ' +
     'The squares pick the Board: 4 pictures in 2 groups of 2, 6 in 2 groups of 3, 9 in 3 groups of 3, or 16 in 4 groups of 4, like the newspaper. ' +
     'Then tap the pictures to play with; Easy is animals, vehicles, food and clothes. Play waits until you have turned on as many as the Board has groups. ' +
-    'Say the group with your child as it gathers, "they’re all animals", and after a Board, find three things at home that go together. Your picks are kept for next time.',
+    'The Game only ever says the group’s name. Say it with your child as the group gathers, "they’re all animals", and after a Board, find three things at home that go together. Your picks are kept for next time.',
   closed: () => start?.redraw(),
 });
 

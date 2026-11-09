@@ -1,6 +1,6 @@
 # Go Together
 
-A phone-first touch game that teaches two to four-year-olds to see which things go together: Connections, with pictures and no words. A grid of 4, 6, 9 or 16 pictures sits in the middle in hidden groups, with an empty frame for each group above. Nobody says what the groups are. The child taps the pictures that belong together; a whole group hops into a frame and a recorded voice says its name, once.
+A phone-first touch game that teaches two to four-year-olds to see which things go together: Connections, with pictures and no words. A grid of 4, 6, 9 or 16 pictures sits in the middle in hidden groups, with an empty frame for each group above. Nobody says what the groups are. The child taps the pictures that belong together; a whole group hops into a frame and a recorded Word says its name, once.
 
 It is the Shelf's step after Tidy Up: there the Bins name the groups first, here the child finds them. Vocabulary lives in [CONTEXT.md](./CONTEXT.md); design decisions in [docs/adr](./docs/adr); the spec it was built from in [docs/spec.md](./docs/spec.md). The pictures and their Words are the site's (`@shared/kinds`, site ADR 0018), credited in Tidy Up's [word-credits.md](../tidy-up/docs/word-credits.md).
 

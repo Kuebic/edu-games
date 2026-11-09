@@ -91,6 +91,22 @@ describe('a Board', () => {
     expect(own[2]!.classList.contains('gone')).toBe(true);
   });
 
+  it('ignores a tap while the second Miss is still gathering, so the two groups land in their own Frames', async () => {
+    const a = app();
+    leave = playScreen(a);
+    await vi.advanceTimersByTimeAsync(100);
+    const { own, other } = split(a);
+    press(own[0]!);
+    press(other);
+    await vi.advanceTimersByTimeAsync(100);
+    press(other);
+    press(other);
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(frames(a)[0]!.classList.contains('full')).toBe(true);
+    expect(frames(a)[1]!.classList.contains('full')).toBe(false);
+    expect(cheer(a)).toBeNull();
+  });
+
   it('gathers the last group on its first tap and ends with a card for the grown-up', async () => {
     const a = app();
     leave = playScreen(a);

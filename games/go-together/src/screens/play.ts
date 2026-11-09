@@ -5,7 +5,7 @@
 
 import { IDLE_MS, MAX_NUDGES, playStage, replay, wait, type Card as GrownUpCard, type PlayStage } from '@shared/sort';
 import type { App } from '../app';
-import { BOARD_COLUMNS, deals, done, FRAME_COLOURS, fresh, leadOf, restOf, tap, type Deal, type Picking } from '../boards';
+import { BOARD_COLUMNS, deals, done, FRAME_COLOURS, fresh, leadOf, restOf, tap, wordOf, type Deal, type Picking } from '../boards';
 import { h } from '../dom';
 import { bump, chime, hushWords, pop, shine, unpop, word } from '../sounds';
 
@@ -54,8 +54,9 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     cards[i]!.classList.toggle('lifted', up);
     cards[i]!.setAttribute('aria-pressed', String(up));
   };
-  const glowRest = (group: string, on: boolean) => {
-    for (const i of restOf(deal, state, group)) cards[i]!.classList.toggle('glow', on);
+  /** The rest of the group lights up, again even if it still was. */
+  const glowRest = (group: string) => {
+    for (const i of restOf(deal, state, group)) replay(cards[i]!, 'glow');
   };
   const clearGlow = () => {
     for (const c of cards) c.classList.remove('glow');
@@ -77,8 +78,8 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
       const i = left[Math.floor(Math.random() * left.length)];
       if (i !== undefined) replay(cards[i]!, 'site-sort-nudge');
     } else {
-      glowRest(lead, true);
-      if (nudges > 1) void word(deal.groups.find((g) => g.key === lead)!.word)?.();
+      glowRest(lead);
+      if (nudges > 1) void word(wordOf(deal, lead))?.();
     }
     if (nudges < MAX_NUDGES) timer = setTimeout(nudge, IDLE_MS);
   }
@@ -88,7 +89,10 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     busy = true;
     clearGlow();
     const members = deal.cards.flatMap((c, i) => (c.group === group ? [i] : []));
-    for (const i of members) lift(i, true);
+    for (const i of members) {
+      lift(i, true);
+      cards[i]!.classList.add('gathering');
+    }
     await wait(GATHER_MS);
     if (gone) return;
     chime();
@@ -96,12 +100,13 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     frame.replaceChildren(...members.map((i) => emoji(deal.cards[i]!.emoji)));
     frame.classList.add('full');
     frame.dataset.group = group;
-    frame.setAttribute('aria-label', deal.groups.find((g) => g.key === group)!.word);
+    frame.setAttribute('aria-label', wordOf(deal, group));
     for (const i of members) {
       lift(i, false);
+      cards[i]!.classList.remove('gathering');
       cards[i]!.classList.add('gone');
     }
-    void word(deal.groups.find((g) => g.key === group)!.word)?.();
+    void word(wordOf(deal, group))?.();
     busy = false;
     if (done(deal, state)) {
       clearTimeout(timer);
@@ -136,13 +141,17 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
         unpop();
         lift(i, false);
         if (state.lifted.length === 0) clearGlow();
-        else if (was.misses > 0) glowRest(leadOf(deal, state)!, true);
+        else if (was.misses > 0) glowRest(leadOf(deal, state)!);
         return;
       case 'miss':
         bump();
         replay(cards[i]!, 'shake');
-        if (outcome.help === 'glow') glowRest(outcome.group, true);
-        else void wait(SHAKE_MS).then(() => (gone ? undefined : gather(outcome.group)));
+        if (outcome.help === 'glow') glowRest(outcome.group);
+        else {
+          // The group is already found in `state`; taps wait until it has gathered on screen too.
+          busy = true;
+          void wait(SHAKE_MS).then(() => (gone ? undefined : gather(outcome.group)));
+        }
         return;
       case 'gather':
         void gather(outcome.group);

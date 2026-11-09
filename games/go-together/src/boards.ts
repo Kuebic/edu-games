@@ -3,7 +3,7 @@
 // (docs/spec.md). Nobody names a group until it's gathered: that is the whole game.
 
 import { COLOUR_THINGS, COLOURS, GROUP_WORDS, GROUPS, membersOf, overlap, type Colour, type Group, type KindThing } from '@shared/kinds';
-import { binsFrom, shuffle, type Rng } from '@shared/sort';
+import { binsFrom, MISSES_BEFORE_HELP, shuffle, type Rng } from '@shared/sort';
 
 // ---- Topics and Boards --------------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ export const BOARD_SIZE: Readonly<Record<Board, number>> = { 4: 2, 6: 3, 9: 3, 1
 export const BOARD_COLUMNS: Readonly<Record<Board, number>> = BOARD_SIZE;
 
 /** Same's Scope: the pools its pictures come from. */
-export type Pool = 'animals' | 'vehicles' | 'food' | 'clothes' | 'toys' | 'plants';
+export type Pool = Extract<Group, 'animals' | 'vehicles' | 'food' | 'clothes' | 'toys' | 'plants'>;
 export const POOL_LIST: readonly Pool[] = ['animals', 'vehicles', 'food', 'clothes', 'toys', 'plants'];
 
 /** Kinds' Scope: every group but mammals, which is animals over again. */
@@ -121,14 +121,11 @@ export interface Picking {
 
 export const fresh: Picking = { lifted: [], misses: 0, found: [] };
 
-/** Misses in one gather before the rest of the group gathers by itself: the site's rule. */
-export const MISSES_BEFORE_GATHER = 2;
-
 export type Outcome =
   | { kind: 'nothing' }
   | { kind: 'lift' }
   | { kind: 'drop' }
-  /** A Card outside the lead's group. `glow`: the rest of the group lights up. `gather`: they gather by themselves. */
+  /** A Card outside the lead's group. `glow`: the rest of the group lights up. `gather`: the second Miss (the site's MISSES_BEFORE_HELP), they gather by themselves. */
   | { kind: 'miss'; group: string; help: 'glow' | 'gather' }
   /** The group is whole. `child`: she lifted its last Card. `help`: after two Misses. `last`: the one group left, on its first tap. */
   | { kind: 'gather'; group: string; by: 'child' | 'help' | 'last' };
@@ -142,6 +139,9 @@ export const restOf = (deal: Deal, state: Picking, group: string): number[] =>
   deal.cards.flatMap((c, i) => (c.group === group && !state.lifted.includes(i) ? [i] : []));
 
 export const done = (deal: Deal, state: Picking): boolean => state.found.length === deal.groups.length;
+
+/** What's said when `group` gathers. */
+export const wordOf = (deal: Deal, group: string): string => deal.groups.find((g) => g.key === group)!.word;
 
 const gathered = (state: Picking, group: string): Picking => ({ lifted: [], misses: 0, found: [...state.found, group] });
 
@@ -161,6 +161,6 @@ export function tap(deal: Deal, state: Picking, index: number): { state: Picking
     return { state: { ...state, lifted }, outcome: { kind: 'lift' } };
   }
   const misses = state.misses + 1;
-  if (misses >= MISSES_BEFORE_GATHER) return { state: gathered(state, lead), outcome: { kind: 'miss', group: lead, help: 'gather' } };
+  if (misses >= MISSES_BEFORE_HELP) return { state: gathered(state, lead), outcome: { kind: 'miss', group: lead, help: 'gather' } };
   return { state: { ...state, misses }, outcome: { kind: 'miss', group: lead, help: 'glow' } };
 }

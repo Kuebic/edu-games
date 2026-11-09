@@ -1,6 +1,6 @@
 // Inline SVG for Practice: a Topic's badge, drawn white on its colour, and the Board chips' little grids.
 
-import type { Board } from '../boards';
+import { BOARD_COLUMNS, type Board } from '../boards';
 
 const svg = (body: string) => `<svg viewBox="0 0 48 48" aria-hidden="true"><g fill="currentColor">${body}</g></svg>`;
 
@@ -21,6 +21,5 @@ export function topicBadge(topic: 'same' | 'colors' | 'kinds'): string {
 
 /** A Board chip's text: a row of its grid as little squares, then its count, for the grown-up. */
 export function boardChip(board: Board): string {
-  const cols = board === 4 ? 2 : board === 16 ? 4 : 3;
-  return `${'▪'.repeat(cols)} ${board}`;
+  return `${'▪'.repeat(BOARD_COLUMNS[board])} ${board}`;
 }

@@ -2,7 +2,7 @@
 // source passed in, so it's tested as data. A Round sorts by one rule only, color or shape, because most
 // three-year-olds can't switch rules partway (docs/spec.md).
 
-import { COLOUR_THINGS, COLOURS, type Colour } from '@shared/kinds';
+import { COLOUR_GLYPHS, COLOUR_THINGS, COLOURS, type Colour } from '@shared/kinds';
 import { binsFrom, pileOf, shuffle, PER_BIN, type Rng } from '@shared/sort';
 
 /** The Topics this module deals: sorting by color or by shape. Kinds has its own, in kinds.ts. */
@@ -23,13 +23,7 @@ export const SORTS: Readonly<Record<SortTopic, readonly Sort[]>> = { colors: COL
 
 /** What a Scope button shows. */
 export const GLYPHS: Readonly<Record<Sort, string>> = {
-  red: '🔴',
-  blue: '🔵',
-  yellow: '🟡',
-  green: '🟢',
-  orange: '🟠',
-  purple: '🟣',
-  pink: '🩷',
+  ...COLOUR_GLYPHS,
   circle: '⚪',
   square: '🟦',
   triangle: '🔺',

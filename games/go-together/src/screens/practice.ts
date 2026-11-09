@@ -2,7 +2,7 @@
 // its Scope, and the Board as the Way of every Topic, saved in the Game's slot, and the gear. A Board of
 // n groups needs n items in the Scope, except Same, whose groups are pictures: one pool is enough.
 
-import { COLOURS, membersOf, type Colour } from '@shared/kinds';
+import { COLOUR_GLYPHS, COLOURS, membersOf, type Colour } from '@shared/kinds';
 import { showPractice, type PracticeGame, type PracticeTopic, type PracticeView } from '@shared/practice';
 import type { App } from '../app';
 import { BOARD_GROUPS, BOARDS, EASY_KINDS, KIND_GROUPS, POOL_LIST, TOPICS, type Board, type KindsGroup, type Pool, type Topic } from '../boards';
@@ -13,16 +13,6 @@ export const TOPIC_COLOURS: Readonly<Record<Topic, string>> = { same: '#2fa36b',
 
 const NAMES: Readonly<Record<Topic, string>> = { same: 'Same', colors: 'Colors', kinds: 'Kinds' };
 
-/** What a Scope button shows for a color. */
-export const COLOUR_GLYPHS: Readonly<Record<Colour, string>> = {
-  red: '🔴',
-  blue: '🔵',
-  yellow: '🟡',
-  green: '🟢',
-  orange: '🟠',
-  purple: '🟣',
-  pink: '🩷',
-};
 /** The first Range of Colors: told apart by a red-green color-blind child too. */
 const FIRST_COLOURS: readonly Colour[] = ['red', 'blue', 'yellow'];
 

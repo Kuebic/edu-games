@@ -93,11 +93,8 @@ export const POOLS: Readonly<Record<Group, { clear: readonly KindThing[]; wide?:
   },
 };
 
-/** A group's clear members, and its wide ones too when asked: never the odd ones. */
-export function membersOf(group: Group, wide = false): readonly KindThing[] {
-  const pool = POOLS[group];
-  return wide ? [...pool.clear, ...(pool.wide ?? [])] : pool.clear;
-}
+/** A group's clear members: never the wide or odd ones. */
+export const membersOf = (group: Group): readonly KindThing[] => POOLS[group].clear;
 
 /**
  * Groups that overlap, so no two of them ever stand side by side: a dog is an animal and a mammal, an apple
@@ -116,6 +113,17 @@ export type Colour = 'red' | 'blue' | 'yellow' | 'green' | 'orange' | 'purple' |
 
 /** In the order they're learnt: the primaries first. */
 export const COLOURS: readonly Colour[] = ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'pink'];
+
+/** What a Scope button shows for a color. */
+export const COLOUR_GLYPHS: Readonly<Record<Colour, string>> = {
+  red: '🔴',
+  blue: '🔵',
+  yellow: '🟡',
+  green: '🟢',
+  orange: '🟠',
+  purple: '🟣',
+  pink: '🩷',
+};
 
 /** Everyday things mainly one color, as emoji. Each is under one color only. */
 export const COLOUR_THINGS: Readonly<Record<Colour, readonly string[]>> = {
