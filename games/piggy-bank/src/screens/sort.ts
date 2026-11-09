@@ -1,6 +1,6 @@
 // Sort, on the site's sorting screen (@shared/sort): a Purse of money at the top, Banks along the bottom,
 // each wearing its money's photo. The child drags each piece, or taps a Bank, and its Word says its name as
-// it goes in. A tap on a piece turns it over. When the Purse is empty the pigs jingle, the site's cheer, a
+// the first goes in, and every time a Bank is tapped. A tap on a piece turns it over. When the Purse is empty the pigs jingle, the site's cheer, a
 // card for the grown-up, and Next. Until Back. This file draws the money and the pigs and plays the sounds.
 
 import { sortRounds as sortScreenRounds } from '@shared/sort';
@@ -30,9 +30,9 @@ export function sortScreen(app: App): () => void {
     piled: (money) => moneyPiece(money),
     land: (bin, money) => fillBelly(bellies.get(bin.el)!, money),
     lifted: () => pickUp(),
-    async landed(money, first) {
+    async landed(money, first, pressed) {
       clink(money === 'dollar');
-      if (first) await word(money)?.();
+      if (first || pressed) await word(money)?.();
     },
     missed: () => bump(),
     helped: (money) => void word(money)?.(),

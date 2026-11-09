@@ -7,6 +7,16 @@ import type { App } from '../app';
 import { loadProgress, type Save } from '../progress';
 import { IDLE_MS, playScreen } from './play';
 
+/** The Words said, by name. The real ones are clips. */
+const said: string[] = [];
+vi.mock('../sounds', async (actual) => ({
+  ...(await actual<typeof import('../sounds')>()),
+  word: (name: string) => () => {
+    said.push(name);
+    return Promise.resolve();
+  },
+}));
+
 function app(picks: Partial<Save> = {}): App {
   const progress = loadProgress(gameStorage('tidy-up', memoryStorage()));
   Object.assign(progress.game, picks);
@@ -59,6 +69,22 @@ describe('a Round', () => {
     expect(landed(a, own)).toBe(1);
     expect(pile(a)).toBe(6);
     expect(thing(a)).not.toBeNull();
+  });
+
+  it('says a Bin’s Word every time the Bin is tapped, not only for the first Thing into it', async () => {
+    const a = app();
+    leave = playScreen(a);
+    await vi.advanceTimersByTimeAsync(500);
+    said.length = 0;
+    // Four Things into two Bins: at least one Bin is tapped again, and says its Word again.
+    const pressed: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      pressed.push(sorts(a).own);
+      press(bin(a, pressed[i]!));
+      await vi.advanceTimersByTimeAsync(600);
+    }
+    expect(new Set(pressed).size).toBeLessThan(pressed.length);
+    expect(said).toEqual(pressed);
   });
 
   it('sends a Miss back and lights its own Bin, and after a second puts it in by itself', async () => {

@@ -7,7 +7,7 @@ A touch game that teaches little kids to recognise numbers and letters. The chil
 ### Play
 
 **Find**:
-One question: something to look at, and three to choose from, one of which matches. Every sixth ends in a Cheer.
+One question: something to look at, and three to choose from, one of which matches. A tap on the thing to look at says only what it is: a letter's name, a Picture's word or a number, and a Tray is counted; the question itself is said as the Find starts, after a wrong pick and on a nudge. Every sixth ends in a Cheer.
 _Avoid_: Question, problem, card
 
 **Both ways round**:
@@ -31,15 +31,15 @@ What the beans on a Tray are: beans, jellybeans, ladybugs, stars or strawberries
 _Avoid_: Theme, counter type
 
 **Picture**:
-An emoji with a word the child can say (an apple, a cat). Each is filed under the letter its word starts with, and the Voice says the word.
+An emoji with a word the child can say (an apple, a cat). Each is filed under the letter its word starts with, and the Voice says the word. A Picture may have other names a child uses too (a gift is a present, a rabbit a bunny), and it is never offered beside a letter one of those starts with.
 _Avoid_: Icon, image, object
 
 **Choices**:
-The three large buttons the child picks from: numerals, Trays, letters or Pictures. The other two are from the Scope where it has them: letters from it, else the nearest in the alphabet; numbers 1 or 2 away, those in it first.
+The three large buttons the child picks from: numerals, Trays, letters or Pictures. The other two are from the Scope where it has them: letters from it, else the nearest in the alphabet; numbers 1 or 2 away, those in it first. No Choice's name, whatever the child calls it, starts with another Choice's letter, and nothing the prompt's Picture is called starts with a wrong one. A wrong pick says only what it is, then the Find is asked again.
 _Avoid_: Options, answers
 
 **Count-along**:
-The help after a wrong pick on a Tray: the Voice counts the beans aloud, full rows by tens and then one by one, while they light up.
+The Voice counting a Tray's beans aloud, full rows by tens and then one by one, while they light up: the help after a wrong pick on a Tray, and what a tap on one does.
 _Avoid_: Hint, correction
 
 ### Practice

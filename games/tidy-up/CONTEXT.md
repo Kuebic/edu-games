@@ -11,7 +11,7 @@ One Pile sorted into its Bins, then Tidy. A Round sorts by color or by shape, ne
 _Avoid_: Level, game, turn
 
 **Bin**:
-Where Things go: a bucket or a dump truck painted its color on Colors, or a wooden shape-sorter Box cut with its shape on Shapes. Two or three stand along the bottom, as many as the Scope has items, up to three.
+Where Things go: a bucket or a dump truck painted its color on Colors, or a wooden shape-sorter Box cut with its shape on Shapes. Two or three stand along the bottom, as many as the Scope has items, up to three. A Bin says its Word for the first Thing into it a Round, and whenever the child taps it to put the Thing in; a Thing dragged in after the first lands with only a sound.
 _Avoid_: Box (only the shape-sorter), basket, target, bucket (only the Skin)
 
 **Pile**:

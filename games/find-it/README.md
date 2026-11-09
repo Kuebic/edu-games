@@ -22,6 +22,6 @@ The Game opens on Practice, a screen for you, with no levels to work through. Pi
 
 Each number or letter you picked comes up once, in a shuffled order, before any comes again, and it goes on until you tap Back. Every six there's a cheer. The three to choose from are the ones you picked where there are enough (B, C and D for the picture of a cat when A to E are on), else the nearest letters, and numbers 1 or 2 away. Beans sit in rows of ten, five and five, so numbers past ten can be counted as ten and some more. Trays to choose from are wide bars, one under the other.
 
-A wrong pick is named ("That's 4", "Cat starts with C"), the beans are counted aloud, and the question is asked again. There are no scores or timers, and nothing to fail. Tapping the big picture at the top asks again.
+A wrong pick is named ("4", "Cat"), the beans are counted aloud, and the question is asked again. There are no scores or timers, and nothing to fail. Tapping the big picture, letter or number at the top says what it is; tapping a tray counts its beans. The three to choose from never share a first letter, even by another name a child might use: a peanut is never offered beside a P, nor a present (the gift) beside one.
 
 Press and hold the gear for 3 seconds to open the Grown-up Corner, where you can turn the voice or sounds off.

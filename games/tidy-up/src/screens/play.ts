@@ -1,5 +1,6 @@
 // Practice's Rounds on the site's sorting screen (@shared/sort): a Pile of Things at the top, Bins along
-// the bottom. The child drags each Thing, or taps a Bin, and its Word says its color or shape as it lands.
+// the bottom. The child drags each Thing, or taps a Bin, and its Word says its color or shape as it lands:
+// on the first into each Bin, and whenever she taps the Bin, so a tap says what it is.
 // When the Pile is empty the Round is tidy: the Bins go, the site's cheer, a card for the grown-up, and
 // Next. Until Back. This file draws Tidy Up's Things and Bins and plays its sounds.
 
@@ -78,9 +79,9 @@ function sortScreen(app: App, topic: SortTopic): () => void {
       load.append(landed);
     },
     lifted: () => pickUp(),
-    async landed(thing, first) {
+    async landed(thing, first, pressed) {
       drop();
-      if (first) await word(thing.sort)?.();
+      if (first || pressed) await word(thing.sort)?.();
     },
     missed: () => bump(),
     helped: (thing) => say(thing.sort),

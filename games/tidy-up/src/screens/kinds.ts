@@ -1,7 +1,8 @@
 // Kinds on the site's sorting screen (@shared/sort): a Pile of everyday Things, and a wooden crate for each
 // group of the Step, three small members on its card. As a Round starts each crate says its group's Word;
-// a Thing lands with only a sound, and says its own name when tapped. After a Miss it says its name, then
-// its group's Word, and its own crate glows (docs/kinds.md, ADR 0004).
+// a Thing lands with only a sound, or its group's Word when the crate was pressed, and says its own name
+// when tapped. After a Miss it says its name, then its group's Word, and its own crate glows (docs/kinds.md,
+// ADR 0004).
 
 import { playStage, replay, sortRounds, wait, type BinView } from '@shared/sort';
 import type { App } from '../app';
@@ -72,7 +73,10 @@ export function kindsScreen(app: App): () => void {
     },
     lifted: () => pickUp(),
     // The crates said their names as the Round opened, so a right drop is only its sound (ADR 0004).
-    landed: async () => drop(),
+    async landed(piece, _first, pressed) {
+      drop();
+      if (pressed) await word(groupWord(piece.group))?.();
+    },
     missed: () => bump(),
     helped(piece) {
       void (async () => {

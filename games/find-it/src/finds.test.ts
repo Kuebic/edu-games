@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  LETTERS, LETTER_RANGES, NUMBERS, NUMBER_RANGES, PICTURES, letterChoices, numberChoices, pictureChoices, practice, type Find,
+  LETTERS, LETTER_RANGES, NUMBERS, NUMBER_RANGES, PICTURES, initials, letterChoices, numberChoices, pictureChoices, pictureFor, practice,
+  type Find, type Picture,
 } from './finds';
 
 function seeded(seed: number) {
@@ -25,6 +26,15 @@ describe('the Topics', () => {
     for (const letter of LETTERS) expect(PICTURES.some((p) => p.letter === letter), letter).toBe(true);
     for (const p of PICTURES) expect(p.word[0]!.toUpperCase(), p.word).toBe(p.letter);
     expect(new Set(PICTURES.map((p) => p.word)).size).toBe(PICTURES.length);
+  });
+
+  it('call the peanut a peanut, and know the other names a child uses', () => {
+    expect(PICTURES.find((p) => p.emoji === '🥜')).toMatchObject({ word: 'peanut', letter: 'P' });
+    expect(PICTURES.filter((p) => p.letter === 'N').length).toBeGreaterThanOrEqual(2);
+    expect([...initials(PICTURES.find((p) => p.word === 'gift')!)].sort()).toEqual(['G', 'P']);
+    expect([...initials(PICTURES.find((p) => p.word === 'queen')!)].sort()).toEqual(['P', 'Q']);
+    // Another name only matters when it starts differently.
+    for (const p of PICTURES) for (const name of p.alsoCalled) expect(name[0]!.toUpperCase(), name).not.toBe(p.letter);
   });
 });
 
@@ -63,6 +73,24 @@ describe('letterChoices and pictureChoices', () => {
         expect(new Set(pictures.map((p) => p.letter)).size).toBe(3);
         for (const p of pictures) expect(scope).toContain(p.letter);
       }
+    }
+  });
+
+  it('never offer a Choice a child might call by another Choice’s letter', () => {
+    const clash = (a: Picture, b: Picture) => initials(a).has(b.letter) || initials(b).has(a.letter);
+    for (let seed = 1; seed < 60; seed++) {
+      const rng = seeded(seed);
+      for (const letter of LETTERS) {
+        const pictures = pictureChoices(letter, LETTERS, rng);
+        for (const a of pictures) for (const b of pictures) if (a !== b) expect(clash(a, b), `${a.word} / ${b.word}`).toBe(false);
+        const prompt = pictureFor(letter, rng);
+        for (const c of letterChoices(letter, LETTERS, rng, prompt)) if (c !== letter) expect(initials(prompt).has(c), `${prompt.word} / ${c}`).toBe(false);
+      }
+      // A present is no Choice beside a P; a queen is a princess, so no P beside her, either way round.
+      expect(pictureChoices('P', ['P', 'G'], rng).map((p) => p.word)).not.toContain('gift');
+      expect(pictureChoices('Q', ['Q', 'P', 'R'], rng).map((p) => p.letter)).not.toContain('P');
+      const queen = PICTURES.find((p) => p.word === 'queen')!;
+      expect(letterChoices('Q', ['Q', 'P', 'R'], rng, queen)).not.toContain('P');
     }
   });
 
@@ -105,8 +133,10 @@ describe('practice', () => {
     for (const f of take(practice('letter', LETTERS, 'mix', seeded(5)), 52)) {
       if (f.kind !== 'letter') throw new Error('not a letter');
       expect(f.picture.letter).toBe(f.letter);
-      if (f.direction === 'find-symbol') expect(f.choices).toContain(f.letter);
-      else expect(f.choices).toContain(f.picture);
+      if (f.direction === 'find-symbol') {
+        expect(f.choices).toContain(f.letter);
+        for (const c of f.choices) if (c !== f.letter) expect(initials(f.picture).has(c)).toBe(false);
+      } else expect(f.choices).toContain(f.picture);
     }
   });
 

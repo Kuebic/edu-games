@@ -17,14 +17,16 @@ const MAX_NUDGES = 3;
 interface Shown {
   /** What to look at. */
   prompt: HTMLElement;
-  /** What's asked, said at the start, on a tap of the prompt, and after a wrong pick. */
+  /** What's asked, said at the start, after a wrong pick and on a nudge. */
   ask: string;
+  /** What the prompt is, said when it's tapped: a letter's name, a picture's word, a number. A Tray counts instead. */
+  promptName?: string;
   /** The three to choose from, in order. */
   choices: HTMLElement[];
   /** Which of them is right. */
   right: number;
-  /** What to say about a wrong pick, before asking again. */
-  wrong(i: number): string;
+  /** What a Choice is, said when it's picked and wrong, before asking again. */
+  choiceName(i: number): string;
   /** What to say when it's right. */
   yes: string;
   /** Count the Tray aloud after a wrong pick, before asking again. */
@@ -64,8 +66,10 @@ function shown(find: Find, skin: Skin): Shown {
         prompt: tray(n, skin),
         ask: `How many ${SKIN_LOOKS[skin].many}? Find the number!`,
         choices: find.choices.map((c) => glyph(String(c))),
+        // An empty Tray has nothing to count.
+        promptName: n === 0 ? 'Zero' : undefined,
         right: find.choices.indexOf(n),
-        wrong: (i) => `That's ${find.choices[i]}.`,
+        choiceName: (i) => String(find.choices[i]),
         yes: `Yes! ${beans(n)}!`,
         countAlong: true,
       };
@@ -73,9 +77,10 @@ function shown(find: Find, skin: Skin): Shown {
     return {
       prompt: glyph(String(n)),
       ask: n === 0 ? `Find zero ${SKIN_LOOKS[skin].many}. Which tray is empty?` : `Find ${beans(n)}!`,
+      promptName: String(n),
       choices: find.choices.map((c) => tray(c, skin)),
       right: find.choices.indexOf(n),
-      wrong: (i) => `That's ${beans(find.choices[i]!)}.`,
+      choiceName: (i) => beans(find.choices[i]!),
       yes: `Yes! ${beans(n)}!`,
     };
   }
@@ -85,9 +90,10 @@ function shown(find: Find, skin: Skin): Shown {
     return {
       prompt: picture(find.picture),
       ask: `${word}! ${word} starts with ${L}. Find ${letterName(L)}!`,
+      promptName: word,
       choices: find.choices.map((c) => glyph(c)),
       right: find.choices.indexOf(L),
-      wrong: (i) => `That's ${letterName(find.choices[i]!)}.`,
+      choiceName: (i) => letterName(find.choices[i]!),
       yes: `Yes! ${L}! ${word} starts with ${L}!`,
     };
   }
@@ -95,9 +101,10 @@ function shown(find: Find, skin: Skin): Shown {
   return {
     prompt: glyph(L),
     ask: `${letterName(L)}! Which one starts with ${L}? ${list(words)}?`,
+    promptName: letterName(L),
     choices: find.choices.map((p) => picture(p)),
     right: find.choices.indexOf(find.picture),
-    wrong: (i) => `${cap(words[i]!)} starts with ${find.choices[i]!.letter}.`,
+    choiceName: (i) => cap(words[i]!),
     yes: `Yes! ${cap(find.picture.word)} starts with ${L}!`,
   };
 }
@@ -111,7 +118,7 @@ export function playScreen(app: App, topic: Topic): () => void {
   // ---- Layout ------------------------------------------------------------
   const backBtn = h('button', { class: 'site-tool', label: 'Back', html: backIcon });
   const dots = Array.from({ length: CHEER_EVERY }, () => h('span', { class: 'dot' }));
-  const promptBtn = h('button', { class: 'prompt', label: 'Hear it again' });
+  const promptBtn = h('button', { class: 'prompt', label: 'What is it?' });
   const choicesEl = h('div', { class: 'choices' });
   const fx = h('div', { class: 'fx-layer' });
   const screen = h(
@@ -125,6 +132,10 @@ export function playScreen(app: App, topic: Topic): () => void {
   app.root.append(screen);
 
   let ask = '';
+  /** What the prompt is; a Tray has none and counts along instead. */
+  let promptName: string | undefined;
+  /** True while the Find answers a pick: its line, a Count-along, the ask again. A tap on the prompt waits. */
+  let answering = false;
   let hint: (() => void) | null = null;
 
   // ---- Idle help: ask again and pulse the choices ------------------------
@@ -148,9 +159,12 @@ export function playScreen(app: App, topic: Topic): () => void {
   screen.addEventListener('pointerdown', touched, { capture: true });
 
   backBtn.addEventListener('click', () => app.start());
+  // A tap on the prompt says only what it is, or counts a Tray. Not over the Find's own lines.
   promptBtn.addEventListener('click', () => {
-    if (ask) void say(ask);
+    if (!ask || answering) return;
     replay(promptBtn, 'wiggle');
+    if (promptName) void say(promptName);
+    else void countAlong();
   });
 
   // ---- Choosing -----------------------------------------------------------
@@ -174,32 +188,44 @@ export function playScreen(app: App, topic: Topic): () => void {
     return { buttons, pick: () => new Promise((r) => (resolvePick = r)) };
   }
 
+  /** Which count is running; a new one, a pick or the next Find stops the one before. */
+  let counting = 0;
+  const stopCounting = () => {
+    counting++;
+    for (const b of promptBtn.querySelectorAll('.lit')) b.classList.remove('lit');
+  };
+
   /** Counts the Tray aloud: full rows by tens, then the rest one by one. */
   async function countAlong(): Promise<void> {
     const all = [...promptBtn.querySelectorAll<HTMLElement>('.bean')];
     if (all.length === 0) return;
+    stopCounting();
+    const run = counting;
+    const going = () => alive && run === counting;
     await say("Let's count!");
     const tens = all.length > 10 ? Math.floor(all.length / 10) : 0;
     const steps: { lit: HTMLElement[]; word: string }[] = [];
     for (let row = 0; row < tens; row++) steps.push({ lit: all.slice(row * 10, row * 10 + 10), word: String((row + 1) * 10) });
     for (let i = tens * 10; i < all.length; i++) steps.push({ lit: [all[i]!], word: String(i + 1) });
     for (const step of steps) {
-      if (!alive) return;
+      if (!going()) return;
       for (const b of step.lit) b.classList.add('lit');
       play('tick');
       await Promise.all([say(step.word), wait(450)]);
     }
     await wait(300);
-    for (const b of all) b.classList.remove('lit');
+    if (going()) stopCounting();
   }
 
   // ---- One Find -----------------------------------------------------------
   async function runFind(find: Find, index: number): Promise<void> {
     const it = shown(find, skin);
     hint = null;
+    stopCounting();
     promptBtn.replaceChildren(it.prompt);
     const { buttons, pick } = offer(it.choices);
     ask = it.ask;
+    promptName = it.promptName;
     void say(ask);
     hint = () => {
       void say(ask);
@@ -210,6 +236,7 @@ export function playScreen(app: App, topic: Topic): () => void {
     for (;;) {
       const i = await pick();
       if (!alive) return;
+      stopCounting();
       if (i === it.right) {
         buttons[i]!.classList.add('right');
         break;
@@ -217,10 +244,12 @@ export function playScreen(app: App, topic: Topic): () => void {
       buttons[i]!.classList.add('gone');
       play('boop');
       hint = null;
-      await say(it.wrong(i));
+      answering = true;
+      await say(it.choiceName(i));
       if (!alive) return;
       if (it.countAlong) await countAlong();
       if (!alive) return;
+      answering = false;
       void say(ask);
       hint = () => {
         void say(ask);
@@ -231,6 +260,7 @@ export function playScreen(app: App, topic: Topic): () => void {
 
     hint = null;
     ask = '';
+    promptName = undefined;
     play('chime');
     buzz(40);
     sparkle(buttons[it.right]!, fx);

@@ -120,7 +120,7 @@ A picture set a child picks from the chips on the Group list, or on a Topic of P
 _Avoid_: theme
 
 **Sorting screen**:
-A Game's play screen where a child sorts (`@shared/sort`): a **Pile** of Things at the top, the **Spot** where the next one waits, and two or three **Bins** along the bottom. She drags a Thing into a Bin, or taps the Bin. A **Miss** glides back and lights the right Bin; after two, the Thing goes in by itself. Tidy Up, and Mailbox's and Piggy Bank's Sort, play on it.
+A Game's play screen where a child sorts (`@shared/sort`): a **Pile** of Things at the top, the **Spot** where the next one waits, and two or three **Bins** along the bottom. She drags a Thing into a Bin, or taps the Bin, which also says the Bin's Word. A **Miss** glides back and lights the right Bin; after two, the Thing goes in by itself. Tidy Up, and Mailbox's and Piggy Bank's Sort, play on it.
 _Avoid_: drag game, drop zone
 
 **Asking screen**:

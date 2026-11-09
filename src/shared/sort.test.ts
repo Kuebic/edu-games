@@ -74,8 +74,8 @@ function game(log: string[]): SortGame<string, string> {
     async opening(bins) {
       log.push(`open ${bins.length}`);
     },
-    async landed(t, first) {
-      log.push(`landed ${t}${first ? ' first' : ''}`);
+    async landed(t, first, pressed) {
+      log.push(`landed ${t}${first ? ' first' : ''}${pressed ? ' pressed' : ''}`);
     },
     missed: (t) => log.push(`missed ${t}`),
     helped: (t) => log.push(`helped ${t}`),
@@ -122,7 +122,7 @@ describe('the sorting screen', () => {
     await vi.advanceTimersByTimeAsync(500);
     press(bin('a'));
     await vi.advanceTimersByTimeAsync(600);
-    expect(log).toContain('landed a first');
+    expect(log).toContain('landed a first pressed');
     expect(bin('a').textContent).toBe('a');
     expect(thing()!.dataset.t).toBe('b');
   });
@@ -135,18 +135,21 @@ describe('the sorting screen', () => {
     expect(bin('a').classList.contains('site-sort-glow')).toBe(true);
     press(bin('b'));
     await vi.advanceTimersByTimeAsync(1000);
+    // Put in by itself: not a tap, so a Game that says what's tapped stays quiet.
     expect(log.slice(3)).toEqual(['missed a', 'landed a first']);
     expect(bin('a').textContent).toBe('a');
     expect(bin('b').textContent).toBe('');
   });
 
-  it('tells the Game only the first Thing into each Bin a Round is the first', async () => {
+  it('tells the Game only the first Thing into each Bin a Round is the first, and which Bins were tapped', async () => {
     await vi.advanceTimersByTimeAsync(500);
     for (let i = 0; i < 4; i++) {
       press(bin(thing()!.dataset.t!));
       await vi.advanceTimersByTimeAsync(600);
     }
-    expect(log.filter((l) => l.startsWith('landed')).sort()).toEqual(['landed a', 'landed a first', 'landed b', 'landed b first']);
+    expect(log.filter((l) => l.startsWith('landed')).sort()).toEqual([
+      'landed a first pressed', 'landed a pressed', 'landed b first pressed', 'landed b pressed',
+    ]);
   });
 
   it('nudges after being still, three times at most', async () => {

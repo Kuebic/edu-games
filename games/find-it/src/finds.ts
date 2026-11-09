@@ -7,44 +7,52 @@ export type Rng = () => number;
 export const CHEER_EVERY = 6;
 export const NUMBER_MAX = 20;
 
-/** One picture a child can name: its emoji, its word and the letter the word starts with. */
+/**
+ * One picture a child can name: its emoji, its word, the letter the word starts with, and the other names
+ * a child might use for it (a gift is a present). A Find never offers it beside a letter any of its names
+ * starts with, in either Way, so what she calls it can't point at a wrong Choice.
+ */
 export interface Picture {
   emoji: string;
   word: string;
   letter: string;
+  alsoCalled: readonly string[];
 }
 
-/** Every picture, at least one per letter A to Z. The word is what the Voice says. */
+/** Every picture, at least one per letter A to Z. The word is what the Voice says; after it, its other names. */
 export const PICTURES: readonly Picture[] = (
   [
     ['🍎', 'apple'], ['🐜', 'ant'],
-    ['📖', 'book'], ['🍌', 'banana'], ['🐻', 'bear'],
-    ['🐱', 'cat'], ['🚗', 'car'], ['🎂', 'cake'],
-    ['🐶', 'dog'], ['🦆', 'duck'], ['🥁', 'drum'],
+    ['📖', 'book'], ['🍌', 'banana'], ['🐻', 'bear', 'teddy'],
+    ['🐱', 'cat', 'kitty'], ['🚗', 'car'], ['🎂', 'cake'],
+    ['🐶', 'dog', 'puppy'], ['🦆', 'duck'], ['🥁', 'drum'],
     ['🥚', 'egg'], ['🐘', 'elephant'],
     ['🐟', 'fish'], ['🐸', 'frog'], ['🌸', 'flower'],
-    ['🍇', 'grapes'], ['🎁', 'gift'], ['🐐', 'goat'],
-    ['🎩', 'hat'], ['🐴', 'horse'], ['🏠', 'house'],
+    ['🍇', 'grapes'], ['🎁', 'gift', 'present'], ['🐐', 'goat'],
+    ['🎩', 'hat'], ['🐴', 'horse', 'pony'], ['🏠', 'house'],
     ['🍦', 'ice cream'], ['🧊', 'ice'],
-    ['🧃', 'juice'], ['👖', 'jeans'],
-    ['🔑', 'key'], ['🪁', 'kite'], ['🐨', 'koala'],
+    ['🧃', 'juice'], ['👖', 'jeans', 'pants'],
+    ['🔑', 'key'], ['🪁', 'kite'], ['🐨', 'koala', 'bear'],
     ['🦁', 'lion'], ['🍋', 'lemon'], ['🍃', 'leaf'],
     ['🌙', 'moon'], ['🐭', 'mouse'], ['🥛', 'milk'],
-    ['👃', 'nose'], ['🥜', 'nut'],
+    ['👃', 'nose'], ['🪺', 'nest'],
     ['🍊', 'orange'], ['🦉', 'owl'], ['🐙', 'octopus'],
-    ['🐷', 'pig'], ['🍕', 'pizza'], ['✏️', 'pencil'],
-    ['👸', 'queen'],
-    ['🐰', 'rabbit'], ['🌈', 'rainbow'], ['🚀', 'rocket'],
+    ['🐷', 'pig'], ['🍕', 'pizza'], ['✏️', 'pencil'], ['🥜', 'peanut'],
+    ['👸', 'queen', 'princess'],
+    ['🐰', 'rabbit', 'bunny'], ['🌈', 'rainbow'], ['🚀', 'rocket'],
     ['⭐', 'star'], ['☀️', 'sun'], ['🐍', 'snake'],
     ['🐯', 'tiger'], ['🌳', 'tree'], ['🚂', 'train'],
     ['☂️', 'umbrella'], ['🦄', 'unicorn'],
     ['🎻', 'violin'], ['🌋', 'volcano'],
     ['🐳', 'whale'], ['🍉', 'watermelon'],
     ['🩻', 'x-ray'],
-    ['🧶', 'yarn'], ['🪀', 'yo-yo'],
+    ['🧶', 'yarn', 'wool'], ['🪀', 'yo-yo'],
     ['🦓', 'zebra'],
   ] as const
-).map(([emoji, word]) => ({ emoji, word, letter: word[0]!.toUpperCase() }));
+).map(([emoji, word, ...alsoCalled]) => ({ emoji, word, letter: word[0]!.toUpperCase(), alsoCalled }));
+
+/** The letters a picture's names start with: its own, and one for each other name. */
+export const initials = (p: Picture): Set<string> => new Set([p.letter, ...p.alsoCalled.map((name) => name[0]!.toUpperCase())]);
 
 /** A Topic's items, as the Scope holds them: the numbers 0 to 20 and the capitals A to Z, in order. */
 export const NUMBERS: readonly string[] = Array.from({ length: NUMBER_MAX + 1 }, (_, i) => String(i));
@@ -99,23 +107,38 @@ export function numberChoices(target: number, scope: readonly string[], rng: Rng
   return shuffle([target, ...others.slice(0, 2)], rng);
 }
 
-/** Two other letters: from the Scope when it has them, else the target's nearest in the alphabet. */
+/** Every other letter, likeliest first: the Scope's in random order, then the target's nearest in the alphabet. */
 function otherLetters(target: string, scope: readonly string[], rng: Rng): string[] {
   const away = (l: string) => Math.abs(l.charCodeAt(0) - target.charCodeAt(0));
   const fromScope = shuffle(scope.filter((l) => l !== target), rng);
   // Stable, so letters as far away as each other stay in their shuffled order.
   const nearest = shuffle(LETTERS.filter((l) => l !== target && !scope.includes(l)), rng).sort((a, b) => away(a) - away(b));
-  return [...fromScope, ...nearest].slice(0, 2);
+  return [...fromScope, ...nearest];
 }
 
-/** The target letter and two others, in random order. */
-export function letterChoices(target: string, scope: readonly string[], rng: Rng = Math.random): string[] {
-  return shuffle([target, ...otherLetters(target, scope, rng)], rng);
+/**
+ * The target letter and two others, in random order. With the picture shown, none of its names starts with
+ * one of the others: a child who says "present" for the gift mustn't find a P beside the G.
+ */
+export function letterChoices(target: string, scope: readonly string[], rng: Rng = Math.random, shown?: Picture): string[] {
+  const taken = shown ? initials(shown) : new Set([target]);
+  const others = otherLetters(target, scope, rng).filter((l) => !taken.has(l)).slice(0, 2);
+  return shuffle([target, ...others], rng);
 }
 
-/** A picture for the target letter and one each for two other letters, in random order. */
+/**
+ * A picture for the target letter and one each for two other letters, in random order. No picture is one a
+ * child might call by another Choice's letter, so the other letters are skipped when they leave no picture.
+ */
 export function pictureChoices(target: string, scope: readonly string[], rng: Rng = Math.random): Picture[] {
-  return shuffle([target, ...otherLetters(target, scope, rng)].map((l) => pictureFor(l, rng)), rng);
+  const chosen = [pictureFor(target, rng)];
+  const clashes = (p: Picture) => chosen.some((c) => initials(c).has(p.letter) || initials(p).has(c.letter));
+  for (const letter of otherLetters(target, scope, rng)) {
+    if (chosen.length === 3) break;
+    const fit = PICTURES.filter((p) => p.letter === letter && !clashes(p));
+    if (fit.length > 0) chosen.push(pick(fit, rng));
+  }
+  return shuffle(chosen, rng);
 }
 
 export function pictureFor(letter: string, rng: Rng = Math.random): Picture {
@@ -145,7 +168,8 @@ export function practice(topic: Topic, scope: readonly string[], way: Way = 'mix
       return { kind: 'number', direction, target, choices: numberChoices(target, items, rng) };
     }
     if (direction === 'find-symbol') {
-      return { kind: 'letter', direction, letter: item, picture: pictureFor(item, rng), choices: letterChoices(item, items, rng) };
+      const picture = pictureFor(item, rng);
+      return { kind: 'letter', direction, letter: item, picture, choices: letterChoices(item, items, rng, picture) };
     }
     const choices = pictureChoices(item, items, rng);
     return { kind: 'letter', direction, letter: item, picture: choices.find((p) => p.letter === item)!, choices };

@@ -31,7 +31,7 @@ const corner = grownUpCorner(root, progress, {
     'A → 🍎 shows a letter and the child finds a picture that starts with it. Mix takes turns. ' +
     'Then tap the numbers or letters to practise, or a range like A–E to turn five on or off at once, and Play. ' +
     'Each one comes up once before any comes again, for as long as the child likes, with a cheer every six. ' +
-    'A wrong pick is named, and the beans are counted aloud. Your picks are kept for next time.',
+    'A wrong pick is named, and the beans are counted aloud. A tap on the big picture, letter or number says what it is. Your picks are kept for next time.',
   closed: () => start?.redraw(),
 });
 

@@ -363,10 +363,12 @@ export interface SortGame<T, K> {
   /** A Thing lifted. */
   lifted?(thing: T): void;
   /**
-   * A Thing in its own Bin: its sound, and its Word only if `first`, the first into that Bin this Round. A
-   * right drop never says again what the child has just heard (site ADR 0016). The next Thing waits for it.
+   * A Thing in its own Bin: its sound, and its Word only if `first`, the first into that Bin this Round, or
+   * `pressed`, when the child tapped the Bin rather than dragging to it. A right drop never says again what
+   * the child has just heard, but a tap on a Bin always says what it is (site ADR 0016). The next Thing
+   * waits for it.
    */
-  landed(thing: T, first: boolean): Promise<void>;
+  landed(thing: T, first: boolean, pressed: boolean): Promise<void>;
   /** A wrong Bin, as it bumps. */
   missed(thing: T): void;
   /** Back on the Spot after a first Miss, its own Bin glowing: its Word. */
@@ -421,7 +423,7 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
       bin.el.classList.add('site-sort-bin');
       // A press from a keyboard or switch; fingers come through the stage's pointer events.
       bin.el.addEventListener('click', (e) => {
-        if (e.detail === 0) void place(bins.indexOf(bin));
+        if (e.detail === 0) void place(bins.indexOf(bin), true);
       });
       return bin;
     });
@@ -453,15 +455,18 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
     armIdle();
   }
 
-  /** The Thing into Bin `i`: right, or a Miss, and after MISSES_BEFORE_HELP into its own by itself. */
-  async function place(i: number): Promise<void> {
+  /**
+   * The Thing into Bin `i`, by a drag or a tap on the Bin: right, or a Miss, and after MISSES_BEFORE_HELP
+   * into its own by itself.
+   */
+  async function place(i: number, pressed: boolean): Promise<void> {
     if (!current || busy || i < 0) return;
     const cur = current;
     busy = true;
     clearIdle();
     game.hush();
     const bin = bins[i]!;
-    if (round.bins[i] === game.binOf(cur.thing)) return into(bin);
+    if (round.bins[i] === game.binOf(cur.thing)) return into(bin, pressed);
 
     cur.misses++;
     game.missed(cur.thing);
@@ -469,7 +474,7 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
     if (cur.misses >= MISSES_BEFORE_HELP) {
       await s.glide(cur.el, mouthOf(ownBin(cur.thing)));
       if (!alive) return;
-      return into(ownBin(cur.thing));
+      return into(ownBin(cur.thing), false);
     }
     await s.glide(cur.el, spotPoint());
     if (!alive) return;
@@ -479,7 +484,7 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
     armIdle();
   }
 
-  async function into(bin: BinView): Promise<void> {
+  async function into(bin: BinView, pressed: boolean): Promise<void> {
     const cur = current!;
     const first = !filled.has(bin);
     filled.add(bin);
@@ -493,7 +498,7 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
     replay(bin.el, 'site-sort-got');
     buzz(30);
     s.sparkleAt(bin.el);
-    await game.landed(cur.thing, first);
+    await game.landed(cur.thing, first, pressed);
     if (!alive) return;
     await wait(150);
     if (alive) serve();
@@ -544,10 +549,10 @@ export function sortRounds<T, K>(s: PlayStage, game: SortGame<T, K>): () => void
     dropped(_view, at) {
       if (!Number.isFinite(at.x)) return;
       const i = binAt(at, s.stage.getBoundingClientRect(), bins.length);
-      if (i !== undefined) void place(i);
+      if (i !== undefined) void place(i, false);
     },
     pressed(target) {
-      void place(bins.findIndex((b) => b.el === target));
+      void place(bins.findIndex((b) => b.el === target), true);
     },
   });
 

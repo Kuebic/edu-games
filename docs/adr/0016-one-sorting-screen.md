@@ -11,3 +11,5 @@ Piggy Bank's Find isn't a sort, so it keeps its own loop, on the shared stage an
 Amended 2026-09-29: `landed(thing, first)` says whether a Thing is the first into its Bin this Round, so a Game says a Bin's Word once, not on every right drop (Tidy Up's ADR 0004).
 
 Amended by 0017: Piggy Bank's Find, and Mailbox's, play on the shared asking screen, `askRounds`.
+
+Amended 2026-11-08: `landed(thing, first, pressed)` also says whether the child tapped the Bin rather than dragging to it, so a Game says the Bin's Word on every tap, the way a tap on anything says what it is, and stays quiet on a repeat drag. A Thing put in by itself after two Misses is not a tap.

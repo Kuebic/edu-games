@@ -1,6 +1,7 @@
 // Sort, on the site's sorting screen (@shared/sort): a Bag of lowercase letters at the top, two or three
 // Mailboxes along the bottom, each wearing a capital. The child drags each letter, or taps a Mailbox, and
-// the first letter into each Mailbox a Round says its name. A Miss says the name of the letter in her hand,
+// the first letter into each Mailbox a Round says its name, as does any letter put in by a tap on the Mailbox.
+// A Miss says the name of the letter in her hand,
 // never "capital" or "lowercase" (ADR 0003). When the Bag is empty every flag is up, the site's cheer, a card
 // for the grown-up, and Next. Until Back. This file draws the letters and Mailboxes and plays the sounds.
 
@@ -39,9 +40,9 @@ export function sortScreen(app: App): () => void {
     },
     land: (bin) => boxes.get(bin.el)?.gotMail(),
     lifted: () => pickUp(),
-    async landed(letter, first) {
+    async landed(letter, first, pressed) {
       post();
-      if (first) await say(letter);
+      if (first || pressed) await say(letter);
     },
     missed(letter) {
       missed.add(letter);
