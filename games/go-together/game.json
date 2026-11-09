@@ -2,6 +2,6 @@
   "name": "Go Together",
   "category": "logic",
   "tile": "icon.svg",
-  "shelf": "hidden",
+  "shelf": "on",
   "added": "2026-11-08"
 }
