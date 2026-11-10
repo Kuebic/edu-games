@@ -19,6 +19,15 @@ export function topicBadge(topic: 'same' | 'colors' | 'kinds'): string {
   }
 }
 
+/** Show Me: three Cards hopping up into a Frame. */
+export function showMeIcon(): string {
+  return svg(
+    '<rect x="6" y="5" width="36" height="13" rx="5" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="5 4"/>' +
+      '<path d="M24 20l7 8h-4.5v5h-5v-5H17z"/>' +
+      '<rect x="5" y="35" width="10" height="10" rx="3"/><rect x="19" y="35" width="10" height="10" rx="3"/><rect x="33" y="35" width="10" height="10" rx="3"/>',
+  );
+}
+
 /** A Board chip's text: a row of its grid as little squares, then its count, for the grown-up. */
 export function boardChip(board: Board): string {
   return `${'▪'.repeat(BOARD_COLUMNS[board])} ${board}`;

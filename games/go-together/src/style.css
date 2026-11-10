@@ -110,7 +110,7 @@ body::before {
   --gap: 10px;
   --cell: min(
     calc((100cqw - (var(--cols, 3) - 1) * var(--gap)) / var(--cols, 3)),
-    calc((100cqh - 100px - (var(--rows, 2) - 1) * var(--gap)) / var(--rows, 2)),
+    calc((100cqh - 178px - (var(--rows, 2) - 1) * var(--gap)) / var(--rows, 2)),
     200px
   );
   flex: none;
@@ -184,6 +184,40 @@ body::before {
   visibility: hidden;
 }
 
+/* ---------- Show Me: under the grid, once she has missed ---------- */
+
+/* The row keeps its height while the button is hidden, so the grid stays put. */
+.show-me-row {
+  flex: none;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+}
+
+.show-me {
+  width: 88px;
+  height: 64px;
+  padding: 10px 22px;
+  border-radius: 22px;
+  background: #fff;
+  color: #5b6b86;
+  box-shadow:
+    inset 0 0 0 3px #e3e8f2,
+    0 5px 0 #0000001f;
+  animation: frame-pop 300ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.show-me[hidden] {
+  display: none;
+}
+
+.show-me:active {
+  translate: 0 2px;
+  box-shadow:
+    inset 0 0 0 3px #e3e8f2,
+    0 2px 0 #0000001f;
+}
+
 /* ---------- The end of a Board ---------- */
 
 .card-art {
@@ -222,10 +256,16 @@ body::before {
   75% { translate: 6% 0; rotate: 4deg; }
 }
 
-/* Short landscape phones: the Frames go small. */
+/* Short landscape phones: the Frames go small, and Show Me stands beside the grid, where there is room. */
 @media (max-height: 500px) {
   .frame {
     height: 44px;
+  }
+
+  .show-me-row {
+    position: absolute;
+    right: 4px;
+    bottom: 8px;
   }
 
   .grid {

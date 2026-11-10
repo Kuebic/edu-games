@@ -3,7 +3,7 @@
 // (docs/spec.md). Nobody names a group until it's gathered: that is the whole game.
 
 import { COLOUR_THINGS, COLOURS, GROUP_WORDS, GROUPS, membersOf, overlap, type Colour, type Group, type KindThing } from '@shared/kinds';
-import { binsFrom, MISSES_BEFORE_HELP, shuffle, type Rng } from '@shared/sort';
+import { binsFrom, shuffle, type Rng } from '@shared/sort';
 
 // ---- Topics and Boards --------------------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ export function deals(topic: Topic, scope: readonly string[], board: Board, rng:
 
 // ---- Picking, tap by tap ------------------------------------------------------------------------------
 
-/** Where a Board stands: which Cards are up (the first is the lead), Misses since the last gather, groups gathered. */
+/** Where a Board stands: which Cards are up (the first is the lead), Misses on this lead's group, groups gathered. */
 export interface Picking {
   lifted: readonly number[];
   misses: number;
@@ -125,9 +125,9 @@ export type Outcome =
   | { kind: 'nothing' }
   | { kind: 'lift' }
   | { kind: 'drop' }
-  /** A Card outside the lead's group. `glow`: the rest of the group lights up. `gather`: the second Miss (the site's MISSES_BEFORE_HELP), they gather by themselves. */
-  | { kind: 'miss'; group: string; help: 'glow' | 'gather' }
-  /** The group is whole. `child`: she lifted its last Card. `help`: after two Misses. `last`: the one group left, on its first tap. */
+  /** A Card outside the lead's group: the rest of the group lights up, and she tries again, as often as she likes. */
+  | { kind: 'miss'; group: string }
+  /** The group is whole. `child`: she lifted its last Card. `help`: she asked with Show Me. `last`: the one group left, on its first tap. */
   | { kind: 'gather'; group: string; by: 'child' | 'help' | 'last' };
 
 /** The lead: the first Card lifted, whose group is being collected. */
@@ -149,7 +149,11 @@ const gathered = (state: Picking, group: string): Picking => ({ lifted: [], miss
 export function tap(deal: Deal, state: Picking, index: number): { state: Picking; outcome: Outcome } {
   const card = deal.cards[index]!;
   if (state.found.includes(card.group)) return { state, outcome: { kind: 'nothing' } };
-  if (state.lifted.includes(index)) return { state: { ...state, lifted: state.lifted.filter((i) => i !== index) }, outcome: { kind: 'drop' } };
+  if (state.lifted.includes(index)) {
+    const lifted = state.lifted.filter((i) => i !== index);
+    // Nothing up: nothing is being collected, so there is nothing to have missed.
+    return { state: { ...state, lifted, misses: lifted.length ? state.misses : 0 }, outcome: { kind: 'drop' } };
+  }
   const lead = leadOf(deal, state);
   if (lead === undefined) {
     if (state.found.length === deal.groups.length - 1) return { state: gathered(state, card.group), outcome: { kind: 'gather', group: card.group, by: 'last' } };
@@ -160,7 +164,15 @@ export function tap(deal: Deal, state: Picking, index: number): { state: Picking
     if (lifted.length === BOARD_SIZE[deal.board]) return { state: gathered(state, lead), outcome: { kind: 'gather', group: lead, by: 'child' } };
     return { state: { ...state, lifted }, outcome: { kind: 'lift' } };
   }
-  const misses = state.misses + 1;
-  if (misses >= MISSES_BEFORE_HELP) return { state: gathered(state, lead), outcome: { kind: 'miss', group: lead, help: 'gather' } };
-  return { state: { ...state, misses }, outcome: { kind: 'miss', group: lead, help: 'glow' } };
+  return { state: { ...state, misses: state.misses + 1 }, outcome: { kind: 'miss', group: lead } };
+}
+
+/** Whether Show Me is on offer: a lead is up and she has missed for its group. Never before she has tried. */
+export const stuck = (deal: Deal, state: Picking): boolean => leadOf(deal, state) !== undefined && state.misses > 0;
+
+/** Show Me: the lead's group gathers by itself. The only way a group gathers without her finding it (ADR 0001). */
+export function showMe(deal: Deal, state: Picking): { state: Picking; outcome: Outcome } {
+  if (!stuck(deal, state)) return { state, outcome: { kind: 'nothing' } };
+  const lead = leadOf(deal, state)!;
+  return { state: gathered(state, lead), outcome: { kind: 'gather', group: lead, by: 'help' } };
 }

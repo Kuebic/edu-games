@@ -1,6 +1,6 @@
 import { COLOUR_THINGS, membersOf, overlap, type Group } from '@shared/kinds';
 import { describe, expect, it } from 'vitest';
-import { BOARD_COLUMNS, BOARD_GROUPS, BOARD_SIZE, BOARDS, deals, EASY_KINDS, fresh, KIND_GROUPS, POOL_LIST, tap, type Deal, type Picking } from './boards';
+import { BOARD_COLUMNS, BOARD_GROUPS, BOARD_SIZE, BOARDS, deals, EASY_KINDS, fresh, KIND_GROUPS, POOL_LIST, showMe, stuck, tap, type Deal, type Picking } from './boards';
 
 /** A seeded random, so a failure can be run again. */
 function seeded(seed: number): () => number {
@@ -137,15 +137,35 @@ describe('picking', () => {
     expect(state.lifted).toEqual([]);
   });
 
-  it('misses a Card outside the lead’s group: the first glows the rest, the second gathers them by itself', () => {
-    const one = play([0, 1]);
-    expect(one.outcome).toEqual({ kind: 'miss', group: 'a', help: 'glow' });
-    expect(one.state.lifted).toEqual([0]);
-    const two = tap(deal, one.state, 3);
-    expect(two.outcome).toEqual({ kind: 'miss', group: 'a', help: 'gather' });
-    expect(two.state.found).toEqual(['a']);
-    expect(two.state.lifted).toEqual([]);
-    expect(two.state.misses).toBe(0);
+  it('misses a Card outside the lead’s group as often as she likes: nothing ever gathers by itself', () => {
+    let at = play([0]);
+    for (const i of [1, 3, 4, 1, 3, 4, 1, 3]) {
+      at = tap(deal, at.state, i);
+      expect(at.outcome).toEqual({ kind: 'miss', group: 'a' });
+      expect(at.state.lifted).toEqual([0]);
+      expect(at.state.found).toEqual([]);
+    }
+    expect(play([2, 5], at.state).outcome).toEqual({ kind: 'gather', group: 'a', by: 'child' });
+  });
+
+  it('offers Show Me only once she has missed for a lead, and Show Me gathers that lead’s group', () => {
+    expect(stuck(deal, fresh)).toBe(false);
+    expect(showMe(deal, fresh).outcome).toEqual({ kind: 'nothing' });
+    const lifted = play([0, 2]);
+    expect(stuck(deal, lifted.state)).toBe(false);
+    expect(showMe(deal, lifted.state).state).toBe(lifted.state);
+    const missed = play([1], lifted.state);
+    expect(stuck(deal, missed.state)).toBe(true);
+    const shown = showMe(deal, missed.state);
+    expect(shown.outcome).toEqual({ kind: 'gather', group: 'a', by: 'help' });
+    expect(shown.state).toEqual({ lifted: [], misses: 0, found: ['a'] });
+    expect(stuck(deal, shown.state)).toBe(false);
+  });
+
+  it('forgets the Misses when every Card is put down, so Show Me is for the group she is on', () => {
+    const { state } = play([0, 1, 0]);
+    expect(state).toEqual(fresh);
+    expect(stuck(deal, play([1], state).state)).toBe(false);
   });
 
   it('starts counting Misses again after a gather', () => {
@@ -166,6 +186,6 @@ describe('picking', () => {
     expect(state.found).toEqual(['a']);
     const handed = play([0, 2, 0]);
     expect(handed.state.lifted).toEqual([2]);
-    expect(tap(deal, handed.state, 1).outcome).toEqual({ kind: 'miss', group: 'a', help: 'glow' });
+    expect(tap(deal, handed.state, 1).outcome).toEqual({ kind: 'miss', group: 'a' });
   });
 });

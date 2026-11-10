@@ -1,12 +1,14 @@
 // Practice's Boards: a grid of Cards in the middle, a row of empty Frames above, on the site's play stage
 // (@shared/sort: Back, the gear, the end of a Round). The child taps Cards; the first lifted leads, a tap
-// outside its group is a Miss at once, and a whole group gathers into the next Frame and says its Word
+// outside its group is a Miss at once, and a whole group gathers into the next Frame and says its Word.
+// She tries as often as she likes; after a Miss the Show Me button under the grid gathers the group for her
 // (docs/spec.md, ADR 0001). When every Frame is full: the site's cheer, a card for the grown-up, and Next.
 
 import { IDLE_MS, MAX_NUDGES, playStage, replay, wait, type Card as GrownUpCard, type PlayStage } from '@shared/sort';
 import type { App } from '../app';
-import { BOARD_COLUMNS, deals, done, FRAME_COLOURS, fresh, leadOf, restOf, tap, wordOf, type Deal, type Picking } from '../boards';
+import { BOARD_COLUMNS, deals, done, FRAME_COLOURS, fresh, leadOf, restOf, showMe, stuck, tap, wordOf, type Deal, type Picking } from '../boards';
 import { h } from '../dom';
+import { showMeIcon } from './icons';
 import { bump, chime, hushWords, pop, shine, unpop, word } from '../sounds';
 
 export { IDLE_MS } from '@shared/sort';
@@ -15,8 +17,6 @@ export { IDLE_MS } from '@shared/sort';
 const GATHER_MS = 450;
 /** The Frames shine before the cheer. */
 const SHINE_MS = 1300;
-/** A Miss's shake. */
-const SHAKE_MS = 360;
 
 const LOOK_FOR = 'Which things at home go together? Find three.';
 
@@ -48,7 +48,14 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
   const grid = h('div', { class: 'grid' }, ...cards);
   grid.style.setProperty('--cols', String(BOARD_COLUMNS[deal.board]));
   grid.style.setProperty('--rows', String(deal.cards.length / BOARD_COLUMNS[deal.board]));
-  s.stage.append(framesRow, grid);
+  // Always in the layout, so the grid never jumps; shown once she has missed for the lead.
+  const show = h('button', { class: 'show-me', label: 'show me', html: showMeIcon() });
+  show.hidden = true;
+  show.addEventListener('click', shown);
+  s.stage.append(framesRow, grid, h('div', { class: 'show-me-row' }, show));
+  const offer = () => {
+    show.hidden = busy || !stuck(deal, state);
+  };
 
   const lift = (i: number, up: boolean) => {
     cards[i]!.classList.toggle('lifted', up);
@@ -87,6 +94,7 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
   /** The group's Cards slide together, chime, hop into the next empty Frame, and its Word is said once. */
   async function gather(group: string): Promise<void> {
     busy = true;
+    offer();
     clearGlow();
     const members = deal.cards.flatMap((c, i) => (c.group === group ? [i] : []));
     for (const i of members) {
@@ -120,6 +128,17 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     } else rest();
   }
 
+  /** Show Me: the rest of the lead's group lifts and it gathers. */
+  function shown(): void {
+    if (busy || gone) return;
+    const { state: next, outcome } = showMe(deal, state);
+    if (outcome.kind !== 'gather') return;
+    nudges = 0;
+    state = next;
+    hushWords();
+    void gather(outcome.group);
+  }
+
   function tapped(i: number): void {
     if (busy || gone) return;
     nudges = 0;
@@ -127,6 +146,7 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     const was = state;
     const { state: next, outcome } = tap(deal, state, i);
     state = next;
+    offer();
     switch (outcome.kind) {
       case 'nothing':
         return;
@@ -146,12 +166,7 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
       case 'miss':
         bump();
         replay(cards[i]!, 'shake');
-        if (outcome.help === 'glow') glowRest(outcome.group);
-        else {
-          // The group is already found in `state`; taps wait until it has gathered on screen too.
-          busy = true;
-          void wait(SHAKE_MS).then(() => (gone ? undefined : gather(outcome.group)));
-        }
+        glowRest(outcome.group);
         return;
       case 'gather':
         void gather(outcome.group);

@@ -25,7 +25,7 @@ const corner = grownUpCorner(root, progress, {
   levels: false,
   note:
     'The first screen is for you. This Game is Connections for a child who can’t read yet: pictures in hidden groups, and nobody says what the groups are. ' +
-    'Your child taps the pictures that go together. The first picture tapped leads; a picture from another group just bumps back, and the rest of the group lights up. After two bumps the group gathers by itself. ' +
+    'Your child taps the pictures that go together. The first picture tapped leads; a picture from another group just bumps back, and the rest of the group lights up. She can try as often as she likes; after a bump a button appears under the pictures that gathers the group for her, if she wants it. ' +
     'When a whole group is up it hops into a frame at the top and says its name, once. Tapping a lifted picture puts it down. Nothing is counted. ' +
     'Try the tabs in order. 🟩 Same is for two-year-olds: the groups are the same picture twice. Colors groups things of one color: a strawberry, a fire truck and a rose. Kinds groups kinds of things: animals, vehicles, food, clothes. ' +
     'The squares pick the Board: 4 pictures in 2 groups of 2, 6 in 2 groups of 3, 9 in 3 groups of 3, or 16 in 4 groups of 4, like the newspaper. ' +

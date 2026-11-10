@@ -31,6 +31,7 @@ const split = (a: App) => {
   return { own: all.filter((c) => groupOf(c) === group), other: all.find((c) => groupOf(c) !== group)! };
 };
 const cheer = (a: App) => a.root.querySelector('.site-sort-cheer');
+const showMe = (a: App) => a.root.querySelector<HTMLButtonElement>('.show-me')!;
 
 let leave: () => void;
 beforeEach(() => vi.useFakeTimers());
@@ -74,33 +75,66 @@ describe('a Board', () => {
     for (const c of own) expect(c.classList.contains('gone')).toBe(true);
   });
 
-  it('bumps a Card outside the lead’s group, glows the rest of the group, and gathers it by itself after two', async () => {
+  it('bumps a Card outside the lead’s group and glows the rest, however often, and never gathers by itself', async () => {
     const a = app();
     leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(100);
     const { own, other } = split(a);
     press(own[0]!);
-    press(other);
-    await vi.advanceTimersByTimeAsync(100);
-    expect(other.getAttribute('aria-pressed')).toBe('false');
-    expect(own[1]!.classList.contains('glow')).toBe(true);
-    expect(frames(a)[0]!.classList.contains('full')).toBe(false);
-    press(other);
-    await vi.advanceTimersByTimeAsync(2000);
+    for (let miss = 0; miss < 8; miss++) {
+      press(other);
+      await vi.advanceTimersByTimeAsync(2000);
+      expect(other.getAttribute('aria-pressed')).toBe('false');
+      expect(own[0]!.getAttribute('aria-pressed')).toBe('true');
+      expect(own[1]!.classList.contains('glow')).toBe(true);
+      expect(frames(a)[0]!.classList.contains('full')).toBe(false);
+    }
+    press(own[1]!);
+    press(own[2]!);
+    await vi.advanceTimersByTimeAsync(1500);
     expect(frames(a)[0]!.classList.contains('full')).toBe(true);
-    expect(own[2]!.classList.contains('gone')).toBe(true);
   });
 
-  it('ignores a tap while the second Miss is still gathering, so the two groups land in their own Frames', async () => {
+  it('shows Show Me only after a Miss, and it gathers the lead’s group and goes away', async () => {
+    const a = app();
+    leave = playScreen(a);
+    await vi.advanceTimersByTimeAsync(100);
+    const { own, other } = split(a);
+    expect(showMe(a).hidden).toBe(true);
+    press(own[0]!);
+    expect(showMe(a).hidden).toBe(true);
+    press(other);
+    expect(showMe(a).hidden).toBe(false);
+    press(showMe(a));
+    expect(showMe(a).hidden).toBe(true);
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(frames(a)[0]!.classList.contains('full')).toBe(true);
+    expect(frames(a)[0]!.dataset.group).toBe(groupOf(own[0]!));
+    for (const c of own) expect(c.classList.contains('gone')).toBe(true);
+    expect(showMe(a).hidden).toBe(true);
+  });
+
+  it('takes Show Me away when the lead is put down', async () => {
     const a = app();
     leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(100);
     const { own, other } = split(a);
     press(own[0]!);
     press(other);
+    press(own[0]!);
+    expect(showMe(a).hidden).toBe(true);
+  });
+
+  it('ignores taps while Show Me is still gathering, so the two groups land in their own Frames', async () => {
+    const a = app();
+    leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(100);
+    const { own, other } = split(a);
+    press(own[0]!);
     press(other);
+    press(showMe(a));
     press(other);
+    press(showMe(a));
     await vi.advanceTimersByTimeAsync(2000);
     expect(frames(a)[0]!.classList.contains('full')).toBe(true);
     expect(frames(a)[1]!.classList.contains('full')).toBe(false);

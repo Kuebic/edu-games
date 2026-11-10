@@ -31,12 +31,16 @@ The first Card lifted; its Group is the one being collected. When the lead is pu
 _Avoid_: anchor, first pick
 
 **Gather**:
-A whole Group up: the Cards slide together, a chime, they hop into a Frame and the Word is said once. The child gathers by lifting the last Card; two Misses gather the rest by themselves; the last Group left gathers on its first tap.
+A whole Group up: the Cards slide together, a chime, they hop into a Frame and the Word is said once. The child gathers by lifting the last Card; Show Me gathers the rest for her; the last Group left gathers on its first tap.
 _Avoid_: solve, match, win, complete
 
 **Miss**:
-A tap on a Card outside the lead's Group: a soft bump, it shakes and drops back, and the rest of the lead's Group glows. The second Miss in one gather gathers it by itself. Nothing is counted.
+A tap on a Card outside the lead's Group: a soft bump, it shakes and drops back, and the rest of the lead's Group glows. She can Miss as often as she likes; nothing gathers by itself. Nothing is counted.
 _Avoid_: mistake, wrong answer, one away, fail
+
+**Show Me**:
+The button under the grid that gathers the lead's Group for her. There only once she has Missed for that lead, gone when the Group gathers or every Card is put down. The one way a Group gathers without her finding it.
+_Avoid_: give up, hint, skip, help
 
 **Word**:
 A recorded name, said once as a Group gathers: its kind ("animals"), its color ("red") or, on Same, the picture's own name ("dog"). The site's Word (CONTEXT.md). The Game has no Voice and says nothing else.
