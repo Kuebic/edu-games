@@ -35,7 +35,7 @@ A whole Group up: the Cards slide together, a chime, they hop into a Frame and t
 _Avoid_: solve, match, win, complete
 
 **Miss**:
-A tap on a Card outside the lead's Group: a soft bump, it shakes and drops back, and the rest of the lead's Group glows. She can Miss as often as she likes; nothing gathers by itself. Nothing is counted.
+A tap on a Card outside the lead's Group: a soft bump, it shakes and drops back, and the lead stays up. Nothing shows where the Group is. She can Miss as often as she likes; nothing gathers by itself. Nothing is counted.
 _Avoid_: mistake, wrong answer, one away, fail
 
 **Show Me**:
@@ -47,7 +47,7 @@ A recorded name, said once as a Group gathers: its kind ("animals"), its color (
 _Avoid_: label, Voice
 
 **Nudge**:
-After 7 seconds without a touch. Nothing up: one Card wiggles. A lead up: the rest of its Group glows, and from the second Nudge its Word plays. Three at most in a row; nothing gathers while she's idle.
+After 7 seconds without a touch. Nothing up: one Card wiggles. A lead up: Show Me wiggles if it is there, or else the lead. Three at most in a row. A Nudge never points at the Cards she is looking for or says their Word, and nothing gathers while she's idle.
 _Avoid_: hint, timeout
 
 **Done**:

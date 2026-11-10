@@ -125,7 +125,7 @@ export type Outcome =
   | { kind: 'nothing' }
   | { kind: 'lift' }
   | { kind: 'drop' }
-  /** A Card outside the lead's group: the rest of the group lights up, and she tries again, as often as she likes. */
+  /** A Card outside the lead's group: it bumps back and nothing else is told, and she tries again, as often as she likes. */
   | { kind: 'miss'; group: string }
   /** The group is whole. `child`: she lifted its last Card. `help`: she asked with Show Me. `last`: the one group left, on its first tap. */
   | { kind: 'gather'; group: string; by: 'child' | 'help' | 'last' };
@@ -133,10 +133,6 @@ export type Outcome =
 /** The lead: the first Card lifted, whose group is being collected. */
 export const leadOf = (deal: Deal, state: Picking): string | undefined =>
   state.lifted.length ? deal.cards[state.lifted[0]!]!.group : undefined;
-
-/** The Cards of `group` not yet lifted, by index. */
-export const restOf = (deal: Deal, state: Picking, group: string): number[] =>
-  deal.cards.flatMap((c, i) => (c.group === group && !state.lifted.includes(i) ? [i] : []));
 
 export const done = (deal: Deal, state: Picking): boolean => state.found.length === deal.groups.length;
 

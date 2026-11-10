@@ -6,7 +6,7 @@
 
 import { IDLE_MS, MAX_NUDGES, playStage, replay, wait, type Card as GrownUpCard, type PlayStage } from '@shared/sort';
 import type { App } from '../app';
-import { BOARD_COLUMNS, deals, done, FRAME_COLOURS, fresh, leadOf, restOf, showMe, stuck, tap, wordOf, type Deal, type Picking } from '../boards';
+import { BOARD_COLUMNS, deals, done, FRAME_COLOURS, fresh, leadOf, showMe, stuck, tap, wordOf, type Deal, type Picking } from '../boards';
 import { h } from '../dom';
 import { showMeIcon } from './icons';
 import { bump, chime, hushWords, pop, shine, unpop, word } from '../sounds';
@@ -61,13 +61,6 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     cards[i]!.classList.toggle('lifted', up);
     cards[i]!.setAttribute('aria-pressed', String(up));
   };
-  /** The rest of the group lights up, again even if it still was. */
-  const glowRest = (group: string) => {
-    for (const i of restOf(deal, state, group)) replay(cards[i]!, 'glow');
-  };
-  const clearGlow = () => {
-    for (const c of cards) c.classList.remove('glow');
-  };
 
   function rest(): void {
     clearTimeout(timer);
@@ -75,7 +68,10 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     timer = setTimeout(nudge, IDLE_MS);
   }
 
-  /** Quiet for a while: with nothing up, one Card wiggles; with a lead up, its group glows, and from the second its Word plays. */
+  /**
+   * Quiet for a while: with nothing up, one Card wiggles; with a lead up, Show Me wiggles if it's on offer,
+   * or else the lead. Never the Cards she is looking for: a Nudge says "go on", not where (ADR 0001).
+   */
   function nudge(): void {
     if (gone || busy) return;
     nudges++;
@@ -84,10 +80,7 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
       const left = deal.cards.flatMap((c, i) => (state.found.includes(c.group) ? [] : [i]));
       const i = left[Math.floor(Math.random() * left.length)];
       if (i !== undefined) replay(cards[i]!, 'site-sort-nudge');
-    } else {
-      glowRest(lead);
-      if (nudges > 1) void word(wordOf(deal, lead))?.();
-    }
+    } else replay(show.hidden ? cards[state.lifted[0]!]! : show, 'site-sort-nudge');
     if (nudges < MAX_NUDGES) timer = setTimeout(nudge, IDLE_MS);
   }
 
@@ -95,7 +88,6 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
   async function gather(group: string): Promise<void> {
     busy = true;
     offer();
-    clearGlow();
     const members = deal.cards.flatMap((c, i) => (c.group === group ? [i] : []));
     for (const i of members) {
       lift(i, true);
@@ -143,7 +135,6 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
     if (busy || gone) return;
     nudges = 0;
     rest();
-    const was = state;
     const { state: next, outcome } = tap(deal, state, i);
     state = next;
     offer();
@@ -154,19 +145,14 @@ function board(s: PlayStage, deal: Deal, over: () => void): () => void {
         hushWords();
         pop();
         lift(i, true);
-        // A lifted Card is of the group; the glow was for finding it.
-        cards[i]!.classList.remove('glow');
         return;
       case 'drop':
         unpop();
         lift(i, false);
-        if (state.lifted.length === 0) clearGlow();
-        else if (was.misses > 0) glowRest(leadOf(deal, state)!);
         return;
       case 'miss':
         bump();
         replay(cards[i]!, 'shake');
-        glowRest(outcome.group);
         return;
       case 'gather':
         void gather(outcome.group);

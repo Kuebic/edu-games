@@ -75,7 +75,7 @@ describe('a Board', () => {
     for (const c of own) expect(c.classList.contains('gone')).toBe(true);
   });
 
-  it('bumps a Card outside the lead’s group and glows the rest, however often, and never gathers by itself', async () => {
+  it('bumps a Card outside the lead’s group, however often, without showing where the group is or gathering it', async () => {
     const a = app();
     leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(100);
@@ -86,7 +86,8 @@ describe('a Board', () => {
       await vi.advanceTimersByTimeAsync(2000);
       expect(other.getAttribute('aria-pressed')).toBe('false');
       expect(own[0]!.getAttribute('aria-pressed')).toBe('true');
-      expect(own[1]!.classList.contains('glow')).toBe(true);
+      // Nothing marks the Cards she is looking for.
+      for (const c of own.slice(1)) expect(c.className).toBe('card');
       expect(frames(a)[0]!.classList.contains('full')).toBe(false);
     }
     press(own[1]!);
@@ -158,16 +159,22 @@ describe('a Board', () => {
     expect(cards(a).filter((c) => !c.classList.contains('gone'))).toHaveLength(6);
   });
 
-  it('nudges a Card after a quiet while, and glows the lead’s group once something is up', async () => {
+  it('nudges a Card after a quiet while; with a lead up it nudges the lead, then Show Me, never the group', async () => {
     const a = app();
     leave = playScreen(a);
     await vi.advanceTimersByTimeAsync(100);
     await vi.advanceTimersByTimeAsync(IDLE_MS);
     expect(cards(a).some((c) => c.classList.contains('site-sort-nudge'))).toBe(true);
-    const { own } = split(a);
+    const { own, other } = split(a);
     press(own[0]!);
+    for (const c of cards(a)) c.classList.remove('site-sort-nudge');
     await vi.advanceTimersByTimeAsync(IDLE_MS);
-    expect(own[1]!.classList.contains('glow')).toBe(true);
+    expect(own[0]!.classList.contains('site-sort-nudge')).toBe(true);
+    for (const c of own.slice(1)) expect(c.className).toBe('card');
+    press(other);
+    await vi.advanceTimersByTimeAsync(IDLE_MS);
+    expect(showMe(a).classList.contains('site-sort-nudge')).toBe(true);
+    for (const c of own.slice(1)) expect(c.className).toBe('card');
   });
 
   it('deals a Board of 16 in four groups of four on Same', async () => {

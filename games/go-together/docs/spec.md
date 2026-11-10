@@ -33,9 +33,9 @@ A grid of Cards in the middle of a portrait phone (2×2, 2×3, 3×3, 4×4), each
 
 - A tap **lifts** a Card: it grows, gets a yellow ring, a soft pop. The first lifted Card is the **Lead**; its group is what she's collecting. A tap on a lifted Card puts it down; if the Lead goes down, the earliest still-lifted Card leads.
 - A tap on a Card of the Lead's group lifts it too. When every Card of the group is up, they **gather**: slide together, a chime, then hop into the next empty Frame, and the group's Word is said once ("animals", "red", or on Same the Thing's name, "dog").
-- **Miss**: a tap on a Card not in the Lead's group. A soft bump, the Card shakes and drops back; the Lead stays up. Nothing is counted, no submit, no "one away". On every Miss the rest of the Lead's group glows, and she tries again as often as she likes: no number of Misses gathers a group.
+- **Miss**: a tap on a Card not in the Lead's group. A soft bump, the Card shakes and drops back; the Lead stays up. Nothing is counted, no submit, no "one away". Nothing lights up or is said: a Miss only tells her that Card wasn't one. She tries again as often as she likes, and no number of Misses gathers a group. (First built with the rest of the group glowing on a Miss; the playtest said that is the answer, ADR 0001.)
 - **Show Me**: a button under the grid, a picture of Cards hopping into a Frame. It appears after the first Miss for a Lead and goes when the group gathers or every Card is put down. A tap gathers the Lead's group by itself, Word and all. First built as a self-gather on the second Miss; the first playtest said the Game should wait until she asks (ADR 0001).
-- **Nudge** after 7 s without a touch: with nothing lifted, one Card wiggles; with a Lead up, the rest of its group glows; from the second Nudge the Lead's Word plays; three at most. Nothing gathers by itself while she's idle.
+- **Nudge** after 7 s without a touch: with nothing lifted, one Card wiggles; with a Lead up, Show Me wiggles if it is on offer, or else the Lead; three at most. A Nudge never points at the group or says its Word. Nothing gathers by itself while she's idle.
 - The last group left gathers as soon as its first Card is tapped, since there is nothing to pick it from.
 
 ### The end
@@ -59,7 +59,7 @@ The site's Sound switch, no Game rows. The note: what the Game teaches, the thre
 ## Tests
 
 - Dealing: groups from the Scope, each once before any again, never overlapping groups on one Board, a Board of n groups × n Cards, no group all on one row.
-- Picking as data: Lead, lift, put down, Miss, a Miss's glow, Misses without end, Show Me only after a Miss and its gather, the last group's free gather.
+- Picking as data: Lead, lift, put down, Miss, a Miss that shows nothing, Misses without end, Show Me only after a Miss and its gather, the last group's free gather.
 - Practice: three Topics, their items, Ranges, Boards, `fewest` per Board.
 - Progress: the slot round-trips Topic, Scope and Board; a damaged slot reads as the new save.
 - Every group and every Thing has a Word clip (from the shared module).
@@ -89,7 +89,7 @@ As built, in [CONTEXT.md](../CONTEXT.md). The draft's list, kept for the record:
 **Lift**: what a tap does to a Card: it rises, rings and waits. A second tap puts it down. _Avoid_: select, pick.
 **Lead**: the first Card lifted; its Group is the one being collected. _Avoid_: anchor, first pick.
 **Gather**: a whole Group lifted: the Cards slide together, chime, hop into a Frame and the Word is said once. _Avoid_: solve, match, win.
-**Miss**: a tap on a Card outside the Lead's Group: a bump and it drops back. Each glows the rest of the Group, as often as she likes; Show Me gathers it if she asks. Nothing is counted. _Avoid_: mistake, wrong answer, one away.
+**Miss**: a tap on a Card outside the Lead's Group: a bump and it drops back. As often as she likes, and nothing shows where the Group is; Show Me gathers it if she asks. Nothing is counted. _Avoid_: mistake, wrong answer, one away.
 **Word**: a recorded name, said once per Gather: the Group's plural, its color, or on Same the picture's name. The Game has no Voice. _Avoid_: label, Voice.
-**Nudge**: after 7 s idle, a wiggle, then the Group glows, then the Word; three at most. _Avoid_: hint, timeout.
+**Nudge**: after 7 s idle, a wiggle: any Card, or the Lead, or Show Me; three at most. _Avoid_: hint, timeout.
 **Same / Colors / Kinds**: the three Topics (the site's word).
